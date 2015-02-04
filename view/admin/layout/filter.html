@@ -1,0 +1,17 @@
+<div id="s-filter" class="col-lg-3 hide">
+    <script>
+        var Filter = {};
+    </script>
+
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Filter</h5>
+        </div>
+        <div class="ibox-content">
+            {% autoescape false %}{{ sfilter }}{% endautoescape %}
+            <div class="form-group" align="right">
+                <button class="btn btn-primary" onclick="runFilter();">filter</button>
+            </div>
+        </div>
+    </div>
+</div>

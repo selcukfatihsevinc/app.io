@@ -1,0 +1,28 @@
+<div class="row border-bottom">
+    <nav style="margin-bottom: 0" role="navigation" class="navbar navbar-static-top">
+        <div class="navbar-header">
+            <a href="javascript:void(0);" class="navbar-minimalize minimalize-styl-2 btn btn-primary">
+                <i class="fa fa-bars"></i>
+            </a>
+        </div>
+
+        {% if session.app %}
+            <ul class="nav navbar-top-links navbar-left">
+                <li>
+                    <a href="javascript:void(0);">{{ session.app.name }}</a>
+                </li>
+            </ul>
+        {% endif %}
+
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <span class="m-r-sm text-muted welcome-message">{{ session.admin.name }}</span>
+            </li>
+            <li>
+                <a href="/admin/logout">
+                    <i class="fa fa-sign-out"></i> Sign out
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,17 @@
+body { background: #f5f5f5; }
+
+.form-group {
+	margin-bottom: 25px;
+}
+
+
+
+
+.page-header { border-color: #CCD1D9 }
+hr { border-top: 1px solid #CCD1D9}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+	color: #333;
+	background-color: transparent;
+}

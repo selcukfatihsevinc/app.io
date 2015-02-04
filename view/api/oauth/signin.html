@@ -1,0 +1,40 @@
+{% extends '../layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <link rel="stylesheet" href="/api/css/oauth.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="auth-wrapper">
+            <form action="/accounts/signin" method="post" class="form-signin" role="form">
+                <h2 class="form-signin-heading">Please sign in</h2>
+
+                {% include 'error.html' %}
+
+                <!-- email -->
+                <label for="f-mail" class="sr-only">Email address</label>
+                <input type="email" name="email" id="f-email" class="form-control" placeholder="Email address" required autofocus>
+
+                <!-- password -->
+                <label for="f-password" class="sr-only">Password</label>
+                <input type="password" name="password" id="f-password" class="form-control" placeholder="Password" required>
+
+                <input type="hidden" name="client_id" value="{{ client_id }}">
+                <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
+
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+                <div class="sign-link">
+                    <a href="/accounts/signup?client_id={{ client_id }}&redirect_uri={{ redirect_uri }}">sign up</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}
+

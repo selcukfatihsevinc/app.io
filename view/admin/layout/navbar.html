@@ -1,0 +1,80 @@
+<nav role="navigation" class="navbar-default navbar-static-side">
+    <div class="sidebar-collapse">
+        <ul id="side-menu" class="nav">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="clear">
+                            <span class="block m-t-xs">
+                                <strong class="font-bold">{{ session.user.name }}</strong>
+                             </span>
+                            <span class="text-muted text-xs block">{{ session.user.email }} <b class="caret"></b></span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="/admin/logout">Sign out</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    {{ session.admin.logo }}
+                </div>
+            </li>
+
+            <li class="{% if object == "system.apps" %}active{% endif %}">
+                <a href="javascript:void(0);">
+                    <i class="fa fa-th-large"></i> <span class="nav-label">Apps</span><span class="fa arrow"></span>
+                </a>
+
+                <ul class="nav nav-second-level collapse">
+                    {% for key, val in session.apps %}
+                        {% if val.slug != "system" %}
+                            <li class="{% if key == session.app._id %}active{% endif %}">
+                                <a href="/admin/app/{{ key }}">{{ val.name|capitalize }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <li class="{% if object == "system.apps" %}active{% endif %}">
+                        <a href="/admin/o/system.apps">+ operations</a>
+                    </li>
+                </ul>
+            </li>
+
+            {% if session.app %}
+                {% set appName = '' %}
+                {% set objName = '' %}
+
+                {% if segments[3] %}
+                    {% set app = segments[3]|split(".") %}
+
+                    {% if app[1] %}
+                        {% set appName = app[0] %}
+                        {% set objName = app[1] %}
+                    {% endif %}
+                {% endif %}
+
+                {% for key, val in session.resources %}
+                    {% if key == "system" || key == 'oauth' || key == session.app.slug %}
+                        <li class="{% if key == appName and objName != "apps" %}active{% endif %}">
+                            <a href="javascript:void(0);">
+                                <i class="fa fa-gears"></i> <span class="nav-label">{{ key|title }}</span><span class="fa arrow"></span>
+                            </a>
+
+                            <ul class="nav nav-second-level collapse">
+                                {% for k, v in val %}
+                                    {% if k != "apps" %}
+                                        <li class="{% if k == objName %}active{% endif %}">
+                                            <a href="/admin/o/{{ key }}.{{ k }}">
+                                                {{ k|capitalize }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</nav>

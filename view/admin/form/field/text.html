@@ -1,0 +1,23 @@
+<div class="f-text form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="f-text-wrap">
+        <input name="{{ key }}" id="f-{{ key }}" type="text" class="form-control {% if opts.filter %}input-sm{% endif %}" placeholder="{{ field.settings.label }}" value="{% if data %}{{ data }}{% endif %}">
+        {% include "../filter/text.html" %}
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        {% if opts.filter %}
+        Filter['{{ key }}'] = {
+            key   : '{{ key }}',
+            name  : '{{ field.alias }}',
+            type  : 'text',
+            opts  : $('.f-{{ key }}-opts'),
+            field : $('#f-{{ key }}')
+        };
+        {% endif %}
+    });
+</script>
+
+

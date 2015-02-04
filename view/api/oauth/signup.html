@@ -1,0 +1,48 @@
+{% extends '../layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <link rel="stylesheet" href="/api/css/oauth.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="auth-wrapper">
+            <form action="/accounts/signup" method="post" class="form-signin" role="form">
+                <h2 class="form-signin-heading">Please sign up</h2>
+
+                {% include 'error.html' %}
+
+                <!-- name -->
+                <label for="f-name" class="sr-only">Name</label>
+                <input type="text" name="name" id="f-name" class="form-control" placeholder="Name" required autofocus>
+
+                <!-- email -->
+                <label for="f-email" class="sr-only">Email address</label>
+                <input type="email" name="email" id="f-email" class="form-control" placeholder="Email address" required>
+
+                <!-- password -->
+                <label for="f-password" class="sr-only">Password</label>
+                <input type="password" name="password" id="f-password" class="form-control" placeholder="Password" required>
+
+                <!-- password confirmation -->
+                <label for="f-password-confirm" class="sr-only">Password</label>
+                <input type="password" name="password_confirmation" id="f-password-confirm" class="form-control" placeholder="Confirm password" required>
+
+                <input type="hidden" name="client_id" value="{{ client_id }}">
+                <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
+
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+
+                <div class="sign-link">
+                    <a href="/accounts/signin?client_id={{ client_id }}&redirect_uri={{ redirect_uri }}">sign in</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}
+

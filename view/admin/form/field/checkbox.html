@@ -1,0 +1,21 @@
+<div class="f-checkbox form-group">
+    <div class="f-checkbox-wrap">
+        <label for="f-{{ key }}">
+            {% if opts.filter %}
+                <div class="list-filter">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default btn-xs">
+                            <input type="radio" name="options" id="f-{{ key }}-contains" autocomplete="off"> checked
+                        </label>
+                        <label class="btn btn-default btn-xs">
+                            <input type="radio" name="options" id="f-{{ key }}-exact" autocomplete="off"> not checked
+                        </label>
+                    </div>
+                </div>
+            {% else %}
+                <input name="{{key}}" id="f-{{ key }}" type="checkbox" value=true> {{ field.settings.label }}
+            {% endif %}
+        </label>
+    </div>
+</div>
+

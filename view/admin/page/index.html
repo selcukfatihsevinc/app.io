@@ -1,0 +1,29 @@
+{% extends '../layout.html' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <!-- use custom css, js here, if you want -->
+    <script type="text/javascript" src="/admin/insp/js/plugins/pace/pace.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="wrapper">
+        {% include "../layout/navbar.html" %}
+
+        <div class="gray-bg" id="page-wrapper">
+            {% include "../layout/topbar.html" %}
+
+            <div class="wrapper wrapper-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        index
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

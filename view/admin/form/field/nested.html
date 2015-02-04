@@ -1,0 +1,84 @@
+<div class="f-nested form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="f-nested-wrap">
+        <input type="hidden" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control {% if opts.filter %}input-sm{% endif %}" value="{% if data %}{{ data }}{% endif %}" />
+        {% include "../filter/select.html" %}
+    </div>
+</div>
+
+<script>
+if(typeof select2nested !== 'function') {
+    function select2nested(data, key, prefix) {
+        var p = '-';
+        var r = [];
+
+        prefix = prefix || p;
+
+        for(d in data) {
+            if(data.hasOwnProperty(d) && data[d][key]) {
+                r.push({id: data[d]._id, text: prefix+' '+data[d][key]});
+
+                if(data[d].children)
+                    r = r.concat(select2nested(data[d].children, key, p+prefix));
+            }
+        }
+
+        return r;
+    }
+}
+
+$(document).ready(function() {
+
+    $('.f-{{ key }}').select2({
+        multiple: {% if field.type == 'array' %}true{% else %}false{% endif %},
+        minimumInputLength: 0,
+        ajax: {
+            url: '{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}',
+            dataType: 'json',
+            quietMillis: 100,
+            data: function (term, page) {
+                return { t: 'tree' };
+            },
+            results: function (data, page) {
+                return { results: select2nested(data, '{{ field.settings.display }}') };
+            },
+            cache: false
+        },
+        initSelection: function(elem, cb) {
+            var ids = $(elem).val();
+
+            if (ids !== '') {
+                $.ajax({
+                    url: '{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}',
+                    data: {
+                        '_id': '{in}'+ids
+                    },
+                    dataType: 'json'
+                }).done(function(data) {
+                    var results = select2nested(data, '{{ field.settings.display }}');
+
+                    {% if field.type != 'array' %}
+                    if(results.length)
+                        results = results[0];
+                    {% endif %}
+
+                    cb(results);
+                });
+            }
+        }
+    });
+
+    {% if opts.filter %}
+    Filter['{{ key }}'] = {
+        key   : '{{ key }}',
+        name  : '{{ field.alias }}',
+        type  : 'nested',
+        opts  : $('.f-{{ key }}-opts'),
+        field : $('#f-{{ key }}')
+    };
+    {% endif %}
+
+});
+</script>
+
+

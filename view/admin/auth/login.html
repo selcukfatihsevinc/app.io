@@ -1,0 +1,42 @@
+{% extends '../layout.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <!-- use custom css, js here, if you want -->
+{% endblock %}
+
+{% block content %}
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name">
+                    <i class="fa fa-sign-in"></i>
+                </h1>
+            </div>
+            <h3>Welcome to Admin</h3>
+
+            {% if error %}
+                {% for key, val in message %}
+                    <span class="label label-danger">{{ val }}</span>
+                {% endfor %}
+            {% endif %}
+
+            <form class="m-t" role="form" action="/admin/login" method="POST">
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="E-mail" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+            </form>
+        </div>
+    </div>
+
+ </body>
+{% endblock %}
+

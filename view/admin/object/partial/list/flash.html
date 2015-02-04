@@ -1,0 +1,11 @@
+{% if flash %}
+    {% for f in flash %}
+        <div class="alert alert-{{ f.type }}">
+            <button data-dismiss="alert" class="close fui-cross" type="button"></button>
+            <h4>{{ f.message }}</h4>
+            {% if f.small %}
+                <hr /><small>{{ f.small }}</small>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endif %}

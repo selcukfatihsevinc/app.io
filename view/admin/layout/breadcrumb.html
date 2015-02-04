@@ -1,0 +1,28 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-9">
+        <h2>{{ opts.plural|title }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/admin">Home</a>
+            </li>
+            <li>
+                Objects
+            </li>
+            <li class="active">
+                <strong>{{ opts.plural|title }}</strong>
+            </li>
+        </ol>
+    </div>
+
+    <div class="col-lg-3">
+        {% if opts.nocreate == false %}
+        <div class="title-action">
+            <a class="btn btn-primary" href="/admin/o/{{ object }}/new">
+                <i class="fa fa-plus"></i> new
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+

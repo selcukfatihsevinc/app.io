@@ -1,0 +1,11 @@
+<div class="page-header">
+    <div class="pull-left"><h4>{{ opts.plural|title }}</h4></div>
+    {% if opts.nocreate == false %}
+    <div class="pull-right">
+        <a href="/admin/o/{{ object }}/new" class="btn btn-default">
+            <i class="fa fa-plus"></i> new
+        </a>
+    </div>
+    {% endif %}
+    <div class="clearfix"></div>
+</div>

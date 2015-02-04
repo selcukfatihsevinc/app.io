@@ -1,0 +1,19 @@
+{% extends '../layout.html' %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <link rel="stylesheet" href="/admin/css/oauth.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="auth-wrapper">
+            <a href="{{ config.url.signin }}?client_id={{ client_id }}&redirect_uri={{ redirect_uri }}" class="btn btn-lg btn-primary btn-block">Sign in</a>
+        </div>
+
+    </div>
+{% endblock %}
+

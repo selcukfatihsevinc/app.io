@@ -1,0 +1,506 @@
+var async  = require('async');
+var extend = require('extend');
+var dot    = require('dotty');
+var qs     = require('qs');
+var _      = require('underscore');
+_.s        = require('underscore.string');
+
+module.exports = function(app) {
+
+    var _env    = app.get('env');
+    var _log    = app.system.logger;
+    var _form   = app.lib.form;
+    var _schema = app.lib.schema;
+    var _conf   = app.config[_env].admin; // admin config
+    var _system = [
+        'oauth.clients',
+        'system.actions',
+        'system.objects',
+        'system.roles',
+        'system.users'
+    ];
+
+    var _inspector = function(req, redirect) {
+        var o = req.params.object;
+
+        // app seçilmese de system.apps işlemleri yapılabilsin
+        if( ! req.session.app && o != 'system.apps' )
+            return false;
+
+        var m = dot.get(req.app.model, o);
+
+        if( ! m ) {
+            redirect = redirect || true;
+
+            if(redirect) {
+                req.flash('flash', {
+                    type: 'danger',
+                    message: _.s.titleize(o)+' not found'
+                });
+            }
+
+            return false;
+        }
+
+        m = _.clone(m);
+        return dot.get(m, 'schema.inspector');
+    };
+
+    // admin main page
+    app.get('/admin', function(req, res, next) {
+        if(req.session.user)
+            return res.render('admin/page/index');
+
+        var a = {
+            u: function(cb) {
+                new _schema('system.users').init(req, res, next).get({_id: req.session.userId, qt: 'one'}, function(err, doc) {
+                    cb(err, doc);
+                });
+            },
+            r: function(cb) {
+                req.app.acl.userRoles(req.session.userId, function(err, roles) {
+                    req.app.acl.whatResources(roles, function(err, resources) {
+                        cb(err, resources);
+                    });
+                });
+            },
+            a: function(cb) {
+                new _schema('system.apps').init(req, res, next).get({s: 'name'}, function(err, doc) {
+                    cb(err, doc)
+                });
+            }
+        };
+
+        async.parallel(a, function(err, results) {
+            _log.info(results);
+            var render = true;
+
+            if(err)
+                _log.info(err);
+            else if( ! results.u )
+                _log.info('user data not found');
+            else if(results.u.type != 'A')
+                _log.info('user type is not admin'); // type = Admin olanların girişine izin veriyoruz
+            else if( ! results.a )
+                _log.info('apps data not found');
+            else
+                render = false;
+
+            if(render)
+                return res.render('admin/page/index');
+
+            // set user session data
+            req.session.user = results.u;
+
+            // set apps session data
+            req.session.apps = {};
+            _.each(results.a, function(value, key) {
+                req.session.apps[value._id.toString()] = value;
+            });
+
+            // set resources session data
+            req.session.resources = {};
+            if(results.r) {
+                var sorted = Object.keys(results.r).sort();
+                var obj    = {};
+
+                _.each(sorted, function(value, key) {
+                    var sortedArr = value.split('_');
+                    var modelName = value.replace('_', '.');
+
+                    // eğer model aktif değilse resource'u alma
+                    if( ! dot.get(req.app.model, modelName) )
+                        return;
+
+                    if(sortedArr.length > 1) {
+                        if( ! obj[sortedArr[0]] )
+                            obj[sortedArr[0]] = {};
+
+                        obj[sortedArr[0]][sortedArr[1]] = results.r[value];
+                    }
+                });
+
+                req.session.resources = obj;
+                _log.info(obj);
+            }
+
+            // set admin session data
+            req.session.admin = {
+                name: _conf.name,
+                logo: _conf.logo
+            };
+
+            res.render('admin/page/index');
+        });
+    });
+
+    // select app
+    app.get('/admin/app/:id', function(req, res, next) {
+        var app = dot.get(req.session, 'apps.'+req.params.id);
+
+        if(app)
+            req.session.app = app;
+
+        res.redirect('back');
+    });
+
+    // object list
+    app.get('/admin/o/:object', function(req, res, next) {
+        var o    = req.params.object;
+        var insp = _inspector(req);
+
+        if( ! insp )
+            return res.redirect('/admin');
+
+        try {
+            // get filter form
+            new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').render(false, function(err, form) {
+                res.render('admin/object/list', {
+                    object  : o,
+                    opts    : insp.Options,
+                    props   : insp.Save.properties,
+                    alias   : insp.Alias,
+                    sfilter : form
+                });
+            });
+        }
+        catch(e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    // empty form
+    app.get('/admin/o/:object/new', function(req, res, next) {
+        var o        = req.params.object;
+        var insp     = _inspector(req);
+        var nocreate = dot.get(insp, 'Options.nocreate');
+
+        if( ! insp || nocreate )
+            return res.redirect('/admin');
+
+        try {
+            new _form(o).init(req, res, next).prefix('/admin/p/').render(false, function(err, form) {
+                res.render('admin/object/new', {
+                    action : 'save',
+                    opts   : insp.Options,
+                    form   : form,
+                    err    : err,
+                    object : o
+                });
+            });
+        }
+        catch(e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    app.get('/admin/o/:object/save', function(req, res, next) {
+        res.redirect('/admin/o/'+req.params.object+'/new');
+    });
+
+    // save form data
+    app.post('/admin/o/:object/save', function(req, res, next) {
+        var o        = req.params.object;
+        var insp     = _inspector(req);
+        var nocreate = dot.get(insp, 'Options.nocreate');
+
+        if( ! insp || nocreate )
+            return res.redirect('/admin');
+
+        try {
+            // set app id
+            if(_system.indexOf(o) != -1)
+                req.body.apps = req.session.app._id;
+
+            new _schema(o).init(req, res, next).post(req.body, function(err, doc) {
+                if( ! err && doc ) {
+                    req.flash('flash', {type: 'success', message: _.s.titleize(o)+' saved'});
+                    return res.redirect('/admin/o/'+o);
+                }
+
+                new _form(o).init(req, res, next).prefix('/admin/p/').data(req.body).render(false, function(formErr, form) {
+                    res.render('admin/object/new', {
+                        action : 'save',
+                        opts   : insp.Options,
+                        form   : form,
+                        err    : err || formErr,
+                        object : o
+                    });
+                });
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    // edit form
+    app.get('/admin/o/:object/edit/:id', function(req, res, next) {
+        var o      = req.params.object;
+        var id     = req.params.id;
+        var insp   = _inspector(req);
+        var noedit = dot.get(insp, 'Options.noedit');
+
+        if( ! insp || noedit )
+            return res.redirect('/admin');
+
+        try {
+            // params
+            var params = {
+                _id: req.params.id,
+                qt: 'one'
+            };
+
+            // set app id
+            if(_system.indexOf(o) != -1)
+                params.apps = req.session.app._id;
+
+            new _schema(o, {format: false}).init(req, res, next).get(params, function(err, doc) {
+                if( err || ! doc ) {
+                    req.flash('flash', {type: 'danger', message: _.s.titleize(o)+' not found'});
+                    return res.redirect('/admin/o/'+o);
+                }
+
+                new _form(o).init(req, res, next).prefix('/admin/p/').data(doc).render(false, function(err, form) {
+                    res.render('admin/object/new', {
+                        action : 'update',
+                        opts   : insp.Options,
+                        id     : id,
+                        form   : form,
+                        err    : err,
+                        object : o
+                    });
+                });
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    app.get('/admin/o/:object/update/:id', function(req, res, next) {
+        res.redirect('/admin/o/'+req.params.object+'/edit/'+req.params.id);
+    });
+
+    // update form data
+    app.post('/admin/o/:object/update/:id', function(req, res, next) {
+        var o      = req.params.object;
+        var id     = req.params.id;
+        var insp   = _inspector(req);
+        var noedit = dot.get(insp, 'Options.noedit');
+
+        if( ! insp || noedit )
+            return res.redirect('/admin');
+
+        try {
+            // set app id
+            if(_system.indexOf(o) != -1)
+                req.body.apps = req.session.app._id;
+
+            new _schema(o).init(req, res, next).put(id, req.body, function(err, doc) {
+                if( ! err || doc ) {
+                    req.flash('flash', {type: 'success', message: _.s.titleize(o)+' updated'});
+                    return res.redirect('/admin/o/'+o);
+                }
+
+                new _form(o).init(req, res, next).prefix('/admin/p/').data(req.body).render(false, function(formErr, form) {
+                    res.render('admin/object/new', {
+                        action : 'update',
+                        opts   : insp.Options,
+                        id     : id,
+                        form   : form,
+                        err    : err || formErr,
+                        object : o
+                    });
+                });
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    function deleteIds(id, req, res, next) {
+        return function(cb) {
+            new _schema(req.params.object).init(req, res, next).remove(id, function(err, doc) {
+                cb(err, doc);
+            });
+        };
+    }
+
+    // remove ids
+    app.get('/admin/o/:object/remove/:ids', function(req, res, next) {
+        var o        = req.params.object;
+        var ids      = req.params.ids;
+        var insp     = _inspector(req);
+        var nodelete = dot.get(insp, 'Options.nodelete');
+
+        if( ! insp || nodelete )
+            return res.redirect('/admin');
+
+        try {
+            ids = ids.split(',');
+
+            if( ! ids.length )
+                return res.redirect('/admin/o/'+o);
+
+            var a = [];
+
+            for(i in ids) {
+                if(ids.hasOwnProperty(i))
+                    a.push(deleteIds(ids[i], req, res, next));
+            }
+
+            async.parallel(a, function(err, results) {
+                req.flash('flash', {type: 'success', message: _.s.titleize(o)+' removed'});
+                res.redirect('/admin/o/'+o);
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    /**
+     * REST API proxies
+     */
+
+    // object list
+    app.get('/admin/p/:object', function(req, res, next) {
+        var o    = req.params.object;
+        var insp = _inspector(req, false);
+
+        if( ! insp )
+            return res.json({});
+
+        try {
+            // delete cache key
+            delete req.query._;
+
+            // set app id
+            if(_system.indexOf(o) != -1)
+                req.query.apps = req.session.app._id;
+
+            new _schema(o).init(req, res, next).get(req.query, function(err, doc) {
+                res.json(doc || {});
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    // object table data
+    app.get('/admin/p/:object/table', function(req, res, next) {
+        var insp = _inspector(req, false);
+
+        if( ! insp )
+            return res.json({total: 0, rows: 0});
+
+        try {
+            var o = req.params.object;
+            var q = req.query;
+            var p = {};
+
+            // set app id
+            if(req.session.app && _system.indexOf(o) != -1)
+                p.apps = req.session.app._id;
+
+            // query type
+            p.qt = 'findcount';
+
+            if(q.limit)  p.l  = q.limit;
+            if(q.offset) p.sk = q.offset;
+
+            if(q.search)
+                p[insp.Options.main] = '{:like:}'+q.search;
+
+            if(q.sort) {
+                p.s = q.sort;
+
+                if(q.order == 'desc')
+                    p.s = '-'+p.s;
+            }
+            else if(insp.Options.sort)
+                p.s = insp.Options.sort;
+
+            if(insp.Options.columns) {
+                // istenecek field'lar
+                p.f = insp.Options.columns.join(',');
+
+                // istenecek field'lar içinde populate edilecek field'lar var mı kontrol ediyoruz
+                var populate = [];
+
+                // columns'a sırayla bakıyoruz
+                for(col in insp.Options.columns) {
+                    if(insp.Options.columns.hasOwnProperty(col)) {
+                        var currCol = insp.Options.columns[col];
+
+                        // field alias'ının karşılık geldiği bir field key var mı kontrol ediyoruz
+                        if(insp.Alias[currCol]) {
+                            // key'e karşılık gelen referans var mı kontrol ediyoruz
+                            var currRef = insp.Refs[ insp.Alias[currCol] ];
+
+                            // bu key'e karşılık gelen bir referans varsa direkt key'i gönderiyoruz
+                            if(currRef)
+                                populate.push(insp.Alias[currCol]);
+                        }
+                    }
+                }
+
+                if(populate.length)
+                    p.p = populate.join(',');
+            }
+
+            // decode filters
+            if(q.filter) {
+                var filter = app.lib.base64.decode(q.filter);
+                filter = qs.parse(filter);
+                p = extend(p, filter);
+            }
+
+            new _schema(o).init(req, res, next).get(p, function(err, doc) {
+                if( err || ! doc )
+                    return res.json({total: 0, rows: 0});
+
+                res.json(doc);
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    // get object
+
+    /*
+     app.get('/admin/p/:object/:id', function(req, res, next) {
+         var insp = _inspector(req, false);
+
+         if( ! insp )
+            return res.json({});
+
+         try {
+             // set access token
+             var access_token = req.session.access_token;
+
+             new _r().get('get_object', _o+req.params.object+'/'+req.params.id+'?access_token='+access_token).exec(function(err, body) {
+                res.json(dot.get(body, 'get_object.data.doc'));
+             });
+         }
+         catch (e) {
+             _log.error(e.stack);
+             res.redirect('/admin');
+         }
+     });
+     */
+
+};

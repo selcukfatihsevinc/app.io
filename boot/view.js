@@ -1,0 +1,43 @@
+var dot    = require('dotty');
+var path   = require('path');
+var swig   = require('swig');
+var extras = require('swig-extras');
+
+// swig extra filters
+extras.useFilter(swig, 'split');
+
+module.exports = function(app) {
+
+    var _log = app.system.logger;
+
+    try {
+        // get config
+        var _env  = app.get('env');
+        var _conf = app.lib.bootConf(app, 'view');
+        var _dir  = path.dirname(__dirname);
+
+        // view
+        app.engine('html', swig.renderFile);
+        app.set('view engine', 'html');
+        app.set('views', _dir+'/'+(_conf.dir || 'view'));
+        app.set('view cache', _env == 'production');
+        swig.setDefaults(_conf.swig || {});
+
+        // set both app view and app.io folders
+        app.set('views', [
+            app.get('basedir')+'/'+(_conf.dir || 'view'),
+            _dir+'/'+(_conf.dir || 'view')
+        ]);
+
+        return true;
+    }
+    catch(e) {
+        _log.error(e.stack);
+        return false;
+    }
+
+};
+
+
+
+

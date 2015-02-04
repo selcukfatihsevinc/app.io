@@ -1,0 +1,205 @@
+{% extends '../layout.html' %}
+
+{% block title %}{{ object|title }} List{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <!-- use custom css, js here, if you want -->
+    <script type="text/javascript" src="/admin/insp/js/plugins/pace/pace.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="wrapper">
+        {% include "../layout/navbar.html" %}
+
+        <div class="gray-bg" id="page-wrapper">
+            {% include "../layout/topbar.html" %}
+            {% include "../layout/breadcrumb.html" %}
+
+            <div class="wrapper wrapper-content">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% include "partial/list/flash.html" %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% include "../layout/filter.html" %}
+
+                    <div id="s-list" class="col-lg-12">
+
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>Records <span id="records"></span></h5>
+                            </div>
+                            <div class="ibox-content">
+
+                                <div id="custom-toolbar">
+                                    <a href="javascript:void(0);" onclick="toggleFilter();" class="btn btn-outline btn-primary">
+                                        <i class="fa fa-filter"></i> filter
+                                    </a>
+
+                                    {% if opts.nodelete == false %}
+                                        <a href="javascript:void(0);" onclick="removeIds();" class="btn btn-outline btn-danger">
+                                            <i class="fa fa-minus"></i> remove
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                                <!-- data-search="true" yerine table filter kullanılacak -->
+
+                                <table
+                                    id="t-{{ object }}"
+                                    class="t-{{ object }}"
+                                    data-toggle="table"
+                                    data-url="/admin/p/{{ object }}/table"
+                                    data-side-pagination="server"
+                                    data-pagination="true"
+                                    data-striped="true"
+                                    data-cache="false"
+                                    data-page-size="{% if opts.perpage %}{{ opts.perpage }}{% else %}25{% endif %}"
+                                    data-page-list="[50, 75, 100]"
+                                    data-show-columns="true"
+                                    data-show-refresh="true"
+                                    data-click-to-select="true"
+                                    data-show-toggle="true"
+                                    data-toolbar="#custom-toolbar"
+                                    data-flat="true"
+                                    data-response-handler="responseHandler"
+                                    >
+                                    <thead>
+                                        <tr>
+                                            <th data-field="state" data-checkbox="true"></th>
+                                            {% for l in opts.columns %}
+                                                <th
+                                                    {% if props[alias[l]] %}
+                                                        {% if props[alias[l]].settings.width %}data-width="{{ props[alias[l]].settings.width }}"{% endif %}
+                                                        {% if props[alias[l]].pattern == 'url' %}data-formatter="urlFormatter"{% endif %}
+                                                    {% endif %}
+
+                                                    data-field="{% if props[alias[l]].settings.display %}{{ l }}.{{ props[alias[l]].settings.display }}{% else %}{{ l }}{% endif %}"
+                                                    data-sortable="true"
+                                                    {% if l == opts.main and opts.noedit == false %}data-formatter="editFormatter"{% endif %}
+                                                    >
+                                                    {% if props[alias[l]].settings.label %}{{ props[alias[l]].settings.label }}{% else %}{{ l }}{% endif %}
+                                                </th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div> <!-- col-lg-12 -->
+                </div>
+
+            </div>
+
+            {% include "../layout/footer.html" %}
+
+        </div>
+    </div>
+
+    <script>
+        var sFilter, sList, $table, records, object;
+
+        $(document).ready(function() {
+            object  = '{{ object }}';
+            object  = object.replace(/\./g,'\\.');
+            sFilter = $('#s-filter');
+            sList   = $('#s-list');
+            $table  = $('.t-'+object).bootstrapTable();
+            records = $('#records');
+
+            var filterStatus = window.localStorage.getItem('filter:{{ object }}');
+
+            if(filterStatus == 'true')
+                openFilter();
+
+            $('.fixed-table-toolbar').find('button').removeClass('btn-default').addClass('btn-outline btn-primary');
+
+            $table.on('load-success.bs.table', function (e, data) {
+                $('.fixed-table-pagination').find('button').addClass('btn-outline');
+            });
+        });
+
+        function removeIds() {
+            var $table  = $('.t-'+object).bootstrapTable();
+            var objects = $table.bootstrapTable('getSelections');
+            var ids     = [];
+
+            for(o in objects) {
+                if(objects.hasOwnProperty(o)) {
+                    ids.push(objects[o]._id);
+                }
+            }
+
+            if(ids.length)
+                window.location.href = '/admin/o/{{ object }}/remove/'+ids.join(',');
+        }
+
+        function responseHandler(res) {
+            var total = parseInt(res.total);
+            if(total)
+                records.html(' - '+total);
+
+            return res;
+        }
+
+        function editFormatter(value, row) {
+            return '<a href="/admin/o/{{ object }}/edit/'+row._id+'">'+value+'</a>';
+        }
+
+        function urlFormatter(value, row) {
+            return '<a href="'+value+'" target="_blank">'+value+'</a> <i class="fa fa-external-link"></i>';
+        }
+
+        function openFilter() {
+            sList.removeClass('col-lg-12').addClass('col-lg-9');
+            sFilter.removeClass('hide').addClass('animated').addClass('fadeInLeft');
+            window.localStorage.setItem('filter:{{ object }}', true);
+        }
+
+        function closeFilter() {
+            sList.removeClass('col-lg-9').addClass('col-lg-12');
+            sFilter.addClass('hide');
+            window.localStorage.setItem('filter:{{ object }}', false);
+        }
+
+        function toggleFilter() {
+            var filter = sFilter.css('display');
+            (filter == 'none') ? openFilter() : closeFilter();
+        }
+
+        function runFilter() {
+            var filters = [];
+
+            _.each(Filter, function(value, key) {
+                var val = _.str.trim(value.field.val());
+
+                if(val) {
+                    var opts = value.opts.find('.active .f-elem').data('value');
+
+                    if( ['exact', 'contains'].indexOf(opts) != -1 )
+                        val = (opts == 'exact') ? val : '{:like:}'+val;
+
+                    if( ['is', 'not'].indexOf(opts) != -1 )
+                        val = (opts == 'is') ? val : '{ne}'+val;
+
+                    if(opts)
+                        filters.push(value.name+'='+val);
+                }
+            });
+
+            if(filters.length) {
+                filters = Base64.encode( filters.join('&') );
+                $table.bootstrapTable('refresh', {
+                    url: '/admin/p/{{ object }}/table?filter='+filters
+                });
+            }
+        }
+    </script>
+{% endblock %}
+

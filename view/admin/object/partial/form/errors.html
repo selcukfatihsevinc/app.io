@@ -1,0 +1,16 @@
+{% if err %}
+    {% if err.type == 'ValidationError' %}
+        <div class="alert alert-danger">
+            <button data-dismiss="alert" class="close" type="button"></button>
+            <h4>Validation Error</h4>
+            <hr class="divider" />
+            {% for e in err.errors %}
+                {% if loop.index > 1 %}<span class="error-offset"></span>{% endif %}
+                <span class="label label-primary">{{ e.path }}</span>
+                <span class="label label-default">{{ e.message }}</span>
+            {% endfor %}
+        </div>
+    {% else%}
+        Unknown Error
+    {% endif %}
+{% endif %}

@@ -1,0 +1,138 @@
+//Timepicker
+// --------------------------------------------------
+// Based on https://github.com/jdewit/bootstrap-timepicker/graphs/contributors
+
+.bootstrap-timepicker {
+  position: relative;
+  width: 160px;
+
+  &.pull-right {
+    .bootstrap-timepicker-widget {
+      &.dropdown-menu {
+        left: auto;
+        right: 0;
+
+        &:before {
+          left: auto;
+          right: 12px;
+        }
+        &:after {
+          left: auto;
+          right: 13px;
+        }
+      }
+    }
+  }
+  &.focus .form-control {
+    border-color: @brand-secondary;
+  }
+  .add-on {
+    cursor: pointer;
+    border-right-width: 0;
+    margin-right: -3px;
+    .border-right-radius(0);
+
+    i {
+     display: inline-block;
+     width: 16px;
+     height: 16px;
+   }
+ }
+}
+
+.bootstrap-timepicker-widget {
+  &.dropdown-menu {
+    padding: 0;
+    margin-top: 11px;
+    background-color: @timepicker-bg;
+    border-radius: @timepicker-border-radius !important;
+    box-shadow: -14px 14px 0 fade(@brand-primary, 6%);
+
+    &.open {
+      display: inline-block;
+      .opacity(1);
+      visibility: visible;
+    }
+  }
+
+  a.btn,
+  input {
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    margin: 0;
+
+    .separator {
+      min-width: 7px;
+      font-size: 15px;
+    }
+    td {
+      text-align: center;
+      height: 30px;
+      margin: 0;
+
+      &:not(.separator) {
+        min-width: 30px;
+        width: 44px;
+      }
+      &:first-child {
+        padding-left: 7px;
+        width: 51px;
+      }
+      &:last-child {
+        padding-right: 7px;
+        width: 51px;
+      }
+      span {
+        width: 100%;
+      }
+      a {
+        width: 100%;
+        display: inline-block;
+        margin: 0;
+        padding: 8px 0;
+        outline: 0;
+
+        i {
+          margin-top: 2px;
+          font-family: inherit;
+          color: @timepicker-nav-color;
+          border-top-color: @timepicker-nav-color;
+          border-bottom-color: @timepicker-nav-color;
+          border-right: 7px solid transparent;
+          border-left: 7px solid transparent;
+          &:before {
+            content:"";
+          }
+        }
+        &:hover i {
+          border-top-color: @timepicker-nav-hover-color;
+          border-bottom-color: @timepicker-nav-hover-color;
+          color: @timepicker-nav-hover-color;
+        }
+        .glyphicon-chevron-up {
+          border-bottom-width: 12px;
+        }
+        .glyphicon-chevron-down {
+          border-top-width: 12px;
+        }
+      }
+      input {
+        width: 25px;
+        height: 38px;
+        margin: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        text-align: center;
+        border: none;
+        border-radius: @timepicker-border-radius !important;
+      }
+    }
+  }
+}
+
+.bootstrap-timepicker-widget .modal-content {
+  padding: 4px;
+}

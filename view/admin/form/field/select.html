@@ -1,0 +1,58 @@
+<div class="f-select form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="f-select-wrap">
+        {% set values = field.settings.options|default(field.eq) %}
+
+        <select name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control {% if opts.filter %}input-sm{% endif %}" {% if field.type == 'array' %}multiple{% endif %}>
+            <option value=""></option>
+
+            {% for key, val in values %}
+
+                {# set value #}
+                {% set value = val %}
+                {% if val.value %} {% set value = val.value %} {% endif %}
+
+                {# set label #}
+                {% set label = val %}
+                {% if val.label %} {% set label = val.label %} {% endif %}
+
+                {# set selected status #}
+                {% set selected = "" %}
+
+                {% if field.type == 'array' %}
+                    {% for d in data %}
+                        {% if d == value %}
+                            {% set selected = "selected" %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% if data == value %}
+                        {% set selected = "selected" %}
+                    {% endif %}
+                {% endif %}
+
+                <option {{ selected }} value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        {% include "../filter/select.html" %}
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    if ($.fn.select2) {
+        $('.f-{{ key }}').select2();
+    }
+
+    {% if opts.filter %}
+    Filter['{{ key }}'] = {
+        key   : '{{ key }}',
+        name  : '{{ field.alias }}',
+        type  : 'select',
+        opts  : $('.f-{{ key }}-opts'),
+        field : $('#f-{{ key }}')
+    };
+    {% endif %}
+});
+</script>

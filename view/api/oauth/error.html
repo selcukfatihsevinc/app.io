@@ -1,0 +1,14 @@
+{% if fails %}
+    <div class="alert alert-danger" role="alert">
+        {% for k, e in errors %}
+            <b>{{ k }}</b> <br />
+            <div class="error-msg">
+                {{ e|join(', ') }}
+            </div>
+        {% endfor %}
+    </div>
+{% elseif message %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+{% endif %}

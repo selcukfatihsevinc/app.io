@@ -1,0 +1,77 @@
+<div class="f-relation form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="f-relation-wrap">
+        <input type="hidden" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control {% if opts.filter %}input-sm{% endif %}" value="{% if data %}{{ data }}{% endif %}" />
+        {% include "../filter/select.html" %}
+    </div>
+</div>
+
+<script>
+if(typeof select2collect !== 'function') {
+    function select2collect(data, key) {
+        var results = [];
+
+        for(d in data) {
+            if(data.hasOwnProperty(d) && data[d][key])
+                results.push({id: data[d]._id, text: data[d][key]});
+        }
+
+        return results;
+    }
+}
+
+$(document).ready(function() {
+
+    $('.f-{{ key }}').select2({
+        multiple: {% if field.type == 'array' %}true{% else %}false{% endif %},
+        minimumInputLength: 0,
+        ajax: {
+            url: '{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}',
+            dataType: 'json',
+            quietMillis: 100,
+            data: function (term, page) {
+                return { '{{ field.settings.display }}': '{:like:}'+term };
+            },
+            results: function (data, page) {
+                return { results: select2collect(data, '{{ field.settings.display }}') };
+            },
+            cache: false
+        },
+        initSelection: function(elem, cb) {
+            var ids = $(elem).val();
+
+            if (ids !== '') {
+                $.ajax({
+                    url: '{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}',
+                    data: {
+                        '_id': '{in}'+ids
+                    },
+                    dataType: 'json'
+                }).done(function(data) {
+                    var results = select2collect(data, '{{ field.settings.display }}');
+
+                    {% if field.type != 'array' %}
+                        if(results.length)
+                            results = results[0];
+                    {% endif %}
+
+                    cb(results);
+                });
+            }
+        }
+    });
+
+    {% if opts.filter %}
+    Filter['{{ key }}'] = {
+        key   : '{{ key }}',
+        name  : '{{ field.alias }}',
+        type  : 'relation',
+        opts  : $('.f-{{ key }}-opts'),
+        field : $('#f-{{ key }}')
+    };
+    {% endif %}
+
+});
+</script>
+
+

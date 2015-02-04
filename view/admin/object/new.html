@@ -1,0 +1,44 @@
+{% extends '../layout.html' %}
+
+{% block title %}New {{ opts.singular|title }}{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <!-- use custom css, js here, if you want -->
+    <script type="text/javascript" src="/admin/insp/js/plugins/pace/pace.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="wrapper">
+        {% include "../layout/navbar.html" %}
+
+        <div class="gray-bg" id="page-wrapper">
+            {% include "../layout/topbar.html" %}
+            {% include "partial/form//breadcrumb.html" %}
+
+            <div class="wrapper wrapper-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% include "partial/form/errors.html" %}
+
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>New {{ opts.singular|title }}</h5>
+                            </div>
+                            <div class="ibox-content">
+                                {% if form %}
+                                    <form action="/admin/o/{{ object }}/{{ action }}{% if id %}/{{ id }}{% endif %}" method="post" role="form">
+                                        {% autoescape false %}{{ form }}{% endautoescape %}
+                                        {% include "partial/form/button.html" %}
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

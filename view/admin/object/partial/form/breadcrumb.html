@@ -1,0 +1,26 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-9">
+        <h2>{{ opts.plural|title }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/admin">Home</a>
+            </li>
+            <li>
+                Objects
+            </li>
+            <li>
+                {{ opts.plural|title }}
+            </li>
+            <li class="active">
+                <strong>
+                    {% if action == 'save' %}New{% endif %}
+                    {% if action == 'update' %}Edit{% endif %}
+                </strong>
+            </li>
+        </ol>
+    </div>
+
+    <div class="col-lg-3"></div>
+</div>
+
+

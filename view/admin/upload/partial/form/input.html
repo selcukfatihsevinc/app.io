@@ -1,0 +1,121 @@
+<script>
+function uploadAll() {
+    $('.files button').each(function () {
+        var disabled = $(this).prop("disabled");
+
+        if(disabled)
+            return false;
+        else
+            $(this).click();
+    });
+}
+</script>
+
+<div class="form-group">
+    <span class="btn btn-default fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add files</span>
+        <input name="files[]" id="f-file" type="file" multiple />
+    </span>
+
+    <button class="btn btn-default" id="f-upload-all" onclick="uploadAll();">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Upload all</span>
+    </button>
+    <br>
+    <br>
+
+    <div id="progress" class="progress">
+        <div class="progress-bar progress-bar-info progress-bar-striped"></div>
+    </div>
+
+    <div id="files" class="files"></div>
+</div>
+
+<script>
+$(document).ready(function() {
+
+    var uploadButton = $('<button/>')
+        .addClass('btn btn-default')
+        .prop('disabled', true)
+        .text('Processing...')
+        .on('click', function () {
+            var $this = $(this), data = $this.data();
+
+            $this
+                .off('click')
+                .text('Abort')
+                .on('click', function () {
+                    $this.remove();
+                    data.abort();
+                });
+
+            data.submit().always(function () {
+                $this.remove();
+            });
+        });
+
+    $('#f-file').fileupload({
+        url: '/admin/upload/{{ type }}',
+        dataType: 'json',
+        autoUpload: false,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|mp4|mp3)$/i, // config'e çek
+        maxFileSize: 5000000000, // 5 MB config'e çek
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+                .test(window.navigator.userAgent),
+        previewMaxWidth: 208,
+        previewMaxHeight: 117,
+        previewCrop: true
+    })
+    .on('fileuploadadd', function (e, data) {
+        data.context = $('<div/>').appendTo('#files');
+
+        $.each(data.files, function (index, file) {
+            var node = $('<p/>').append($('<span/>').text(file.name));
+
+            if ( ! index )
+                node.append('<br>').append(uploadButton.clone(true).data(data));
+
+            node.appendTo(data.context);
+        });
+    })
+    .on('fileuploadprocessalways', function (e, data) {
+        var index = data.index,
+            file  = data.files[index],
+            node  = $(data.context.children()[index]);
+
+        if (file.preview)
+            node.prepend('<br>').prepend(file.preview);
+
+        if (file.error)
+            node.append('<br>').append($('<span class="text-danger"/>').text(file.error));
+
+        if (index + 1 === data.files.length)
+            data.context.find('button').text('Upload').prop('disabled', !!data.files.error);
+    })
+    .on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('.progress .progress-bar').css('width', progress + '%');
+    })
+    .on('fileuploaddone', function (e, data) {
+        $.each(data.result.files, function (index, file) {
+            if (file.url) {
+                var link = $('<a>').attr('target', '_blank').prop('href', file.url);
+                $(data.context.children()[index]).wrap(link);
+            }
+            else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index]).append('<br>').append(error);
+            }
+        });
+    }).on('fileuploadfail', function (e, data) {
+        $.each(data.files, function (index) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index]).append('<br>').append(error);
+        });
+    })
+    .prop('disabled', !$.support.fileInput)
+    .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+});
+</script>

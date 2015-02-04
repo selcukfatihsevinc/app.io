@@ -1,0 +1,18 @@
+{% extends '../layout.html' %}
+
+{% block title %}File Upload{% endblock %}
+
+{% block head %}
+    {% parent %}
+    <!-- use custom css, js here, if you want -->
+{% endblock %}
+
+{% block content %}
+    {% include "../navbar.html" %}
+
+    <div class="container">
+        {% include "partial/form/header.html" %}
+        {% include "partial/form/input.html" %}
+    </div>
+{% endblock %}
+
