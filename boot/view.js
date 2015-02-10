@@ -19,7 +19,6 @@ module.exports = function(app) {
         // view
         app.engine('html', swig.renderFile);
         app.set('view engine', 'html');
-        app.set('views', _dir+'/'+(_conf.dir || 'view'));
         app.set('view cache', _env == 'production');
         swig.setDefaults(_conf.swig || {});
 

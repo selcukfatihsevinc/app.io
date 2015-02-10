@@ -12,6 +12,7 @@ module.exports = function(app) {
         var _dir  = path.dirname(__dirname);
 
         app.use(express.static(_dir+'/'+(_conf.dir || 'public'), (_conf.options || {}) ));
+        app.use(express.static(app.get('basedir')+'/'+(_conf.dir || 'public'), (_conf.options || {}) ));
         return true;
     }
     catch(e) {

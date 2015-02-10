@@ -79,7 +79,7 @@ module.exports = function(app) {
                 _log.info(err);
             else if( ! results.u )
                 _log.info('user data not found');
-            else if(results.u.type != 'A')
+            else if(results.u.type != 'Admin')
                 _log.info('user type is not admin'); // type = Admin olanların girişine izin veriyoruz
             else if( ! results.a )
                 _log.info('apps data not found');
@@ -460,13 +460,16 @@ module.exports = function(app) {
             }
 
             // decode filters
+            var filter;
             if(q.filter) {
-                var filter = app.lib.base64.decode(q.filter);
+                filter = app.lib.base64.decode(q.filter);
                 filter = qs.parse(filter);
-                p = extend(p, filter);
+                p      = extend(p, filter);
             }
 
             new _schema(o).init(req, res, next).get(p, function(err, doc) {
+                o = q= p = filter = null;
+
                 if( err || ! doc )
                     return res.json({total: 0, rows: 0});
 

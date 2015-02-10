@@ -62,7 +62,7 @@
                                     data-page-list="[50, 75, 100]"
                                     data-show-columns="true"
                                     data-show-refresh="true"
-                                    data-click-to-select="true"
+                                    data-click-to-select="false"
                                     data-show-toggle="true"
                                     data-toolbar="#custom-toolbar"
                                     data-flat="true"
@@ -76,6 +76,7 @@
                                                     {% if props[alias[l]] %}
                                                         {% if props[alias[l]].settings.width %}data-width="{{ props[alias[l]].settings.width }}"{% endif %}
                                                         {% if props[alias[l]].pattern == 'url' %}data-formatter="urlFormatter"{% endif %}
+                                                        {% if props[alias[l]].settings.video %}data-formatter="videoFormatter"{% endif %}
                                                     {% endif %}
 
                                                     data-field="{% if props[alias[l]].settings.display %}{{ l }}.{{ props[alias[l]].settings.display }}{% else %}{{ l }}{% endif %}"
@@ -154,6 +155,18 @@
 
         function urlFormatter(value, row) {
             return '<a href="'+value+'" target="_blank">'+value+'</a> <i class="fa fa-external-link"></i>';
+        }
+
+        function videoFormatter(value, row) {
+            var elem =
+                '<div style="width: 320px; height: 320px;">' +
+                    '<video width="320" height="320" onclick="this.paused ? this.play() : this.pause();">' +
+                        '<source src="'+value+'" type="video/mp4" />' +
+                        'Your browser does not support the video tag.' +
+                    '</video>' +
+                '</div>';
+
+            return elem;
         }
 
         function openFilter() {
