@@ -6,6 +6,8 @@ module.exports = function(app) {
     var _log = app.system.logger;
     var _c   = app.config[_env].redis;
 
+    _log.info('redis config', _c);
+
     if( ! _c )
         return false;
 
