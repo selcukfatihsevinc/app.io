@@ -19,14 +19,15 @@ module.exports = function(app) {
         // view
         app.engine('html', swig.renderFile);
         app.set('view engine', 'html');
-        app.set('view cache', _env == 'production');
-        swig.setDefaults(_conf.swig || {});
 
         // set both app view and app.io folders
         app.set('views', [
             app.get('basedir')+'/'+(_conf.dir || 'view'),
             _dir+'/'+(_conf.dir || 'view')
         ]);
+
+        app.set('view cache', _env == 'production');
+        swig.setDefaults(_conf.swig || {});
 
         return true;
     }
@@ -36,7 +37,6 @@ module.exports = function(app) {
     }
 
 };
-
 
 
 

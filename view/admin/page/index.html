@@ -15,11 +15,78 @@
         <div class="gray-bg" id="page-wrapper">
             {% include "../layout/topbar.html" %}
 
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>Applications</h2>
+                    {% if session.app %}
+                        <ol class="breadcrumb">
+                            <li><a href="/admin">Home</a></li>
+                            <li class="active">
+                                <strong>{{ session.app.long }}</strong>
+                            </li>
+                        </ol>
+                    {% endif %}
+                </div>
+            </div>
+
             <div class="wrapper wrapper-content">
                 <div class="row">
-                    <div class="col-lg-12">
-                        index
-                    </div>
+
+                    {% if session.app %}
+                        {% set appName = '' %}
+                        {% set objName = '' %}
+
+                        {% if segments[3] %}
+                            {% set app = segments[3]|split(".") %}
+
+                            {% if app[1] %}
+                                {% set appName = app[0] %}
+                                {% set objName = app[1] %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% for key, val in session.resources %}
+                            {% if key == "system" || key == 'oauth' || key == session.app.slug %}
+                                <div class="col-lg-4">
+                                    <div class="ibox float-e-margins">
+                                        <div class="ibox-content">
+                                            <h3>
+                                                <i class="fa fa-gears"></i>
+                                                <strong><span class="">{{ key|title }}</span></strong>
+                                            </h3>
+                                            <div class="hr-line-dashed"></div>
+                                            {% for k, v in val %}
+                                                {% if k != "apps" %}
+                                                    <p>
+                                                        <a href="/admin/o/{{ key }}.{{ k }}" class="btn btn-block btn-outline btn-primary">
+                                                            <strong>{{ k|capitalize }}</strong>
+                                                        </a>
+                                                    </p>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-lg-4">
+                            {% for key, app in session.apps %}
+                                {% if app.slug != "system" %}
+                                    <div class="jumbotron">
+                                        <h3><i class="fa fa-th-large"></i> {{ app.long }}</h3>
+                                        <p>
+                                            <a href="/admin/app/{{ key }}" class="btn btn-block btn-outline btn-primary">
+                                                <strong>view objects</strong>
+                                            </a>
+                                        </p>
+                                    </div>
+
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

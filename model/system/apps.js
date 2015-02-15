@@ -12,7 +12,8 @@ module.exports = function(app) {
 
     var Schema = {
         n : {type: String, required: true, alias: 'name', unique: true},
-        s : {type: String, required: true, alias: 'slug', unique: true}
+        s : {type: String, required: true, alias: 'slug', unique: true},
+        l : {type: String, required: true, alias: 'long', unique: true}
     };
 
     Schema.n.settings = {
@@ -21,6 +22,10 @@ module.exports = function(app) {
 
     Schema.s.settings = {
         label: 'Slug'
+    };
+
+    Schema.l.settings = {
+        label: 'Long Name'
     };
 
     var inspector  = new Inspector(Schema).init();

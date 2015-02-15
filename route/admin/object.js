@@ -124,12 +124,6 @@ module.exports = function(app) {
                 _log.info(obj);
             }
 
-            // set admin session data
-            req.session.admin = {
-                name: _conf.name,
-                logo: _conf.logo
-            };
-
             res.render('admin/page/index');
         });
     });

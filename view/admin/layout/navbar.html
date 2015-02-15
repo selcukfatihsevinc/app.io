@@ -16,20 +16,20 @@
                     </ul>
                 </div>
                 <div class="logo-element">
-                    {{ session.admin.logo }}
+                    {% if session.app %}{{ session.app.slug }}{% else %}&nbsp;{% endif %}
                 </div>
             </li>
 
             <li class="{% if object == "system.apps" %}active{% endif %}">
                 <a href="javascript:void(0);">
-                    <i class="fa fa-th-large"></i> <span class="nav-label">Apps</span><span class="fa arrow"></span>
+                    <i class="fa fa-th-large"></i> <span class="nav-label">Applications</span><span class="fa arrow"></span>
                 </a>
 
                 <ul class="nav nav-second-level collapse">
                     {% for key, val in session.apps %}
                         {% if val.slug != "system" %}
                             <li class="{% if key == session.app._id %}active{% endif %}">
-                                <a href="/admin/app/{{ key }}">{{ val.name|capitalize }}</a>
+                                <a href="/admin/app/{{ key }}">{{ val.long }}</a>
                             </li>
                         {% endif %}
                     {% endfor %}

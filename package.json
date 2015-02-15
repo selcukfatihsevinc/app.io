@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -37,8 +37,7 @@
     "agenda": "0.6.26",
     "cron": "1.0.6",
     "dotty": "0.0.2",
-    "redis-memoizer": "0.0.4",
-    "cache-stampede": "0.0.5",
+    "cache-stampede": "https://github.com/export/cache-stampede/tarball/95cf172b979581785756e71e5ccd27f0a0ca4459",
     "parseable": "1.0.10",
     "blueimp-file-upload-expressjs": "0.3.1",
     "multiparty": "4.0.0",
@@ -59,7 +58,9 @@
     "method-override": "2.3.0",
     "extend": "2.0.0",
     "kue": "0.8.11",
-    "he": "0.5.0"
+    "he": "0.5.0",
+    "bull": "0.2.3",
+    "bluebird": "2.9.8"
   },
   "main": "index.js",
   "devDependencies": {},

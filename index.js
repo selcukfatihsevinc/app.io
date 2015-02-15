@@ -1,6 +1,8 @@
 var cluster = require('cluster');
 var express = require('express');
 var load    = require('express-load');
+var https   = require('https');
+var http    = require('http');
 
 function AppIo(options) {
     this.master = cluster.isMaster;
@@ -23,6 +25,13 @@ AppIo.prototype.init = function (options) {
     this.app.set('env', options.env || env);
     this.app.set('port', options.port || port);
     this.app.set('basedir', options.basedir);
+
+    /**
+     * @TODO
+     * config'e çek
+     * https ayarlarını da ekle
+     */
+    http.globalAgent.maxSockets = 9999;
 };
 
 AppIo.prototype.set = function (key, value) {
@@ -89,7 +98,7 @@ AppIo.prototype.listen = function () {
         if(self.app.boot.agenda)
             self.app.boot.agenda.start();
 
-        self.app.listen(self.get('port'), function() {
+        http.createServer(self.app).listen(self.get('port'), function() {
             self.app.system.logger.info('server listening, port:' + self.get('port'));
         });
     });

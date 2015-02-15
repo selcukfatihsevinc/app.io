@@ -75,8 +75,9 @@
                                                 <th
                                                     {% if props[alias[l]] %}
                                                         {% if props[alias[l]].settings.width %}data-width="{{ props[alias[l]].settings.width }}"{% endif %}
-                                                        {% if props[alias[l]].pattern == 'url' %}data-formatter="urlFormatter"{% endif %}
-                                                        {% if props[alias[l]].settings.video %}data-formatter="videoFormatter"{% endif %}
+                                                        {% if props[alias[l]].settings.image %}data-formatter="imageFormatter"{% elseif props[alias[l]].pattern == 'url' %}data-formatter="urlFormatter"{% endif %}
+
+                                                        {% if props[alias[l]].settings.square_video %}data-formatter="videoFormatter"{% endif %}
                                                     {% endif %}
 
                                                     data-field="{% if props[alias[l]].settings.display %}{{ l }}.{{ props[alias[l]].settings.display }}{% else %}{{ l }}{% endif %}"
@@ -153,14 +154,27 @@
             return '<a href="/admin/o/{{ object }}/edit/'+row._id+'">'+value+'</a>';
         }
 
+        function imageFormatter(value, row) {
+            if( ! value )
+                return '-';
+
+            return '<img style="max-width: 320px; max-height: 320px;" src="'+value+'" /></div>';
+        }
+
         function urlFormatter(value, row) {
+            if( ! value )
+                return '-';
+
             return '<a href="'+value+'" target="_blank">'+value+'</a> <i class="fa fa-external-link"></i>';
         }
 
         function videoFormatter(value, row) {
+            if( ! value )
+                return '-';
+
             var elem =
                 '<div style="width: 320px; height: 320px;">' +
-                    '<video width="320" height="320" onclick="this.paused ? this.play() : this.pause();">' +
+                    '<video onclick="this.paused ? this.play() : this.pause();">' +
                         '<source src="'+value+'" type="video/mp4" />' +
                         'Your browser does not support the video tag.' +
                     '</video>' +
