@@ -78,6 +78,7 @@
                                                         {% if props[alias[l]].settings.image %}data-formatter="imageFormatter"{% elseif props[alias[l]].pattern == 'url' %}data-formatter="urlFormatter"{% endif %}
 
                                                         {% if props[alias[l]].settings.square_video %}data-formatter="videoFormatter"{% endif %}
+                                                        {% if props[alias[l]].settings.dateFormat %}data-formatter="dateFormatter"{% endif %}
                                                     {% endif %}
 
                                                     data-field="{% if props[alias[l]].settings.display %}{{ l }}.{{ props[alias[l]].settings.display }}{% else %}{{ l }}{% endif %}"
@@ -181,6 +182,17 @@
                 '</div>';
 
             return elem;
+        }
+
+        function dateFormatter(value, row) {
+            if( ! value )
+                return '-';
+
+            /**
+             * @TODO
+             * date format'ı nerden alacağına karar ver
+             */
+            return moment(value).format("DD-MM-YYYY, h:mm:ss a");
         }
 
         function openFilter() {

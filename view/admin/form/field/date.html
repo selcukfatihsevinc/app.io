@@ -1,1 +1,25 @@
-date<br />
+<div id="" class="f-date form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="input-group date f-date-wrap">
+        <span class="input-group-addon">
+            <i class="fa fa-calendar"></i>
+        </span>
+
+        <input type="text" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control" value="{% if data %}{{ data|date('m-d-Y') }}{% endif %}">
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
+

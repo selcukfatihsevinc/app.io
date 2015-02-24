@@ -123,13 +123,17 @@ module.exports = function(app) {
 
         _.each(models, function(value, key) {
             // inspector eklenmemiş veya appName'i olmayan modelleri resource kabul etmiyoruz
-            if( ! value.schema.inspector || ! value.appName )
+            if( ! value.schema.inspector || ! value.appName ) {
+                console.log('inspector or app name not found: ', key);
                 return;
+            }
 
             var currApp = apps['app_'+value.appName];
 
-            if( ! currApp )
+            if( ! currApp ) {
+                console.log('curr app not found: ', key);
                 return;
+            }
 
             // get app id
             var currId = currApp._id.toString();
