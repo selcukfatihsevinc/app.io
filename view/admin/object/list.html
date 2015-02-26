@@ -192,7 +192,7 @@
              * @TODO
              * date format'ı nerden alacağına karar ver
              */
-            return moment(value).format("DD-MM-YYYY, h:mm:ss a");
+            return moment(value).utc().format("DD-MM-YYYY, HH:mm:ss");
         }
 
         function openFilter() {
