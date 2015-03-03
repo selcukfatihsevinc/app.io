@@ -5,9 +5,11 @@
             <li>
                 <a href="/admin">Home</a>
             </li>
-            <li>
-                {{ session.app.long }}
-            </li>
+            {% if session.app && object != 'system.apps' %}
+                <li>
+                    {{ session.app.long }}
+                </li>
+            {% endif %}
             <li>
                 {{ opts.plural|title }}
             </li>

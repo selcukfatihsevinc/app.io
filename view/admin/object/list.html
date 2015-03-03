@@ -16,6 +16,11 @@
             {% include "../layout/topbar.html" %}
             {% include "../layout/breadcrumb.html" %}
 
+            {#
+                @TODO
+                action çalıştırıldıktan sonra sayfaya döndüğümüzde seçili filtre varsa uygula
+            #}
+
             <div class="wrapper wrapper-content">
 
                 <div class="row">
@@ -25,7 +30,9 @@
                 </div>
 
                 <div class="row">
-                    {% include "../layout/filter.html" %}
+                    <div id="s-filter" class="col-lg-3 hide">
+                        {% include "../layout/filter.html" %}
+                    </div>
 
                     <div id="s-list" class="col-lg-12">
 
@@ -40,11 +47,30 @@
                                         <i class="fa fa-filter"></i> filter
                                     </a>
 
-                                    {% if opts.nodelete == false %}
-                                        <a href="javascript:void(0);" onclick="removeIds();" class="btn btn-outline btn-danger">
-                                            <i class="fa fa-minus"></i> remove
-                                        </a>
+                                    {% if opts.actions || opts.nodelete == false %}
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-outline dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                            <span id="filter-title">actions</span> <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            {% if opts.actions %}
+                                                {% for a in opts.actions %}
+                                                    <li><a href="javascript:void(0);" onclick="doAction('{{ a.url }}')" class="">{{ a.name }}</a></li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if opts.nodelete == false %}
+                                                <li><a href="javascript:void(0);" onclick="removeIds();">remove items</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
                                     {% endif %}
+
+                                    <style>
+                                        .ibox .open > .dropdown-menu {
+                                            left: 0;
+                                        }
+                                    </style>
                                 </div>
 
                                 <!-- data-search="true" yerine table filter kullanılacak -->
@@ -109,6 +135,24 @@
         var sFilter, sList, $table, records, object;
 
         $(document).ready(function() {
+            // toastr override class'ları inspinia css içinde
+            // #toast-container > .toast-error:before gibi
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "400",
+                "hideDuration": "1000",
+                "timeOut": "7000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
             object  = '{{ object }}';
             object  = object.replace(/\./g,'\\.');
             sFilter = $('#s-filter');
@@ -128,7 +172,7 @@
             });
         });
 
-        function removeIds() {
+        function getIds() {
             var $table  = $('.t-'+object).bootstrapTable();
             var objects = $table.bootstrapTable('getSelections');
             var ids     = [];
@@ -139,8 +183,19 @@
                 }
             }
 
-            if(ids.length)
-                window.location.href = '/admin/o/{{ object }}/remove/'+ids.join(',');
+            return ids.length ? ids.join(',') : false;
+        }
+
+        function removeIds() {
+            var ids = getIds();
+
+            if(ids)
+                window.location.href = '/admin/o/{{ object }}/remove/'+ids;
+        }
+
+        function doAction(url) {
+            var ids = getIds();
+            window.location.href = url+(ids ? '?ids='+ids : '');
         }
 
         function responseHandler(res) {
@@ -152,7 +207,7 @@
         }
 
         function editFormatter(value, row) {
-            return '<a href="/admin/o/{{ object }}/edit/'+row._id+'">'+value+'</a>';
+            return '<a target="_blank" href="/admin/o/{{ object }}/edit/'+row._id+'">'+value+'</a>';
         }
 
         function imageFormatter(value, row) {
@@ -212,8 +267,9 @@
             (filter == 'none') ? openFilter() : closeFilter();
         }
 
-        function runFilter() {
-            var filters = [];
+        function encodeFilter(get) {
+            var filters    = [];
+            var filtersKey = [];
 
             _.each(Filter, function(value, key) {
                 var val = _.str.trim(value.field.val());
@@ -221,24 +277,116 @@
                 if(val) {
                     var opts = value.opts.find('.active .f-elem').data('value');
 
-                    if( ['exact', 'contains'].indexOf(opts) != -1 )
+                    if(get != 'key' && ['exact', 'contains'].indexOf(opts) != -1 )
                         val = (opts == 'exact') ? val : '{:like:}'+val;
 
-                    if( ['is', 'not'].indexOf(opts) != -1 )
+                    if(get != 'key' &&  ['is', 'not'].indexOf(opts) != -1 )
                         val = (opts == 'is') ? val : '{ne}'+val;
 
-                    if(opts)
+                    if(opts) {
                         filters.push(value.name+'='+val);
+                        filtersKey.push(value.key+'='+val);
+                    }
                 }
             });
 
-            if(filters.length) {
-                filters = Base64.encode( filters.join('&') );
+            if(get == 'key' && filtersKey.length)
+                return Base64.encode( filtersKey.join('&') );
+
+            if(filters.length)
+                return Base64.encode( filters.join('&') );
+
+            return false;
+        }
+
+        function runFilter() {
+            var filters = encodeFilter();
+
+            if(filters) {
                 $table.bootstrapTable('refresh', {
                     url: '/admin/p/{{ object }}/table?filter='+filters
                 });
             }
         }
+
+        function saveFilterForm() {
+            var filters = encodeFilter('key');
+
+            if(filters) {
+                $('#filter-encoded').val(filters);
+                $('#filter-modal').modal('show');
+            }
+            else
+                toastr.info('', 'USE A FILTER!')
+        }
+
+        var filterXhr;
+        function saveFilter() {
+            if(filterXhr)
+                filterXhr.abort();
+
+            filterXhr = $.ajax({
+                type: 'POST',
+                url: '/admin/f/{{ object }}',
+                data: {
+                    name: $('#filter-name').val(),
+                    object: $('#filter-object').val(),
+                    filter: $('#filter-encoded').val()
+                }
+            })
+            .done(function(resp) {
+                if(resp.err) {
+                    toastr.error('', 'ERROR!');
+                    console.log(resp.detail);
+                }
+                else {
+                    toastr.info('', 'FILTER SAVED!');
+                    $('#filter-modal').modal('hide');
+                    window.location.reload();
+                }
+            });
+        }
+
+        var loadFilterXhr;
+        function loadFilter(id, title) {
+            if(loadFilterXhr)
+                loadFilterXhr.abort();
+
+            loadFilterXhr = $.ajax({
+                type: 'GET',
+                url: '/admin/f/{{ object }}/'+id
+            })
+            .done(function(resp) {
+                sFilter.html(resp);
+                $('#filter-title').html(title);
+                runFilter();
+            });
+        }
+
     </script>
+
+    <div class="modal inmodal" id="filter-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <i class="fa fa-filter modal-icon"></i>
+                    <h4 class="modal-title">Save Filter</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input id="filter-name" type="text" name="name" placeholder="Filter Name" class="form-control">
+                        <input id="filter-object" type="hidden" name="object" value="{{ object }}" />
+                        <input id="filter-encoded" type="hidden" name="filter" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveFilter();">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 

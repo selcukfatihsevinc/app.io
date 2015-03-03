@@ -47,7 +47,7 @@
 
                         {% for key, val in session.resources %}
                             {% if key == "system" || key == 'oauth' || key == session.app.slug %}
-                                <div class="col-lg-4">
+                                <div class="col-md-3">
                                     <div class="ibox float-e-margins">
                                         <div class="ibox-content">
                                             <h3>
@@ -70,7 +70,7 @@
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <div class="col-lg-4">
+                        <div class="col-md-4">
                             {% for key, app in session.apps %}
                                 {% if app.slug != "system" %}
                                     <div class="jumbotron">

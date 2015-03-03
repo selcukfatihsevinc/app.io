@@ -5,7 +5,13 @@
             <i class="fa fa-calendar"></i>
         </span>
 
-        <input type="text" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control" value="{% if data %}{{ data|date('m-d-Y') }}{% endif %}">
+        <input
+            type="text"
+            {% if ! (opts.edit && field.settings.noedit) %}name="{{ key }}"{% endif %}
+            id="f-{{ key }}"
+            class="f-{{ key }} form-control"
+            {% if opts.edit && field.settings.noedit %}disabled=""{% endif %}
+            value="{% if data %}{{ data|date('m-d-Y') }}{% endif %}">
     </div>
 </div>
 

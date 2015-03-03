@@ -20,6 +20,8 @@
                 {% set selected = "" %}
 
                 {% if field.type == 'array' %}
+                    {% set data = data|split(',') %}
+
                     {% for d in data %}
                         {% if d == value %}
                             {% set selected = "selected" %}

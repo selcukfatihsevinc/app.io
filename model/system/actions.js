@@ -43,13 +43,13 @@ module.exports = function(app) {
     };
 
     var inspector    = new Inspector(Schema).init();
-    var ActionSchema = app.core.mongo.db.Schema(inspector.Mongoose);
+    var ActionSchema = app.core.mongo.db.Schema(Schema);
 
     // plugins
     ActionSchema.plugin(query);
 
     // inspector
-    ActionSchema.inspector = inspector.Base;
+    ActionSchema.inspector = inspector;
 
     // compound index
     ActionSchema.index({ap: 1, r: 1, o: 1}, {unique: true});

@@ -29,19 +29,19 @@ module.exports = function(app) {
     };
 
     var inspector  = new Inspector(Schema).init();
-    var AppsSchema = app.core.mongo.db.Schema(inspector.Mongoose);
+    var AppsSchema = app.core.mongo.db.Schema(Schema);
 
     // plugins
     AppsSchema.plugin(query);
 
     // inspector
-    AppsSchema.inspector = inspector.Base;
+    AppsSchema.inspector = inspector;
 
     // model options
     AppsSchema.inspector.Options = {
         singular : 'App',
         plural   : 'Apps',
-        columns  : ['name', 'slug'],
+        columns  : ['name', 'slug', 'long'],
         main     : 'name',
         perpage  : 10
     };

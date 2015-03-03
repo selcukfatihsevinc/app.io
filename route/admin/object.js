@@ -15,6 +15,7 @@ module.exports = function(app) {
     var _system = [
         'oauth.clients',
         'system.actions',
+        'system.filters',
         'system.objects',
         'system.roles',
         'system.users'
@@ -147,14 +148,27 @@ module.exports = function(app) {
             return res.redirect('/admin');
 
         try {
+            var filterForm = dot.get(insp, 'Forms.filter') || false;
+
             // get filter form
-            new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').render(false, function(err, form) {
-                res.render('admin/object/list', {
-                    object  : o,
-                    opts    : insp.Options,
-                    props   : insp.Save.properties,
-                    alias   : insp.Alias,
-                    sfilter : form
+            new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').render(filterForm, function(err, form) {
+
+                // get filters
+                new _schema('system.filters').init(req, res, next).get({
+                    users: req.session.user._id,
+                    object: o
+                }, function(err, filters) {
+
+                    // render page
+                    res.render('admin/object/list', {
+                        object  : o,
+                        opts    : insp.Options,
+                        props   : insp.Save.properties,
+                        alias   : insp.Alias,
+                        sfilter : form,
+                        filters : filters
+                    });
+
                 });
             });
         }
@@ -174,7 +188,9 @@ module.exports = function(app) {
             return res.redirect('/admin');
 
         try {
-            new _form(o).init(req, res, next).prefix('/admin/p/').render(false, function(err, form) {
+            var newForm = dot.get(insp, 'Forms.new') || false;
+
+            new _form(o).init(req, res, next).prefix('/admin/p/').render(newForm, function(err, form) {
                 res.render('admin/object/new', {
                     action : 'save',
                     opts   : insp.Options,
@@ -208,13 +224,19 @@ module.exports = function(app) {
             if(_system.indexOf(o) != -1)
                 req.body.apps = req.session.app._id;
 
+            // set user id
+            if(o == 'system.filters')
+                req.body.users = req.session.user._id;
+
             new _schema(o).init(req, res, next).post(req.body, function(err, doc) {
                 if( ! err && doc ) {
                     req.flash('flash', {type: 'success', message: _.s.titleize(o)+' saved'});
                     return res.redirect('/admin/o/'+o);
                 }
 
-                new _form(o).init(req, res, next).prefix('/admin/p/').data(req.body).render(false, function(formErr, form) {
+                var newForm = dot.get(insp, 'Forms.new') || false;
+
+                new _form(o).init(req, res, next).prefix('/admin/p/').data(req.body).render(newForm, function(formErr, form) {
                     res.render('admin/object/new', {
                         action : 'save',
                         opts   : insp.Options,
@@ -252,13 +274,19 @@ module.exports = function(app) {
             if(_system.indexOf(o) != -1)
                 params.apps = req.session.app._id;
 
+            // set user id
+            if(o == 'system.filters')
+                params.users = req.session.user._id;
+
             new _schema(o, {format: false}).init(req, res, next).get(params, function(err, doc) {
                 if( err || ! doc ) {
                     req.flash('flash', {type: 'danger', message: _.s.titleize(o)+' not found'});
                     return res.redirect('/admin/o/'+o);
                 }
 
-                new _form(o).init(req, res, next).prefix('/admin/p/').data(doc).render(false, function(err, form) {
+                var editForm = dot.get(insp, 'Forms.edit') || dot.get(insp, 'Forms.new') || false;
+
+                new _form(o, {edit: true}).init(req, res, next).prefix('/admin/p/').data(doc).render(editForm, function(err, form) {
                     res.render('admin/object/new', {
                         action : 'update',
                         opts   : insp.Options,
@@ -295,13 +323,19 @@ module.exports = function(app) {
             if(_system.indexOf(o) != -1)
                 req.body.apps = req.session.app._id;
 
+            // set user id
+            if(o == 'system.filters')
+                req.body.users = req.session.user._id;
+
             new _schema(o).init(req, res, next).put(id, req.body, function(err, doc) {
                 if( ! err || doc ) {
                     req.flash('flash', {type: 'success', message: _.s.titleize(o)+' updated'});
                     return res.redirect('/admin/o/'+o);
                 }
 
-                new _form(o).init(req, res, next).prefix('/admin/p/').data(req.body).render(false, function(formErr, form) {
+                var editForm = dot.get(insp, 'Forms.edit') || dot.get(insp, 'Forms.new') || false;
+
+                new _form(o, {edit: true}).init(req, res, next).prefix('/admin/p/').data(req.body).render(editForm, function(formErr, form) {
                     res.render('admin/object/new', {
                         action : 'update',
                         opts   : insp.Options,
@@ -361,6 +395,36 @@ module.exports = function(app) {
         }
     });
 
+    // enable item
+    app.get('/admin/o/:object/enable', function(req, res, next) {
+        var o    = req.params.object;
+        var ids  = req.query.ids;
+        var insp = _inspector(req);
+
+        if( ! insp )
+            return res.redirect('/admin');
+
+        try {
+            if(ids)
+                ids = ids.split(',');
+            else
+                return res.redirect('/admin/o/'+o);
+
+            var params = {where:
+                {_id: {$in: ids}}
+            };
+
+            new _schema(o).init(req, res, next).put(params, {is_enabled: 'Y'}, function(err, doc) {
+                req.flash('flash', {type: 'success', message: _.s.titleize(o)+' enabled'});
+                res.redirect('/admin/o/'+o);
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
     /**
      * REST API proxies
      */
@@ -406,6 +470,10 @@ module.exports = function(app) {
             // set app id
             if(req.session.app && _system.indexOf(o) != -1)
                 p.apps = req.session.app._id;
+
+            // set user id
+            if(req.session.user && o == 'system.filters')
+                p.users = req.session.user._id;
 
             // query type
             p.qt = 'findcount';
@@ -499,5 +567,93 @@ module.exports = function(app) {
          }
      });
      */
+
+    /**
+     * filter functions
+     */
+
+    // filter form
+    // [ajax]
+    app.get('/admin/f/:object/:id', function(req, res, next) {
+        var o    = req.params.object;
+        var insp = _inspector(req);
+
+        if( ! insp )
+            return res.json({err: true});
+
+        try {
+            var a = {};
+
+            a['get_filter'] = function(cb) {
+                new _schema('system.filters').init(req, res, next).get({_id: req.params.id, qt: 'one'}, function(err, doc) {
+                    cb(err, doc);
+                });
+            }
+
+            a['filters'] = function(cb) {
+                new _schema('system.filters').init(req, res, next).get({
+                    apps: req.session.app._id,
+                    users: req.session.user._id,
+                    object: o
+                }, function(err, filters) {
+                    cb(err, filters);
+                });
+            }
+
+            async.parallel(a, function(err, results) {
+                if(err)
+                    return res.json({err: true});
+
+                // decode filter
+                var filter;
+                try {
+                    filter = app.lib.base64.decode(results['get_filter'].filter);
+                    filter = qs.parse(filter);
+                }
+                catch (e) {}
+
+                _log.info('load filter: ', filter);
+
+                var filterForm = dot.get(insp, 'Forms.filter') || false;
+
+                new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').data(filter).render(filterForm, function(err, form) {
+                    res.render('admin/layout/filter', {
+                        sfilter: form,
+                        filters: results['filters']
+                    });
+                });
+            });
+        }
+        catch(e) {
+            _log.error(e.stack);
+            res.json({err: true});
+        }
+    });
+
+    // save filter
+    // [ajax]
+    app.post('/admin/f/:object', function(req, res, next) {
+        var o    = req.params.object;
+        var insp = _inspector(req);
+
+        if( ! insp )
+            return res.json({err: true});
+
+        try {
+            req.body.apps = req.session.app._id; // set app id
+            req.body.users = req.session.user._id; // set user id
+
+            new _schema('system.filters').init(req, res, next).post(req.body, function(err, doc) {
+                if( ! err && doc )
+                    return res.json({err: false});
+
+                res.json({err: true, detail: err});
+            });
+        }
+        catch (e) {
+            _log.error(e.stack);
+            res.json({err: true});
+        }
+    });
 
 };

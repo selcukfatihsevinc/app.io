@@ -26,13 +26,13 @@ module.exports = function(app) {
     };
 
     var inspector  = new Inspector(Schema).init();
-    var RoleSchema = app.core.mongo.db.Schema(inspector.Mongoose);
+    var RoleSchema = app.core.mongo.db.Schema(Schema);
 
     // plugins
     RoleSchema.plugin(query);
 
     // inspector
-    RoleSchema.inspector = inspector.Base;
+    RoleSchema.inspector = inspector;
 
     // compound index
     RoleSchema.index({ap: 1, n: 1}, {unique: true});

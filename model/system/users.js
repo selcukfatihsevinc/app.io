@@ -81,13 +81,13 @@ module.exports = function(app) {
     };
 
     var inspector  = new Inspector(Schema).init();
-    var UserSchema = app.core.mongo.db.Schema(inspector.Mongoose);
+    var UserSchema = app.core.mongo.db.Schema(Schema);
 
     // plugins
     UserSchema.plugin(query);
 
     // inspector
-    UserSchema.inspector = inspector.Base;
+    UserSchema.inspector = inspector;
 
     // compound index
     UserSchema.index({ap: 1, em: 1}, {unique: true});

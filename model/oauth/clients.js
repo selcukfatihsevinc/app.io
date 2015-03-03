@@ -47,13 +47,13 @@ module.exports = function(app) {
     };
 
     var inspector     = new Inspector(Schema).init();
-    var ClientsSchema = app.core.mongo.db.Schema(inspector.Mongoose);
+    var ClientsSchema = app.core.mongo.db.Schema(Schema);
 
     // plugins
     ClientsSchema.plugin(query);
 
     // inspector
-    ClientsSchema.inspector = inspector.Base;
+    ClientsSchema.inspector = inspector;
 
     // model options
     ClientsSchema.inspector.Options = {

@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -60,7 +60,8 @@
     "kue": "0.8.11",
     "he": "0.5.0",
     "bull": "0.2.3",
-    "bluebird": "2.9.8"
+    "bluebird": "2.9.8",
+    "basic-auth": "1.0.0"
   },
   "main": "index.js",
   "devDependencies": {},
