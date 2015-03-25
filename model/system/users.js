@@ -261,7 +261,7 @@ module.exports = function(app) {
                     return _log.error(err);
 
                 if( ! results || ! results['app'] || ! results['roles'] )
-                    return _log.info('app or roles not found');
+                    return _log.info('app or roles not found (save)');
 
                 var appData  = results['app'];
                 var roleData = results['roles'];
@@ -304,7 +304,7 @@ module.exports = function(app) {
                     return _log.error(err);
 
                 if( ! results || ! results['app'] || ! results['roles'] )
-                    return _log.info('app or roles not found 2');
+                    return _log.info('app or roles not found (remove)');
 
                 var appData  = results['app'];
                 var roleData = results['roles'];

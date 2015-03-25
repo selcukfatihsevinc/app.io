@@ -2,6 +2,7 @@ function error(err, req, res, next) {
 
     var _app    = req.app;
     var _log    = _app.system.logger;
+    var _api    = res.apiResponse;
     var code    = err.code || 500;
     var name    = err.name || 'InternalServerError';
     var message = err.message || false;
@@ -22,12 +23,15 @@ function error(err, req, res, next) {
     if(type)
         response.meta.type = type;
 
+    if( ! _api && code == 500)
+        return res.render('admin/error/500');
+
     res.status(code).json(response);
 
 }
 
 function notFound(req, res, next) {
-    next(req.app.system.response.api.NotFound());
+    next( req.app.system.response.app.NotFound() );
 }
 
 module.exports = function(app) {

@@ -66,6 +66,27 @@
                                     </div>
                                     {% endif %}
 
+                                    {% if opts.analytics %}
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary btn-outline dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                                <span id="filter-title">analytics</span> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                {% if opts.analytics %}
+                                                    {% for a in opts.analytics %}
+                                                        <li><a href="javascript:void(0);" onclick="doAction('{{ a.url }}')" class="">{{ a.name }}</a></li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if search %}
+                                        <a href="/admin/o/{{ object }}/build-index" class="btn btn-outline btn-primary">
+                                            <i class="fa fa-gear"></i> build index
+                                        </a>
+                                    {% endif %}
+
                                     <style>
                                         .ibox .open > .dropdown-menu {
                                             left: 0;

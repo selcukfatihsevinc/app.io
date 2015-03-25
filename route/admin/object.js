@@ -11,6 +11,7 @@ module.exports = function(app) {
     var _log    = app.system.logger;
     var _form   = app.lib.form;
     var _schema = app.lib.schema;
+    var _jobs   = app.boot.kue;
     var _conf   = app.config[_env].admin; // admin config
     var _system = [
         'oauth.clients',
@@ -166,7 +167,8 @@ module.exports = function(app) {
                         props   : insp.Save.properties,
                         alias   : insp.Alias,
                         sfilter : form,
-                        filters : filters
+                        filters : filters,
+                        search  : insp.Searchable,
                     });
 
                 });
@@ -423,6 +425,26 @@ module.exports = function(app) {
             _log.error(e.stack);
             res.redirect('/admin');
         }
+    });
+
+    app.get('/admin/o/:object/build-index', function(req, res, next) {
+        var o    = req.params.object;
+        var ids  = req.query.ids;
+        var insp = _inspector(req);
+
+        if( ! insp || ! insp.Searchable )
+            return res.redirect('/admin');
+
+        _jobs.create('set-index-job', {
+            title: 'Set '+o+' index job',
+            params: {
+                type   : 'set-index-job',
+                object : o
+            }
+        }).attempts(3).save();
+
+        req.flash('flash', {type: 'success', message: _.s.titleize(o)+' index is building'});
+        res.redirect('/admin/o/'+o);
     });
 
     /**

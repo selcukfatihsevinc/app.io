@@ -21,7 +21,7 @@ AppIo.prototype.init = function (options) {
     var env   = process.env.NODE_ENV || 'development';
     var port  = process.env.NODE_PORT || 3001;
 
-    this.app.set('name', options.name || 'AppIo');
+    this.app.set('name', options.name || 'app');
     this.app.set('env', options.env || env);
     this.app.set('port', options.port || port);
     this.app.set('basedir', options.basedir);

@@ -1,0 +1,20 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-9">
+        <h2>{{ p_title|title }}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/admin">Home</a>
+            </li>
+            {% if session.app && object != 'system.apps' %}
+            <li>
+                {{ session.app.long }}
+            </li>
+            {% endif %}
+            <li class="active">
+                <strong>{{ p_title|title }}</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
