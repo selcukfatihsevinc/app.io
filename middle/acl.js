@@ -5,7 +5,7 @@ function Acl(req, res, next) {
 
     var _app  = req.app;
     var _log  = _app.system.logger;
-    var _resp = _app.system.response.api;
+    var _resp = _app.system.response.app;
 
     // acl middleware'inden sonra object route'una düşünce bunu sorgu parametresi olarak kabul etmemesi için siliyoruz
     if(_app.oauth)

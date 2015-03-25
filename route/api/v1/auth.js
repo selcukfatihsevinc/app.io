@@ -7,7 +7,7 @@ module.exports = function(app) {
     var _env    = app.get('env');
     var _schema = app.lib.schema;
     var _conf   = app.config[_env].api; // api config
-    var _resp   = app.system.response.api;
+    var _resp   = app.system.response.app;
 
     var _hash = function(passwd, salt) {
         return crypto.createHmac('sha256', salt).update(passwd).digest('hex');

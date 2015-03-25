@@ -11,7 +11,7 @@ function _access_token(req, res, next) {
 
     var _app  = req.app;
     var _env  = _app.get('env');
-    var _resp = _app.system.response.api;
+    var _resp = _app.system.response.app;
     var _conf = _app.config[_env].api; // api config
 
     try {
