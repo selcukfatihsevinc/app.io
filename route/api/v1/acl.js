@@ -7,7 +7,7 @@ module.exports = function(app) {
      * REST Routes
      */
 
-    app.get('/api/v1/acl/resources', app.middle.auth, function(req, res, next) {
+    app.get('/api/resources', app.middle.auth, function(req, res, next) {
         res.apiResponse = true;
 
         app.acl.userRoles(req.user.id, function(err, roles) {

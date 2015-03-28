@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -65,7 +65,8 @@
     "basic-auth": "1.0.0",
     "sanitize-html": "1.6.1",
     "git-rev-sync": "1.0.0",
-    "solr-client": "0.5.0"
+    "solr-client": "0.5.0",
+    "jwt-redis-session": "1.0.0"
   },
   "main": "index.js",
   "devDependencies": {},

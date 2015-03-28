@@ -19,7 +19,7 @@ module.exports = function(app) {
         name         : {type: String, unique: true, alias: 'name'},
         apps         : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
         clientId     : {type: String, unique: true, alias: 'clientId'},
-        clientSecret : {type: String, alias: 'clientSecret'},
+        clientSecret : {type: String, index: true, alias: 'clientSecret'},
         redirectUri  : {type: String, required: true, alias: 'redirectUri', pattern: 'url'}
     };
 

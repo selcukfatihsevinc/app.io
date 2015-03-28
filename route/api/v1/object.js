@@ -8,7 +8,7 @@ module.exports = function(app) {
      * REST Routes
      */
 
-    app.get('/api/v1/o/:object', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.get('/api/o/:object', app.middle.auth, app.middle.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -16,7 +16,7 @@ module.exports = function(app) {
             schema.get(req.query);
     });
 
-    app.get('/api/v1/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.get('/api/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -24,7 +24,7 @@ module.exports = function(app) {
             schema.getById(req.params.id);
     });
 
-    app.post('/api/v1/o/:object', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.post('/api/o/:object', app.middle.auth, app.middle.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -32,7 +32,7 @@ module.exports = function(app) {
             schema.post(req.body);
     });
 
-    app.put('/api/v1/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.put('/api/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -40,7 +40,7 @@ module.exports = function(app) {
             schema.put(req.params.id, req.body);
     });
 
-    app.delete('/api/v1/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.delete('/api/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
