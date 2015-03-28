@@ -96,11 +96,11 @@ module.exports = function(app) {
                 }
 
                 async.parallel(a, function(err, results) {
-                    // token.resources = results.resources || {};
-                    // token.profile   = {};
+                    token.resources = results.resources || {};
+                    token.profile   = {};
 
-                    // if(results.profile)
-                        // token.profile = results.profile;
+                    if(results.profile)
+                        token.profile = results.profile;
 
                     _resp.OK(token, res);
                 });
