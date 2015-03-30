@@ -13,8 +13,8 @@ function Client(req, res, next) {
     function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
-                type   : 'InvalidCredentials',
-                errors : ['check your client id and client secret']}
+                type: 'InvalidCredentials',
+                errors: ['check your client id and client secret']}
             ));
         }
 

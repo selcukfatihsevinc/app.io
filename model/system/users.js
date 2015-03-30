@@ -24,32 +24,17 @@ module.exports = function(app) {
         ty : {type: String, default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
         ro : [{type: ObjectId, ref: 'System_Roles', alias: 'roles'}],
         ca : {type: Date, alias: 'created_at', default: Date.now},
-        uf : {type: String, alias: 'url_field'}
+        uf : {type: String, alias: 'url_field'},
+        rt : {type: String, alias: 'reset_token'},
+        re : {type: Date, alias: 'reset_expires'}
     };
 
-    Schema.ap.settings = {
-        initial: false
-    };
-
-    Schema.na.settings = {
-        label: 'Name'
-    };
-
-    Schema.em.settings = {
-        label: 'Email'
-    };
-
-    Schema.pa.settings = {
-        label: 'Password'
-    };
-
-    Schema.sa.settings = {
-        initial: false
-    };
-
-    Schema.ha.settings = {
-        initial: false
-    };
+    Schema.ap.settings = {initial: false};
+    Schema.na.settings = {label: 'Name'};
+    Schema.em.settings = {label: 'Email'};
+    Schema.pa.settings = {label: 'Password'};
+    Schema.sa.settings = {initial: false};
+    Schema.ha.settings = {initial: false};
 
     Schema.ie.settings = {
         label: 'Is Enabled ?',
@@ -72,13 +57,10 @@ module.exports = function(app) {
         display: 'name'
     };
 
-    Schema.ca.settings = {
-        initial: false
-    };
-
-    Schema.uf.settings = {
-        initial: false
-    };
+    Schema.ca.settings = {initial: false};
+    Schema.uf.settings = {initial: false};
+    Schema.rt.settings = {initial: false};
+    Schema.re.settings = {initial: false};
 
     var inspector  = new Inspector(Schema).init();
     var UserSchema = app.core.mongo.db.Schema(Schema);
@@ -114,7 +96,7 @@ module.exports = function(app) {
     UserSchema.pre('save', function (next) {
         var self = this;
 
-        // yeni kullanıcı durumunda password hash'i kaydediyoruz
+        // yeni kullanıcı veya güncelleme durumunda password hash'i kaydediyoruz
         if( ! php.empty(self.pa) ) {
             self.sa = uuid.v1();
             self.ha = hash(self.pa, self.sa);
