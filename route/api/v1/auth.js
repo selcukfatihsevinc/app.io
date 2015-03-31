@@ -70,8 +70,9 @@ module.exports = function(app) {
             }
 
             async.parallel(a, function(err, results) {
+                token.userId    = userId;
                 token.resources = results.resources || {};
-                token.profile   = {};
+                token.profile   = false;
 
                 if(results.profile)
                     token.profile = results.profile;
