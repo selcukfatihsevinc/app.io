@@ -467,6 +467,10 @@ module.exports = function(app) {
             if(_system.indexOf(o) != -1)
                 req.query.apps = req.session.app._id;
 
+            // system.actions için sistem objelerine erişim izni olabilir
+            if(req.query.apps && o == 'system.objects')
+                delete req.query.apps;
+
             new _schema(o).init(req, res, next).get(req.query, function(err, doc) {
                 res.json(doc || {});
             });

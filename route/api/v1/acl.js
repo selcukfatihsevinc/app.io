@@ -3,11 +3,9 @@ var _     = require('underscore');
 
 module.exports = function(app) {
 
-    /**
-     * REST Routes
-     */
+    var _mdl = app.middle;
 
-    app.get('/api/resources', app.middle.auth, function(req, res, next) {
+    app.get('/api/resources', _mdl.auth, function(req, res, next) {
         res.apiResponse = true;
 
         app.acl.userRoles(req.user.id, function(err, roles) {

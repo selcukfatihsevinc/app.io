@@ -44,8 +44,8 @@ module.exports = function(app) {
 
     // model options
     FilterSchema.inspector.Options = {
-        singular : 'Filter',
-        plural   : 'Filters',
+        singular : 'System Filter',
+        plural   : 'System Filters',
         columns  : ['name', 'object'],
         main     : 'name',
         perpage  : 25

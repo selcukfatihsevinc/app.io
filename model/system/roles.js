@@ -40,8 +40,8 @@ module.exports = function(app) {
 
     // model options
     RoleSchema.inspector.Options = {
-        singular : 'Role',
-        plural   : 'Roles',
+        singular : 'System Role',
+        plural   : 'System Roles',
         columns  : ['name', 'slug'],
         main     : 'name',
         perpage  : 25,

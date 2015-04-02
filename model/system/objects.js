@@ -40,8 +40,8 @@ module.exports = function(app) {
 
     // model options
     ObjectSchema.inspector.Options = {
-        singular : 'Object',
-        plural   : 'Objects',
+        singular : 'System Object',
+        plural   : 'System Objects',
         columns  : ['name', 'slug'],
         main     : 'name',
         perpage  : 25,

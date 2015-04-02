@@ -56,8 +56,8 @@ module.exports = function(app) {
 
     // model options
     ActionSchema.inspector.Options = {
-        singular : 'Action',
-        plural   : 'Actions',
+        singular : 'System Action',
+        plural   : 'System Actions',
         columns  : ['roles', 'objects', 'action'],
         main     : 'action',
         perpage  : 25
@@ -105,8 +105,14 @@ module.exports = function(app) {
                 var roleApp = role.ap.toString();
                 var objApp  = object.ap.toString();
 
-                if(roleApp != objApp)
-                    return _log.info('app id is not same for role and object');
+                /**
+                 * @TODO
+                 * system objelerine erişim izni gereken uygulamalarda bu kontrol izin vermiyor
+                 * (uygulama ile sistem ayrı application)
+                 */
+
+                // if(roleApp != objApp)
+                //    return _log.info('app id is not same for role and object');
 
                 Apps.findById(roleApp, function (err, apps) {
                     if( err || ! apps )
@@ -181,8 +187,14 @@ module.exports = function(app) {
                 var roleApp = role.ap.toString();
                 var objApp  = object.ap.toString();
 
-                if(roleApp != objApp)
-                    return _log.info('app id is not same for role and object');
+                /**
+                 * @TODO
+                 * system objelerine erişim izni gereken uygulamalarda bu kontrol izin vermiyor
+                 * (uygulama ile sistem ayrı application)
+                 */
+
+                // if(roleApp != objApp)
+                //    return _log.info('app id is not same for role and object');
 
                 Apps.findById(roleApp, function (err, apps) {
                     if( err || ! apps )

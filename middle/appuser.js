@@ -7,6 +7,19 @@ function AppUser(req, res, next) {
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
 
+    if( ! req.appId ) {
+        return next( _resp.Unauthorized({
+            type: 'InvalidCredentials',
+            errors: ['app id not found']}
+        ));
+    }
+    else if( ! req.body.email ) {
+        return next( _resp.Unauthorized({
+            type: 'InvalidCredentials',
+            errors: ['email not found']}
+        ));
+    }
+
     var a = {
         app: function(cb) {
             new _schema('system.apps').init(req, res, next).getById(req.appId, function(err, doc) {
@@ -31,7 +44,7 @@ function AppUser(req, res, next) {
         if( ! results.user ) {
             return next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
-                errors: ['email not found']}
+                errors: ['user not found']}
             ));
         }
 

@@ -229,6 +229,9 @@ module.exports = function(app) {
                             };
 
                             new _schema('system.actions').init(app).post(obj, function(err, action) {
+                                // if(err)
+                                //    _log.info(err);
+
                                 if( ! err && action )
                                     _log.info('action created');
                             });

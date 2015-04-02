@@ -39,8 +39,8 @@ module.exports = function(app) {
 
     // model options
     AppsSchema.inspector.Options = {
-        singular : 'App',
-        plural   : 'Apps',
+        singular : 'System App',
+        plural   : 'System Apps',
         columns  : ['name', 'slug', 'long'],
         main     : 'name',
         perpage  : 10

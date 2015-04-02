@@ -2,21 +2,24 @@ var async = require('async');
 
 module.exports = function(app) {
 
+    var _mdl    = app.middle;
     var _schema = app.lib.schema;
 
     /**
      * REST Routes
      */
 
-    app.get('/api/o/:object/structure', app.middle.client, function(req, res, next) {
+    /*
+    app.get('/api/o/:object/structure', _mdl.client, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
         if(schema)
             schema.structure();
     });
+    */
 
-    app.get('/api/o/:object', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.get('/api/o/:object', _mdl.system, _mdl.auth, _mdl.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -24,7 +27,7 @@ module.exports = function(app) {
             schema.get(req.query);
     });
 
-    app.get('/api/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.get('/api/o/:object/:id', _mdl.system, _mdl.auth, _mdl.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -32,7 +35,7 @@ module.exports = function(app) {
             schema.getById(req.params.id);
     });
 
-    app.post('/api/o/:object', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.post('/api/o/:object', _mdl.system, _mdl.auth, _mdl.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -40,7 +43,7 @@ module.exports = function(app) {
             schema.post(req.body);
     });
 
-    app.put('/api/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.put('/api/o/:object/:id', _mdl.system, _mdl.auth, _mdl.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
@@ -48,7 +51,7 @@ module.exports = function(app) {
             schema.put(req.params.id, req.body);
     });
 
-    app.delete('/api/o/:object/:id', app.middle.auth, app.middle.acl, function(req, res, next) {
+    app.delete('/api/o/:object/:id', _mdl.system, _mdl.auth, _mdl.acl, function(req, res, next) {
         res.apiResponse = true;
         var schema = new _schema(req.params.object).init(req, res, next);
 
