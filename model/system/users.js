@@ -12,6 +12,7 @@ module.exports = function(app) {
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
+    var emitter   = app.lib.schemaEmitter;
 
     var Schema = {
         ap  : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
@@ -119,6 +120,13 @@ module.exports = function(app) {
     };
 
     UserSchema.post('save', function (doc) {
+        // emit event
+        if( ! this._isNew ) {
+            emitter.emit('user_updated', {
+                doc: doc
+            });
+        }
+
         var self  = this;
         var roles = [];
         doc       = doc.toJSON();
