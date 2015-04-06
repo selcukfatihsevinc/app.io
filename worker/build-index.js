@@ -62,22 +62,25 @@ module.exports = function(app) {
                 done();
             });
         });
+
     });
 
     // remove completed jobs
-    app.boot.kue.on('job complete', function(id) {
+    if(parseInt(process.env.worker_id) == 0) {
+        app.boot.kue.on('job complete', function(id) {
 
-        kue.Job.get(id, function(err, job) {
-            if (err) return;
-
-            // remove job from kue
-            job.remove(function(err) {
+            kue.Job.get(id, function(err, job) {
                 if (err) return;
-                console.log('removed completed job #%d', job.id);
-            });
-        });
 
-    });
+                // remove job from kue
+                job.remove(function(err) {
+                    if (err) return;
+                    console.log('removed completed job #%d', job.id);
+                });
+            });
+
+        });
+    }
 
 };
 

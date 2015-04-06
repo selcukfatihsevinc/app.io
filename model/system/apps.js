@@ -11,9 +11,9 @@ module.exports = function(app) {
     var workerId  = parseInt(process.env.worker_id);
 
     var Schema = {
-        n : {type: String, required: true, alias: 'name', unique: true},
-        s : {type: String, required: true, alias: 'slug', unique: true},
-        l : {type: String, required: true, alias: 'long', unique: true}
+        n : {type: String, typeStr: 'String', required: true, alias: 'name', unique: true},
+        s : {type: String, typeStr: 'String', required: true, alias: 'slug', unique: true},
+        l : {type: String, typeStr: 'String', required: true, alias: 'long', unique: true}
     };
 
     Schema.n.settings = {

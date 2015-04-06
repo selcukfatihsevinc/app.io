@@ -63,7 +63,7 @@ module.exports = function(app) {
 
             if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
                 a.profile = function(cb) {
-                    new _schema(req.appData.slug+'.profiles').init(req, res, next).get({user: userId, qt: 'one'}, function(err, doc) {
+                    new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
                         cb(err, doc);
                     });
                 }

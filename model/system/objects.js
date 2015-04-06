@@ -8,9 +8,9 @@ module.exports = function(app) {
     var workerId  = parseInt(process.env.worker_id);
 
     var Schema = {
-        ap : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
-        n  : {type: String, required: true, alias: 'name'},
-        s  : {type: String, required: true, alias: 'slug'}
+        ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
+        n  : {type: String, typeStr: 'String', required: true, alias: 'name'},
+        s  : {type: String, typeStr: 'String', required: true, alias: 'slug'}
     };
 
     Schema.ap.settings = {

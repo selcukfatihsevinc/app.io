@@ -15,22 +15,22 @@ module.exports = function(app) {
     var emitter   = app.lib.schemaEmitter;
 
     var Schema = {
-        ap  : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
-        na  : {type: String, required: true, alias: 'name'},
-        em  : {type: String, required: true, alias: 'email', pattern: 'email'},
-        pa  : {type: String, optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
-        sa  : {type: String, alias: 'salt'},
-        ha  : {type: String, alias: 'hash'},
-        ie  : {type: String, default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled'},
-        ty  : {type: String, default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
-        ro  : [{type: ObjectId, ref: 'System_Roles', alias: 'roles'}],
-        ca  : {type: Date, alias: 'created_at', default: Date.now},
-        uf  : {type: String, alias: 'url_field'},
-        rt  : {type: String, alias: 'reset_token'},
-        re  : {type: Date, alias: 'reset_expires'},
-        fbt : {type: String, alias: 'facebook_token'},
-        twt : {type: String, alias: 'twitter_token'},
-        tws : {type: String, alias: 'twitter_token_secret'}
+        ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
+        na  : {type: String, typeStr: 'String', required: true, alias: 'name'},
+        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email'},
+        pa  : {type: String, typeStr: 'String', optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
+        sa  : {type: String, typeStr: 'String', alias: 'salt'},
+        ha  : {type: String, typeStr: 'String', alias: 'hash'},
+        ie  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled'},
+        ty  : {type: String, typeStr: 'String', default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
+        ro  : [{type: ObjectId, typeStr: 'ObjectId', ref: 'System_Roles', alias: 'roles'}],
+        ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
+        rt  : {type: String, typeStr: 'String', alias: 'reset_token'},
+        re  : {type: Date, typeStr: 'Date', alias: 'reset_expires'},
+        fbt : {type: String, typeStr: 'String', alias: 'facebook_token'},
+        twt : {type: String, typeStr: 'String', alias: 'twitter_token'},
+        tws : {type: String, typeStr: 'String', alias: 'twitter_token_secret'},
+        apn : {type: String, typeStr: 'String', alias: 'push_apn'} // ios push notification apn
     };
 
     Schema.ap.settings = {initial: false};
@@ -62,12 +62,12 @@ module.exports = function(app) {
     };
 
     Schema.ca.settings  = {initial: false};
-    Schema.uf.settings  = {initial: false};
     Schema.rt.settings  = {initial: false};
     Schema.re.settings  = {initial: false};
     Schema.fbt.settings = {initial: false};
     Schema.twt.settings = {initial: false};
     Schema.tws.settings = {initial: false};
+    Schema.apn.settings = {initial: false};
 
     var inspector  = new Inspector(Schema).init();
     var UserSchema = app.core.mongo.db.Schema(Schema);

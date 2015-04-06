@@ -12,10 +12,10 @@ module.exports = function(app) {
     var workerId  = parseInt(process.env.worker_id);
 
     var Schema = {
-        ap : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
-        r  : {type: ObjectId, required: true, ref: 'System_Roles', alias: 'roles'},
-        o  : {type: ObjectId, required: true, ref: 'System_Objects', alias: 'objects'},
-        a  : [{type: String, required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}]
+        ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
+        r  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Roles', alias: 'roles'},
+        o  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Objects', alias: 'objects'},
+        a  : [{type: String, typeStr: 'String', required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}]
     };
 
     Schema.ap.settings = {
