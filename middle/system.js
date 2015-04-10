@@ -32,12 +32,6 @@ function System(req, res, next) {
 
             req.system_AppId = doc.apps.toString();
 
-            /**
-             * @TODO
-             * get, post, put, delete işlemleri için systemAppId varsa app id'yi gerekli şekilde set et
-             * aynı işlemi acl'de owner protection için de yap
-             */
-
             next();
         });
     }

@@ -219,10 +219,41 @@
             window.location.href = url+(ids ? '?ids='+ids : '');
         }
 
+        var toString = Object.prototype.toString;
+
         function responseHandler(res) {
             var total = parseInt(res.total);
             if(total)
                 records.html(' - '+total);
+
+            {# populate edilen dökümanlarda display edilecek field listesini oluşturuyoruz #}
+            {# display = {roles: 'name'}; gibi #}
+
+            var display = {}, dData = {};
+            {% for l in opts.columns %}
+                {% if props[alias[l]].settings.display %}
+                    display['{{ l }}'] = '{{ props[alias[l]].settings.display }}';
+                {% endif %}
+            {% endfor %}
+
+            _.each(res.rows, function(value, key) {
+                _.each(value, function(vVal, vKey) {
+                    {# eğer array gelmişse ve populate edilmiş bir alan ise, o field'ın değerlerini birleştiriyoruz #}
+                    {# ve table init edilirken belirtilen data-field alanını yeniden oluşturmuş oluyoruz #}
+                    if(toString.call(vVal) == '[object Array]' && display[vKey]) {
+                        dData[vKey] = [];
+
+                        _.each(vVal, function(aVal, aKey) {
+                            dData[vKey].push(aVal[display[vKey]]);
+                        });
+
+                        if(dData[vKey].length) {
+                            res.rows[key][vKey] = {};
+                            res.rows[key][vKey][display[vKey]] = dData[vKey].join(', ');
+                        }
+                    }
+                });
+            });
 
             return res;
         }

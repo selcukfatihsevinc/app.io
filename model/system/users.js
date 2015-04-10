@@ -85,15 +85,20 @@ module.exports = function(app) {
     UserSchema.inspector.Options = {
         singular : 'System User',
         plural   : 'System Users',
-        columns  : ['name', 'email'],
+        columns  : ['name', 'email', 'roles'],
         main     : 'name',
         perpage  : 25
     };
 
     // schema owner
-    UserSchema.owner = {
-        field   : '_id',
-        protect : true
+    UserSchema.inspector.Owner = {
+        field : '_id',
+        alias : '_id',
+        protect : {
+            'get': true,
+            'getid': true,
+            'put': true
+        }
     };
 
     var hash = function(passwd, salt) {
@@ -112,6 +117,19 @@ module.exports = function(app) {
 
         self._isNew = self.isNew;
 
+        // twitter token parse (hello.js)
+        if(self.twt && self.twt.indexOf(':') != -1 && self.twt.indexOf('@') != -1) {
+            try {
+                var tokenData = self.twt.split('@');
+                tokenData = tokenData[0];
+                tokenData = tokenData.split(':');
+
+                self.twt = tokenData[0];
+                self.tws = tokenData[1];
+            }
+            catch(e) {}
+        }
+
         next();
     });
 
@@ -121,11 +139,7 @@ module.exports = function(app) {
 
     UserSchema.post('save', function (doc) {
         // emit event
-        if( ! this._isNew ) {
-            emitter.emit('user_updated', {
-                doc: doc
-            });
-        }
+        emitter.emit('user_updated', {doc: doc});
 
         var self  = this;
         var roles = [];

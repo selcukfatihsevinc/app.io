@@ -15,7 +15,8 @@ module.exports = function(app) {
         ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
         r  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Roles', alias: 'roles'},
         o  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Objects', alias: 'objects'},
-        a  : [{type: String, typeStr: 'String', required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}]
+        a  : [{type: String, typeStr: 'String', required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}],
+        m  : [{type: String, typeStr: 'String', enum: ['get*', 'post*', 'put*', 'delete*'], alias: 'master'}]
     };
 
     Schema.ap.settings = {
@@ -42,6 +43,16 @@ module.exports = function(app) {
         ]
     };
 
+    Schema.m[0].settings = {
+        label: 'Master',
+        options: [
+            {label: 'Get', value: 'get*'},
+            {label: 'Post', value: 'post*'},
+            {label: 'Put', value: 'put*'},
+            {label: 'Delete', value: 'delete*'}
+        ]
+    };
+
     var inspector    = new Inspector(Schema).init();
     var ActionSchema = app.core.mongo.db.Schema(Schema);
 
@@ -58,7 +69,7 @@ module.exports = function(app) {
     ActionSchema.inspector.Options = {
         singular : 'System Action',
         plural   : 'System Actions',
-        columns  : ['roles', 'objects', 'action'],
+        columns  : ['roles', 'objects', 'action', 'master'],
         main     : 'action',
         perpage  : 25
     };
@@ -123,8 +134,18 @@ module.exports = function(app) {
 
                     if(self._isNew) {
                         app.acl.allow(roleName, objName, doc.a);
+
+                        if(doc.m.length) {
+                            app.acl.allow(roleName, objName, doc.m);
+                            _log.info('[acl:allow] '+roleName+':'+objName+':'+doc.m);
+                        }
+
                         return _log.info('[acl:allow] '+roleName+':'+objName+':'+doc.a);
                     }
+
+                    /**
+                     * actions
+                     */
 
                     var _original = self._original.a;
                     var _new      = doc.a;
@@ -145,6 +166,30 @@ module.exports = function(app) {
                     if(oldActions.length) {
                         app.acl.removeAllow(roleName, objName, oldActions);
                         _log.info('[acl:removeAllow] '+roleName+':'+objName+':'+oldActions);
+                    }
+
+                    /**
+                     * master
+                     */
+                    var _orgm = self._original.m;
+                    var _newm = doc.m;
+
+                    // new actions
+                    var newMaster = php.array_diff(_newm, _orgm);
+                    newMaster     = _.map(Object.keys(newMaster), function(key) { return newMaster[key]; });
+
+                    if(newMaster.length) {
+                        app.acl.allow(roleName, objName, newMaster);
+                        _log.info('[acl:allow] '+roleName+':'+objName+':'+newMaster);
+                    }
+
+                    // old actions
+                    var oldMaster = php.array_diff(_orgm, _newm);
+                    oldMaster     = _.map(Object.keys(oldMaster), function(key) { return oldMaster[key]; });
+
+                    if(oldMaster.length) {
+                        app.acl.removeAllow(roleName, objName, oldMaster);
+                        _log.info('[acl:removeAllow] '+roleName+':'+objName+':'+oldMaster);
                     }
                 });
             });
@@ -205,6 +250,11 @@ module.exports = function(app) {
 
                     app.acl.removeAllow(roleName, objName, doc.a);
                     _log.info('[acl:removeAllow] '+roleName+':'+objName+':'+doc.a);
+
+                    if(doc.m.length) {
+                        app.acl.removeAllow(roleName, objName, doc.m);
+                        _log.info('[acl:removeAllow] '+roleName+':'+objName+':'+doc.m);
+                    }
                 });
             });
         }

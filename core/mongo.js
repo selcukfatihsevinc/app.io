@@ -16,8 +16,8 @@ module.exports = function(app) {
     var str = 'mongodb://'+_auth+_c.host+':'+_c.port+'/'+_c.db;
     var db  = mongoose.connect(str);
 
-    _log.info('mongo config', _c);
-    _log.info('mongo str', str);
+    // _log.info('mongo config', _c);
+    // _log.info('mongo str', str);
 
     mongoose.connection.on('error', function(err) {
         _log.error(err);

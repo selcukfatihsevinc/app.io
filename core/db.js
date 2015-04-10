@@ -6,7 +6,7 @@ module.exports = function(app) {
     var _log = app.system.logger;
     var _c   = app.config[_env].db;
 
-    _log.info('db config', _c);
+    // _log.info('db config', _c);
 
     if( ! _c )
         return false;
