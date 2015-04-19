@@ -30,7 +30,9 @@ module.exports = function(app) {
         fbt : {type: String, typeStr: 'String', alias: 'facebook_token'},
         twt : {type: String, typeStr: 'String', alias: 'twitter_token'},
         tws : {type: String, typeStr: 'String', alias: 'twitter_token_secret'},
-        apn : {type: String, typeStr: 'String', alias: 'push_apn'} // ios push notification apn
+        apn : {type: String, typeStr: 'String', alias: 'push_apn'}, // ios push notification apn
+        ii  : {type: String, typeStr: 'String', default: 'N', enum: ['Y', 'N'], alias: 'is_invited'},
+        inv : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'}
     };
 
     Schema.ap.settings = {initial: false};
@@ -68,6 +70,16 @@ module.exports = function(app) {
     Schema.twt.settings = {initial: false};
     Schema.tws.settings = {initial: false};
     Schema.apn.settings = {initial: false};
+
+    Schema.ii.settings = {
+        initial: false,
+        options: [
+            {label: 'Yes', value: 'Y'},
+            {label: 'No', value: 'N'}
+        ]
+    };
+
+    Schema.inv.settings = {initial: false};
 
     var inspector  = new Inspector(Schema).init();
     var UserSchema = app.core.mongo.db.Schema(Schema);
@@ -339,9 +351,6 @@ module.exports = function(app) {
             _log.info('[acl:allow] superadmin:system_users:*');
         }
     });
-
-    // tmp users
-    mongoose.model('Tmp_Users', UserSchema);
 
     return mongoose.model('System_Users', UserSchema);
 

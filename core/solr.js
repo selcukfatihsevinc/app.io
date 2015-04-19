@@ -6,7 +6,7 @@ module.exports = function(app) {
     var _log = app.system.logger;
     var _c   = app.config[_env].solr;
 
-    _log.info('solr config', _c);
+    // _log.info('solr config', _c);
 
     if( ! _c )
         return false;

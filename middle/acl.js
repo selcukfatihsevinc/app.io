@@ -18,23 +18,6 @@ function Acl(req, res, next) {
         var object = req.params.object.replace('.', '_'); // acl sisteminde object isimleri "." yerine "_" ile tutulduğu için değiştiriyoruz
         var method = req.method.toLowerCase();
 
-        var a = {};
-
-        // başka kontroller async olarak yapılmak istenirse buraya ekleyeceğiz
-
-        /*
-        a[method] = function(cb) {
-            _app.acl.isAllowed(user, object, method, function(err, res) {
-                cb(err, res);
-            });
-        };
-        */
-
-        /**
-         * is allowed yerine resource üzerinde hangi action'ları olduğu listesinden kontrol yapılacak
-         * owner protection olduğu halde master izni varsa burada set edilecek
-         */
-
         _app.acl.allowedPermissions(user, [object], function(err, results) {
             _log.info('user '+user+' acl result:');
             _log.info(results);
@@ -50,16 +33,6 @@ function Acl(req, res, next) {
 
             next();
         });
-
-        /*
-        async.parallel(a, function(err, results) {
-            _log.info('user '+user+' acl result:');
-            _log.info(results);
-
-            // eğer hata olduysa veya result'lardan biri false geldiyse forbidden gönder
-            (err || ! results[method]) ? next( _resp.Forbidden() ) : next();
-        });
-        */
     }
     else
         next( _resp.Forbidden() );

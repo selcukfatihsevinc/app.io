@@ -55,7 +55,7 @@ module.exports = function(app) {
                 resources: function(cb) {
                     app.acl.userRoles(userId, function(err, roles) {
                         app.acl.whatResources(roles, function(err, resources) {
-                            cb(err, resources);
+                            cb(err, {roles: roles, resources: resources});
                         });
                     });
                 }
@@ -71,7 +71,8 @@ module.exports = function(app) {
 
             async.parallel(a, function(err, results) {
                 token.userId    = userId;
-                token.resources = results.resources || {};
+                token.roles     = results.resources.roles || {};
+                token.resources = results.resources.resources || {};
                 token.profile   = false;
 
                 if(results.profile)
@@ -134,7 +135,7 @@ module.exports = function(app) {
         _resp.OK({}, res);
     });
 
-    app.post('/api/reset/:token', _mdl.token.reset, function(req, res, next) {
+    app.post('/api/reset/:token', _mdl.client, _mdl.token.reset, function(req, res, next) {
         res.apiResponse = true;
         var password    = req.body.password;
         var userId      = req.userData._id;
@@ -158,6 +159,98 @@ module.exports = function(app) {
 
         async.parallel(a, function(err, results) {
             _resp.OK({affected: results.setUser}, res);
+        });
+    });
+
+    /**
+     * User Invitation
+     */
+
+    app.post('/api/invite', _mdl.auth, _mdl.client, _mdl.appdata, _mdl.user.found, function(req, res, next) {
+        res.apiResponse = true;
+
+        /**
+         * @TODO
+         * expire süresini config'e bağla
+         */
+
+        var token = _random(24);
+
+        // save token
+        var obj = {
+            apps: req.appId,
+            inviter: req.user.id,
+            email: req.body.email,
+            invite_token: token,
+            invite_expires: Date.now()+(3600000*24*30) // 30 gün expire süresi
+        };
+
+        new _schema('system.invites').init(req, res, next).post(obj, function(err, doc) {
+            if(err) {
+                return next( _resp.Unauthorized({
+                    type: 'InvalidCredentials',
+                    errors: ['email found']}
+                ));
+            }
+
+            var mailconf = dot.get(req.app.config[_env], 'app.mail.'+req.appData.slug);
+
+            if(mailconf) {
+                var mailObj = mailconf.invite;
+
+                req.app.render('email/templates/invite', {
+                    baseUrl: mailconf.baseUrl,
+                    endpoint: mailconf.endpoints.invite,
+                    token: token
+                }, function(err, html) {
+                    if(html) {
+                        mailObj.to = req.body.email;
+                        mailObj.html = html;
+
+                        new _mailer(_transport).send(mailObj);
+                    }
+                });
+            }
+
+            _resp.Created({
+                email: req.body.email
+            }, res);
+        });
+    });
+
+    app.get('/api/invite/:token', _mdl.token.invite, function(req, res, next) {
+        res.apiResponse = true;
+        _resp.OK({}, res);
+    });
+
+    app.post('/api/invite/:token', _mdl.client, _mdl.token.invite, function(req, res, next) {
+        // auth middleware kullanmadığımız için apiResponse olarak işaretlemiyoruz
+
+        var obj = {
+            apps: req.appId,
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            is_invited: 'Y',
+            inviter: req.inviteData.inviter
+        };
+
+        // save user with basic data
+        var users = new _schema('system.users').init(req, res, next);
+        users.post(obj, function(err, user) {
+            if(err)
+                return users.errResponse(err);
+
+            new _schema('system.invites').init(req, res, next).put(req.inviteData._id, {
+                invite_token: {"__op": "Delete"},
+                invite_expires: {"__op": "Delete"}
+            },
+            function(err, affected) {
+                // send new user data
+                _resp.Created({
+                    email: user.email
+                }, res);
+            });
         });
     });
 

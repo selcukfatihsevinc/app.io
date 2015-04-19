@@ -1,4 +1,5 @@
 var winston = require('winston');
+var _       = require('underscore');
 
 module.exports = function(app) {
 
@@ -7,6 +8,8 @@ module.exports = function(app) {
 
     winston.emitErrs = true;
     var logger = new winston.Logger({exitOnError: false});
+
+    // add transport
     logger.add(winston.transports[_c.transport], _c.options);
 
     return logger;
