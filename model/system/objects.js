@@ -6,6 +6,7 @@ module.exports = function(app) {
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
+    var emitter   = app.lib.schemaEmitter;
 
     var Schema = {
         ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
@@ -49,6 +50,13 @@ module.exports = function(app) {
         nodelete : true,
         noedit   : true
     };
+
+    ObjectSchema.post('save', function (doc) {
+
+        // emit event
+        emitter.emit('object_updated', {doc: doc});
+
+    });
 
     // allow superadmin (mongoose connection bekliyor)
     mongoose.connection.on('open', function() {

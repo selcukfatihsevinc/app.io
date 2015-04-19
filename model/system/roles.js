@@ -6,11 +6,12 @@ module.exports = function(app) {
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
+    var emitter   = app.lib.schemaEmitter;
 
     var Schema = {
         ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        n  : {type: String, typeStr: 'String', required: true, unique: true, alias: 'name'},
-        s  : {type: String, typeStr: 'String', required: true, unique: true, alias: 'slug'}
+        n  : {type: String, typeStr: 'String', required: true, alias: 'name'},
+        s  : {type: String, typeStr: 'String', required: true, alias: 'slug'}
     };
 
     Schema.ap.settings = {
@@ -47,6 +48,13 @@ module.exports = function(app) {
         perpage  : 25,
         nodelete : true
     };
+
+    RoleSchema.post('save', function (doc) {
+
+        // emit event
+        emitter.emit('role_updated', {doc: doc});
+
+    });
 
     // allow superadmin (mongoose connection bekliyor)
     mongoose.connection.on('open', function() {

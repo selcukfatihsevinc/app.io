@@ -1,37 +1,45 @@
 var async = require('async');
 var php   = require('phpjs');
+var dot   = require('dotty');
 var _     = require('underscore');
 
 module.exports = function(app) {
 
+    var _env      = app.get('env');
     var _log      = app.system.logger;
     var mongoose  = app.core.mongo.mongoose;
     var ObjectId  = mongoose.Schema.Types.ObjectId;
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
+    var emitter   = app.lib.schemaEmitter;
+    var syncConf  = app.config[_env].sync;
 
     var Schema = {
-        ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        r  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Roles', alias: 'roles'},
-        o  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Objects', alias: 'objects'},
-        a  : [{type: String, typeStr: 'String', required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}],
-        m  : [{type: String, typeStr: 'String', enum: ['get*', 'post*', 'put*', 'delete*'], alias: 'master'}]
+        ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
+        r   : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Roles', alias: 'roles'},
+        rna : {type: String, typeStr: 'String', alias: 'roles_name'},
+        o   : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Objects', alias: 'objects'},
+        ona : {type: String, typeStr: 'String', alias: 'objects_name'},
+        a   : [{type: String, typeStr: 'String', required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}],
+        m   : [{type: String, typeStr: 'String', enum: ['get*', 'post*', 'put*', 'delete*'], alias: 'master'}]
     };
 
-    Schema.ap.settings = {
-        initial: false
-    };
+    Schema.ap.settings = {initial: false};
 
     Schema.r.settings = {
         label: 'Role',
         display: 'name'
     };
 
+    Schema.rna.settings = {initial: false};
+
     Schema.o.settings = {
         label: 'Object',
         display: 'name'
     };
+
+    Schema.ona.settings = {initial: false};
 
     Schema.a[0].settings = {
         label: 'Action',
@@ -74,10 +82,39 @@ module.exports = function(app) {
         perpage  : 25
     };
 
+    /**
+     * Denormalization
+     */
+
+    var denorm = [
+        {ref: 'System_Roles', source: 'r', fields: {rna: 'n'}},
+        {ref: 'System_Objects', source: 'o', fields: {ona: 'n'}}
+    ];
+
+    emitter.on('role_updated', function(role) {
+        app.lib.denormalize.update('System_Actions', 'System_Roles', role.doc, denorm);
+    });
+
+    emitter.on('object_updated', function(object) {
+        app.lib.denormalize.update('System_Actions', 'System_Objects', object.doc, denorm);
+    });
+
+    if(workerId == 0 && dot.get(syncConf, 'denormalize.system_actions')) {
+        // lib modelden önce çalıştığı için hemen çalıştırınca schema register olmuyor, 5sn sonra çalıştır
+        setTimeout(function() {
+            app.lib.denormalize.sync('System_Actions');
+        }, 5000);
+    }
+
     ActionSchema.pre('save', function (next) {
+
         var self = this;
         self._isNew = self.isNew;
-        next();
+
+        app.lib.denormalize.fill(this, denorm, function() {
+            next();
+        });
+
     });
 
     // init acl role
@@ -86,6 +123,9 @@ module.exports = function(app) {
         doc      = doc.toJSON();
 
         if(app.acl) {
+            if( ! self._original )
+                return _log.info('action original data not found');
+
             var Apps    = mongoose.model('System_Apps');
             var Roles   = mongoose.model('System_Roles');
             var Objects = mongoose.model('System_Objects');
