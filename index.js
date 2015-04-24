@@ -3,6 +3,7 @@ var express = require('express');
 var load    = require('express-load');
 var https   = require('https');
 var http    = require('http');
+var io      = require('socket.io');
 
 function AppIo(options) {
     this.master = cluster.isMaster;
@@ -17,9 +18,14 @@ AppIo.prototype.init = function (options) {
     if (cluster.isMaster)
         return this.fork();
 
-    this.app  = express();
-    var env   = process.env.NODE_ENV || 'development';
-    var port  = process.env.NODE_PORT || 3001;
+    this.opts   = options;
+    this.app    = express();
+    this.server = http.createServer(this.app);
+    var env     = process.env.NODE_ENV || 'development';
+    var port    = process.env.NODE_PORT || 3001;
+
+    if(this.opts.socket)
+        this.app.io = io(this.server);
 
     this.app.set('name', options.name || 'app');
     this.app.set('env', options.env || env);
@@ -71,7 +77,7 @@ AppIo.prototype.external = function (source, options) {
 };
 
 AppIo.prototype.load = function (source, options) {
-    if ( this.master )
+    if ( this.master || ! this.app )
         return false;
 
     if(Object.prototype.toString.call(options) == '[object Array]') {
@@ -86,7 +92,7 @@ AppIo.prototype.load = function (source, options) {
 };
 
 AppIo.prototype.listen = function () {
-    if ( this.master )
+    if ( this.master || ! this.app )
         return false;
 
     var self = this;
@@ -95,10 +101,20 @@ AppIo.prototype.listen = function () {
         if(err)
             throw err;
 
-        if(self.app.boot.agenda)
+        // start agenda
+        if(self.opts.agenda && self.app.boot.agenda)
             self.app.boot.agenda.start();
 
-        http.createServer(self.app).listen(self.get('port'), function() {
+        // socket route
+        if(self.opts.socket) {
+            var router = new self.app.lib.router();
+
+            self.app.io.route = function(namespace, route, fn) {
+                router.add(namespace, route, fn);
+            }
+        }
+
+        self.server.listen(self.get('port'), function() {
             self.app.system.logger.info('server listening, port:' + self.get('port'));
         });
     });
