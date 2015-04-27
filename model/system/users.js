@@ -25,6 +25,7 @@ module.exports = function(app) {
         ty  : {type: String, typeStr: 'String', default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
         ro  : [{type: ObjectId, typeStr: 'ObjectId', ref: 'System_Roles', alias: 'roles'}],
         ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
+        rgt : {type: String, typeStr: 'String', alias: 'register_token'},
         rt  : {type: String, typeStr: 'String', alias: 'reset_token'},
         re  : {type: Date, typeStr: 'Date', alias: 'reset_expires'},
         fbt : {type: String, typeStr: 'String', alias: 'facebook_token'},
@@ -64,6 +65,7 @@ module.exports = function(app) {
     };
 
     Schema.ca.settings  = {initial: false};
+    Schema.rgt.settings = {initial: false};
     Schema.rt.settings  = {initial: false};
     Schema.re.settings  = {initial: false};
     Schema.fbt.settings = {initial: false};

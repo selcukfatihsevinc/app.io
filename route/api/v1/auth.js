@@ -2,6 +2,7 @@ var async     = require('async');
 var crypto    = require('crypto');
 var jwt       = require('jwt-simple');
 var Validator = require('validatorjs');
+var addrs     = require('email-addresses');
 var dot       = require('dotty');
 
 module.exports = function(app) {
@@ -96,7 +97,7 @@ module.exports = function(app) {
      */
 
     app.post('/api/forgot', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
-        res.apiResponse = true;
+        res.jsonResponse = true;  // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         // save token
         var obj = {
@@ -136,9 +137,9 @@ module.exports = function(app) {
     });
 
     app.post('/api/reset/:token', _mdl.client, _mdl.token.reset, function(req, res, next) {
-        res.apiResponse = true;
-        var password    = req.body.password;
-        var userId      = req.userData._id;
+        res.jsonResponse = true;  // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
+        var password     = req.body.password;
+        var userId       = req.userData._id;
 
         var a = {
             setUser: function(cb) {
@@ -148,8 +149,8 @@ module.exports = function(app) {
             },
             updateUser: function(cb) {
                 new _schema('system.users').init(req, res, next).put(userId, {
-                    reset_token: {"__op": "Delete"},
-                    reset_expires: {"__op": "Delete"}
+                    reset_token: {__op: 'Delete'},
+                    reset_expires: {__op: 'Delete'}
                 },
                 function(err, affected) {
                     cb(err, affected);
@@ -224,7 +225,7 @@ module.exports = function(app) {
     });
 
     app.post('/api/invite/:token', _mdl.client, _mdl.token.invite, function(req, res, next) {
-        // auth middleware kullanmadığımız için apiResponse olarak işaretlemiyoruz
+        res.apiResponse = true;
 
         var obj = {
             apps: req.appId,
@@ -237,13 +238,14 @@ module.exports = function(app) {
 
         // save user with basic data
         var users = new _schema('system.users').init(req, res, next);
+
         users.post(obj, function(err, user) {
             if(err)
                 return users.errResponse(err);
 
             new _schema('system.invites').init(req, res, next).put(req.inviteData._id, {
-                invite_token: {"__op": "Delete"},
-                invite_expires: {"__op": "Delete"}
+                invite_token: {__op: 'Delete'},
+                invite_expires: {__op: 'Delete'}
             },
             function(err, affected) {
                 // send new user data
@@ -251,6 +253,104 @@ module.exports = function(app) {
                     email: user.email
                 }, res);
             });
+        });
+    });
+
+    /**
+     * Register
+     */
+
+    app.post('/api/register', _mdl.client, _mdl.appdata, function(req, res, next) {
+        res.apiResponse = true;
+
+        var appslug  = req.appData.slug;
+        var mailconf = dot.get(req.app.config[_env], 'app.mail.'+appslug);
+
+        if(Object.prototype.toString.call(mailconf.domains) == '[object Array]' && mailconf.domains.length) {
+            var email = addrs.parseOneAddress(req.body.email);
+
+            if( ! email ) {
+                return next( _resp.Unauthorized({
+                    type: 'InvalidCredentials',
+                    errors: ['not found email']
+                }));
+            }
+
+            if(mailconf.domains.indexOf(email.domain) == -1) {
+                return next( _resp.Unauthorized({
+                    type: 'InvalidCredentials',
+                    errors: ['not allowed domain']
+                }));
+            }
+        }
+
+        var token = _random(24);
+
+        var obj = {
+            apps: req.appId,
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            is_enabled: 'N',
+            register_token: token
+        };
+
+        var users = new _schema('system.users').init(req, res, next);
+
+        users.post(obj, function(err, user) {
+            if(err)
+                return users.errResponse(err);
+
+            if(mailconf) {
+                var mailObj = mailconf.register;
+
+                req.app.render(appslug+'/email/templates/register', {
+                    baseUrl: mailconf.baseUrl,
+                    endpoint: mailconf.endpoints.verify,
+                    token: token
+                }, function(err, html) {
+                    if(html) {
+                        mailObj.to = req.body.email;
+                        mailObj.html = html;
+
+                        new _mailer(_transport).send(mailObj);
+                    }
+                });
+            }
+
+            _resp.Created({
+                email: user.email
+            }, res);
+        });
+    });
+
+    app.get('/api/verify/:token', _mdl.token.verify, function(req, res, next) {
+        res.apiResponse = true;
+        _resp.OK({}, res);
+    });
+
+    app.post('/api/verify/:token', _mdl.client, _mdl.token.verify, function(req, res, next) {
+        res.jsonResponse = true; // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
+        var userId = req.userData._id;
+
+        var a = {
+            setUser: function(cb) {
+                new _schema('system.users').init(req, res, next).put(userId, {is_enabled: 'Y'}, function(err, affected) {
+                    cb(err, affected);
+                });
+            },
+            updateUser: function(cb) {
+                new _schema('system.users').init(req, res, next).put(userId, {
+                    register_token: {__op: 'Delete'}
+                },
+                function(err, affected) {
+                    cb(err, affected);
+                });
+            }
+        };
+
+        async.parallel(a, function(err, results) {
+            _resp.OK({affected: results.setUser}, res);
         });
     });
 
