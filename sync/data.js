@@ -4,10 +4,10 @@ var _     = require('underscore');
 
 module.exports = function(app) {
 
-    var _log    = app.system.logger;
-    var _env    = app.get('env');
-    var _schema = app.lib.schema;
-    var _c      = app.config[_env];
+    var _log     = app.system.logger;
+    var _env     = app.get('env');
+    var _schema  = app.lib.schema;
+    var _c       = app.config[_env];
 
     if(parseInt(process.env.worker_id) != 0)
         return false;
@@ -301,6 +301,29 @@ module.exports = function(app) {
 
                     cb();
                 };
+            }
+
+            // sync user roles
+            if(dot.get(_c, 'sync.data.userroles')) {
+
+                series['userroles'] = function(cb) {
+                    var schema = new _schema('system.users').init(app);
+
+                    schema.stream({}, function(err, users) {
+
+                        users.on('data', function (user) {
+
+                            new app.lib.user(app).addRole(user);
+
+                        }).on('error', function (err) {
+                            _log.info(err.stack);
+                        }).on('end', function () {
+                            _log.info('user roles sync stream end');
+                        });
+
+                    });
+                };
+
             }
 
             // exec series
