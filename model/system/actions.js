@@ -123,9 +123,6 @@ module.exports = function(app) {
         doc      = doc.toJSON();
 
         if(app.acl) {
-            if( ! self._original )
-                return _log.info('action original data not found');
-
             var Apps    = mongoose.model('System_Apps');
             var Roles   = mongoose.model('System_Roles');
             var Objects = mongoose.model('System_Objects');
@@ -184,6 +181,14 @@ module.exports = function(app) {
                     }
 
                     /**
+                     * @TODO
+                     * aşağıdaki actions ve master işlemlerinde _original data gerekiyor, yoksa işlem yapmıyoruz
+                     */
+
+                    if( ! self._original )
+                        return _log.info('action original data not found !!!');
+
+                    /**
                      * actions
                      */
 
@@ -211,6 +216,7 @@ module.exports = function(app) {
                     /**
                      * master
                      */
+
                     var _orgm = self._original.m;
                     var _newm = doc.m;
 
