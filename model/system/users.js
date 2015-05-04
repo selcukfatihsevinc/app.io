@@ -291,7 +291,7 @@ module.exports = function(app) {
                 var roleData = results['roles'];
 
                 app.acl.addUserRoles(id, appData.s+'_user');
-                _log.info('[acl:addUserRoles] add default user role');
+                _log.info('[acl:addUserRoles] add default user role as '+appData.s+'_user');
             });
         }
     });
