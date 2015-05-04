@@ -46,7 +46,7 @@ module.exports = function(app) {
      */
 
     app.post('/api/login', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
-        res.apiResponse = true;
+        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         if( req.userData.hash === _hash(req.body.password, req.userData.salt) ) {
             var userId = req.userData._id.toString();
@@ -225,7 +225,7 @@ module.exports = function(app) {
     });
 
     app.post('/api/invite/:token', _mdl.client, _mdl.token.invite, function(req, res, next) {
-        res.apiResponse = true;
+        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         var obj = {
             apps: req.appId,
@@ -261,7 +261,7 @@ module.exports = function(app) {
      */
 
     app.post('/api/register', _mdl.client, _mdl.appdata, function(req, res, next) {
-        res.apiResponse = true;
+        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         var appslug  = req.appData.slug;
         var mailconf = dot.get(req.app.config[_env], 'app.mail.'+appslug);
@@ -330,7 +330,7 @@ module.exports = function(app) {
     });
 
     app.post('/api/verify/:token', _mdl.client, _mdl.token.verify, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
+        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
         var userId = req.userData._id;
 
         var a = {

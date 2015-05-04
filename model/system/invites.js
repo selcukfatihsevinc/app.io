@@ -19,8 +19,8 @@ module.exports = function(app) {
         ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
         em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email'},
         ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
-        it  : {type: String, typeStr: 'String', alias: 'invite_token'},
-        iex : {type: Date, typeStr: 'Date', alias: 'invite_expires'}
+        it  : {type: String, typeStr: 'String', required: true, alias: 'invite_token'},
+        iex : {type: Date, typeStr: 'Date', required: true, alias: 'invite_expires'}
     };
 
     Schema.ap.settings = {initial: false};
