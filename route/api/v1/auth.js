@@ -42,7 +42,9 @@ module.exports = function(app) {
     };
 
     /**
+     * ----------------------------------------------------------------
      * Login
+     * ----------------------------------------------------------------
      */
 
     app.post('/api/login', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
@@ -93,7 +95,9 @@ module.exports = function(app) {
     });
 
     /**
+     * ----------------------------------------------------------------
      * Forgot Password
+     * ----------------------------------------------------------------
      */
 
     app.post('/api/forgot', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
@@ -164,10 +168,33 @@ module.exports = function(app) {
     });
 
     /**
+     * ----------------------------------------------------------------
      * User Invitation
+     * ----------------------------------------------------------------
      */
 
-    app.post('/api/invite', _mdl.auth, _mdl.client, _mdl.appdata, _mdl.user.found, function(req, res, next) {
+    var _invite_mail = function(config, appSlug, req, token) {
+        var mailconf = dot.get(config, 'app.mail.'+appSlug);
+
+        if(mailconf) {
+            var mailObj = mailconf.invite;
+
+            req.app.render('email/templates/invite', {
+                baseUrl: mailconf.baseUrl,
+                endpoint: mailconf.endpoints.invite,
+                token: token
+            }, function(err, html) {
+                if(html) {
+                    mailObj.to = req.body.email;
+                    mailObj.html = html;
+
+                    new _mailer(_transport).send(mailObj);
+                }
+            });
+        }
+    }
+
+    app.post('/api/invite', _mdl.authtoken, _mdl.auth, _mdl.client, _mdl.appdata, _mdl.user.found, function(req, res, next) {
         res.apiResponse = true;
 
         /**
@@ -175,7 +202,9 @@ module.exports = function(app) {
          * expire süresini config'e bağla
          */
 
-        var token = _random(24);
+        var conf     = req.app.config[_env];
+        var token    = _random(24);
+        var moderate = dot.get(conf, 'app.config.'+req.appData.slug+'.auth.invite_moderation');
 
         // save token
         var obj = {
@@ -183,40 +212,42 @@ module.exports = function(app) {
             inviter: req.user.id,
             email: req.body.email,
             invite_token: token,
-            invite_expires: Date.now()+(3600000*24*30) // 30 gün expire süresi
+            invite_expires: Date.now()+(3600000*24*30), // 30 gün expire süresi
+            detail: req.body.detail
         };
 
-        new _schema('system.invites').init(req, res, next).post(obj, function(err, doc) {
-            if(err) {
-                return next( _resp.Unauthorized({
-                    type: 'InvalidCredentials',
-                    errors: ['email found']}
-                ));
-            }
+        if(moderate) {
+            obj.email_sent = 'N';
+            obj.status = 'WA';
+        }
 
-            var mailconf = dot.get(req.app.config[_env], 'app.mail.'+req.appData.slug);
+        var invites = new _schema('system.invites').init(req, res, next);
 
-            if(mailconf) {
-                var mailObj = mailconf.invite;
+        invites.post(obj, function(err, doc) {
+            if(err)
+                return invites.errResponse(err);
 
-                req.app.render('email/templates/invite', {
-                    baseUrl: mailconf.baseUrl,
-                    endpoint: mailconf.endpoints.invite,
-                    token: token
-                }, function(err, html) {
-                    if(html) {
-                        mailObj.to = req.body.email;
-                        mailObj.html = html;
-
-                        new _mailer(_transport).send(mailObj);
-                    }
-                });
-            }
+            // send invitation mail
+            if( ! moderate )
+               _invite_mail(conf, req.appData.slug, req, token);
 
             _resp.Created({
                 email: req.body.email
             }, res);
         });
+    });
+
+    /**
+     * @TODO
+     * invite status işlemlerini burada yap, acl ile system.invites üzerinde put* iznine bak
+     */
+
+    app.post('/api/invite_accept/:id', function(req, res, next) {
+
+    });
+
+    app.post('/api/invite_decline/:id', function(req, res, next) {
+
     });
 
     app.get('/api/invite/:token', _mdl.token.invite, function(req, res, next) {
@@ -257,7 +288,9 @@ module.exports = function(app) {
     });
 
     /**
+     * ----------------------------------------------------------------
      * Register
+     * ----------------------------------------------------------------
      */
 
     app.post('/api/register', _mdl.client, _mdl.appdata, function(req, res, next) {
