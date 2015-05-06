@@ -255,34 +255,48 @@ module.exports = function(app) {
         _resp.OK({}, res);
     });
 
-    app.post('/api/invite/:token', _mdl.client, _mdl.token.invite, function(req, res, next) {
+    app.post('/api/invite/:token', _mdl.client, _mdl.appdata, _mdl.token.invite, function(req, res, next) {
         res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
-        var obj = {
-            apps: req.appId,
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            is_invited: 'Y',
-            inviter: req.inviteData.inviter
-        };
+        // get initial role for app
+        var slug = dot.get(app.config[_env], 'roles.'+req.appData.slug+'.initial.invite');
 
-        // save user with basic data
-        var users = new _schema('system.users').init(req, res, next);
+        // get role by slug
+        new _schema('system.roles').init(req, res, next).get({slug: slug, qt: 'one'}, function(err, doc) {
+            if(err || ! doc) {
+                return next( _resp.Unauthorized({
+                    type: 'InvalidCredentials',
+                    errors: ['initial role not found']}
+                ));
+            }
 
-        users.post(obj, function(err, user) {
-            if(err)
-                return users.errResponse(err);
+            var obj = {
+                apps: req.appId,
+                name: req.body.name,
+                email: req.inviteData.email,
+                password: req.body.password,
+                roles: doc._id.toString(),
+                is_invited: 'Y',
+                inviter: req.inviteData.inviter
+            };
 
-            new _schema('system.invites').init(req, res, next).put(req.inviteData._id, {
-                invite_token: {__op: 'Delete'},
-                invite_expires: {__op: 'Delete'}
-            },
-            function(err, affected) {
-                // send new user data
-                _resp.Created({
-                    email: user.email
-                }, res);
+            // save user with basic data
+            var users = new _schema('system.users').init(req, res, next);
+
+            users.post(obj, function(err, user) {
+                if(err)
+                    return users.errResponse(err);
+
+                new _schema('system.invites').init(req, res, next).put(req.inviteData._id, {
+                    invite_token: {__op: 'Delete'},
+                    invite_expires: {__op: 'Delete'}
+                },
+                function(err, affected) {
+                    // send new user data
+                    _resp.Created({
+                        email: user.email
+                    }, res);
+                });
             });
         });
     });
