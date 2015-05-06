@@ -153,7 +153,7 @@ module.exports = function(app) {
 
     UserSchema.post('save', function (doc) {
         // emit event
-        emitter.emit('user_updated', {doc: doc});
+        emitter.emit('user_updated', {doc: doc, isNew: this._isNew});
 
         var self  = this;
         var roles = [];
