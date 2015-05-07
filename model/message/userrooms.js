@@ -13,10 +13,20 @@ module.exports = function(app) {
     var syncConf  = app.config[_env].sync;
 
     var Schema = {
-        u : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'users'}
+        u  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Users', alias: 'users'},
+        r  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Rooms', alias: 'rooms'}, // bazı field'ları denormalize et
+        m  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Messages', alias: 'last_message'}, // bazı field'ları denormalize et
+        rd : {type: Number, typeStr: 'Number', default: 0, alias: 'unread'},
+        ua : {type: Date, typeStr: 'Date', alias: 'updated_at', default: Date.now},
+        ca : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now}
     };
 
-    Schema.u.settings = {initial: false};
+    Schema.u.settings  = {initial: false};
+    Schema.r.settings  = {initial: false};
+    Schema.m.settings  = {initial: false};
+    Schema.rd.settings = {initial: false};
+    Schema.ua.settings = {initial: false};
+    Schema.ca.settings = {initial: false};
 
     var inspector      = new Inspector(Schema).init();
     var UserRoomSchema = app.core.mongo.db.Schema(Schema);
@@ -26,7 +36,7 @@ module.exports = function(app) {
 
     // inspector
     UserRoomSchema.inspector = inspector;
-    // UserRoomSchema.structure = Schema;
+    // UserMessageSchema.structure = Schema;
 
     // model options
     UserRoomSchema.inspector.Options = {

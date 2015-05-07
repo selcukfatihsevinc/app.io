@@ -13,10 +13,26 @@ module.exports = function(app) {
     var syncConf  = app.config[_env].sync;
 
     var Schema = {
-        u : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'users'}
+        n  : {type: String, typeStr: 'String', required: true, alias: 'name'},
+        s  : {type: String, typeStr: 'String', alias: 'slug'},
+        d  : {type: String, typeStr: 'String', alias: 'detail'},
+        rm : {type: String, typeStr: 'String', required: true, alias: 'ref_model'},
+        ri : {type: String, typeStr: 'String', required: true, alias: 'ref_id'},
+        au : [{type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Users', alias: 'allowed_users'}],
+        bu : [{type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'banned_users'}],
+        u  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'users'}, // room owner if necessary (unique index, sparse: true)
+        ca : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now}
     };
 
-    Schema.u.settings = {initial: false};
+    Schema.n.settings     = {initial: false};
+    Schema.s.settings     = {initial: false};
+    Schema.d.settings     = {initial: false};
+    Schema.rm.settings    = {initial: false};
+    Schema.ri.settings    = {initial: false};
+    Schema.au[0].settings = {initial: false};
+    Schema.bu[0].settings = {initial: false};
+    Schema.u.settings     = {initial: false};
+    Schema.ca.settings    = {initial: false};
 
     var inspector  = new Inspector(Schema).init();
     var RoomSchema = app.core.mongo.db.Schema(Schema);
