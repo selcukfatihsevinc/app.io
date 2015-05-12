@@ -22,6 +22,7 @@ module.exports = function(app) {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
         ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
         em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email'},
+        na  : {type: String, typeStr: 'String', alias: 'name'},
         ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
         it  : {type: String, typeStr: 'String', required: true, alias: 'invite_token'},
         iex : {type: Date, typeStr: 'Date', required: true, alias: 'invite_expires'},
@@ -32,6 +33,7 @@ module.exports = function(app) {
 
     Schema.ap.settings  = {initial: false};
     Schema.em.settings  = {initial: false};
+    Schema.na.settings  = {initial: false};
     Schema.ir.settings  = {initial: false};
     Schema.ca.settings  = {initial: false};
     Schema.it.settings  = {initial: false};

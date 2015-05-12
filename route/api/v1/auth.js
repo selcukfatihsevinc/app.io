@@ -272,7 +272,7 @@ module.exports = function(app) {
 
             var obj = {
                 apps: req.appId,
-                name: req.body.name,
+                name: req.inviteData.name || req.body.name,
                 email: req.inviteData.email,
                 password: req.body.password,
                 roles: doc._id.toString(),
