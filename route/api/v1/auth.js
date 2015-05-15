@@ -96,6 +96,51 @@ module.exports = function(app) {
 
     /**
      * ----------------------------------------------------------------
+     * Token (send user data for verified token)
+     * ----------------------------------------------------------------
+     */
+
+    app.get('/api/token', _mdl.client, _mdl.appdata, _mdl.authtoken, _mdl.auth, function(req, res, next) {
+        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
+
+        var userId = req.user.id;
+        var resp   = {};
+
+        var a = {
+            resources: function(cb) {
+                app.acl.userRoles(userId, function(err, roles) {
+                    app.acl.whatResources(roles, function(err, resources) {
+                        cb(err, {roles: roles, resources: resources});
+                    });
+                });
+            }
+        };
+
+        if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
+            a.profile = function(cb) {
+                new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
+                    cb(err, doc);
+                });
+            }
+        }
+
+        async.parallel(a, function(err, results) {
+            resp.userId    = userId;
+            resp.roles     = results.resources.roles || {};
+            resp.resources = results.resources.resources || {};
+            resp.profile   = false;
+
+            if(results.profile)
+                resp.profile = results.profile;
+
+            _resp.OK(resp, res);
+
+            a = null;
+        });
+    });
+
+    /**
+     * ----------------------------------------------------------------
      * Forgot Password
      * ----------------------------------------------------------------
      */
