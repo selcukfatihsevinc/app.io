@@ -28,7 +28,7 @@ module.exports = function(app) {
         iex : {type: Date, typeStr: 'Date', required: true, alias: 'invite_expires'},
         dt  : {type: String, typeStr: 'String', required: true, alias: 'detail'},
         es  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'email_sent'},
-        st  : {type: String, typeStr: 'String', default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'status'}
+        st  : {type: String, typeStr: 'String', default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'status', index: true}
     };
 
     Schema.ap.settings  = {initial: false};
