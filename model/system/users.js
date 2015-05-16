@@ -33,7 +33,8 @@ module.exports = function(app) {
         tws : {type: String, typeStr: 'String', alias: 'twitter_token_secret'},
         apn : {type: String, typeStr: 'String', alias: 'push_apn'}, // ios push notification apn
         ii  : {type: String, typeStr: 'String', default: 'N', enum: ['Y', 'N'], alias: 'is_invited'},
-        inv : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'}
+        inv : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
+        ll  : {type: Date, typeStr: 'Date', alias: 'last_login'}
     };
 
     Schema.ap.settings = {initial: false};
@@ -82,6 +83,7 @@ module.exports = function(app) {
     };
 
     Schema.inv.settings = {initial: false};
+    Schema.ll.settings  = {initial: false};
 
     var inspector  = new Inspector(Schema).init();
     var UserSchema = app.core.mongo.db.Schema(Schema);

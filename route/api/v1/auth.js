@@ -83,6 +83,11 @@ module.exports = function(app) {
 
                 _resp.OK(token, res);
 
+                // update last login
+                new _schema('system.users').init(req, res, next).put(userId, {last_login: Date.now()}, function(err, affected) {
+
+                });
+
                 a = null;
             });
         }
