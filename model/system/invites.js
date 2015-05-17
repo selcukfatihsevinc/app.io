@@ -20,14 +20,14 @@ module.exports = function(app) {
 
     var Schema = {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
-        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email'},
+        ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter', index: true},
+        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email', index: true},
         na  : {type: String, typeStr: 'String', alias: 'name'},
         ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
-        it  : {type: String, typeStr: 'String', required: true, alias: 'invite_token'},
+        it  : {type: String, typeStr: 'String', required: true, alias: 'invite_token', index: true},
         iex : {type: Date, typeStr: 'Date', required: true, alias: 'invite_expires'},
         dt  : {type: String, typeStr: 'String', required: true, alias: 'detail'},
-        es  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'email_sent'},
+        es  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'email_sent', index: true},
         st  : {type: String, typeStr: 'String', default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'status', index: true}
     };
 
