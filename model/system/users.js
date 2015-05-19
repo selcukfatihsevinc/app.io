@@ -32,9 +32,9 @@ module.exports = function(app) {
         twt : {type: String, typeStr: 'String', alias: 'twitter_token'},
         tws : {type: String, typeStr: 'String', alias: 'twitter_token_secret'},
         apn : {type: String, typeStr: 'String', alias: 'push_apn'}, // ios push notification apn
-        ii  : {type: String, typeStr: 'String', default: 'N', enum: ['Y', 'N'], alias: 'is_invited'},
+        ii  : {type: String, typeStr: 'String', default: 'N', enum: ['Y', 'N'], alias: 'is_invited', index: true},
         inv : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
-        ll  : {type: Date, typeStr: 'Date', alias: 'last_login'}
+        ll  : {type: Date, typeStr: 'Date', alias: 'last_login', index: true}
     };
 
     Schema.ap.settings = {initial: false};
