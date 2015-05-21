@@ -451,4 +451,52 @@ module.exports = function(app) {
         });
     });
 
+    /**
+     * ----------------------------------------------------------------
+     * Change Password
+     * ----------------------------------------------------------------
+     */
+
+    app.post('/api/change_password', _mdl.authtoken, _mdl.auth, _mdl.user.data, function(req, res, next) {
+        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
+
+        var data = {
+            old_password        : req.body.old_password,
+            new_password        : req.body.new_password,
+            new_password_repeat : req.body.new_password_repeat
+        }
+
+        /**
+         * @TODO
+         * kuralları config'e çek
+         */
+
+        var rules = {
+            old_password        : 'required',
+            new_password        : 'required|min:4|max:32',
+            new_password_repeat : 'required|min:4|max:32|same:new_password',
+        };
+
+        var validation = new Validator(data, rules);
+
+        if(validation.fails()) {
+            return next( _resp.UnprocessableEntity({
+                type: 'ValidationError',
+                errors: validation.errors.all()
+            }));
+        }
+
+        if( req.userData.hash !== _hash(req.body.old_password, req.userData.salt) ) {
+            return next( _resp.Unauthorized({
+                type: 'InvalidCredentials',
+                errors: ['old_password is wrong']}
+            ));
+        }
+
+        // update password
+        new _schema('system.users').init(req, res, next).put(req.userData._id, {password: req.body.new_password}, function(err, affected) {
+            _resp.OK({affected: affected}, res);
+        });
+    });
+
 };
