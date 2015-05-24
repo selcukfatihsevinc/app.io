@@ -100,7 +100,7 @@ module.exports = function(app) {
     UserSchema.inspector = inspector;
 
     // compound index
-    UserSchema.index({ap: 1, em: 1}, {unique: true, sparse: true});
+    UserSchema.index({em: 1}, {unique: true, sparse: true});
     UserSchema.index({unm: 1}, {unique: true, sparse: true});
 
     // model options
