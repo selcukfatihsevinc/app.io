@@ -50,6 +50,13 @@ module.exports = function(app) {
     app.post('/api/login', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
         res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
+        if( ! req.body.password ) {
+            return next( _resp.Unauthorized({
+                type: 'InvalidCredentials',
+                errors: ['password not found']}
+            ));
+        }
+
         if( req.userData.hash === _hash(req.body.password, req.userData.salt) ) {
             var userId = req.userData._id.toString();
             var token  = _genToken({_id: userId}, _conf.token.secret, _conf.token.expires);

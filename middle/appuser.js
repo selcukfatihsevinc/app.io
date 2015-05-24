@@ -1,4 +1,7 @@
 var async = require('async');
+var php   = require('phpjs');
+var _     = require('underscore');
+var s     = require('underscore.string');
 
 function AppUser(req, res, next) {
 
@@ -13,10 +16,13 @@ function AppUser(req, res, next) {
             errors: ['app id not found']}
         ));
     }
-    else if( ! req.body.email ) {
+
+    var login_field = req.body.email || req.body.username;
+
+    if( ! login_field ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
-            errors: ['email not found']}
+            errors: ['user credentials not found']}
         ));
     }
 
@@ -29,9 +35,13 @@ function AppUser(req, res, next) {
         user: function(cb) {
             var obj = {
                 apps: req.appId,
-                email: req.body.email,
                 qt: 'one'
             };
+
+            if(req.body.email)
+                obj.email = req.body.email;
+            else if(req.body.username)
+                obj.username = req.body.username;
 
             new _schema('system.users').init(req, res, next).get(obj, function(err, doc) {
                 cb(err, doc);

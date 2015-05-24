@@ -17,7 +17,8 @@ module.exports = function(app) {
     var Schema = {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
         na  : {type: String, typeStr: 'String', required: true, alias: 'name'},
-        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email'},
+        em  : {type: String, typeStr: 'String', alias: 'email', pattern: 'email'},
+        unm : {type: String, typeStr: 'String', alias: 'username'},
         pa  : {type: String, typeStr: 'String', optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
         sa  : {type: String, typeStr: 'String', alias: 'salt'},
         ha  : {type: String, typeStr: 'String', alias: 'hash'},
@@ -37,12 +38,13 @@ module.exports = function(app) {
         ll  : {type: Date, typeStr: 'Date', alias: 'last_login', index: true}
     };
 
-    Schema.ap.settings = {initial: false};
-    Schema.na.settings = {label: 'Name'};
-    Schema.em.settings = {label: 'Email'};
-    Schema.pa.settings = {label: 'Password'};
-    Schema.sa.settings = {initial: false};
-    Schema.ha.settings = {initial: false};
+    Schema.ap.settings  = {initial: false};
+    Schema.na.settings  = {label: 'Name'};
+    Schema.em.settings  = {label: 'Email'};
+    Schema.unm.settings = {label: 'Username'};
+    Schema.pa.settings  = {label: 'Password'};
+    Schema.sa.settings  = {initial: false};
+    Schema.ha.settings  = {initial: false};
 
     Schema.ie.settings = {
         label: 'Is Enabled ?',
@@ -88,6 +90,9 @@ module.exports = function(app) {
     var inspector  = new Inspector(Schema).init();
     var UserSchema = app.core.mongo.db.Schema(Schema);
 
+    // some keys
+    inspector.Save.someKeys = ['em', 'unm'];
+
     // plugins
     UserSchema.plugin(query);
 
@@ -95,7 +100,8 @@ module.exports = function(app) {
     UserSchema.inspector = inspector;
 
     // compound index
-    UserSchema.index({ap: 1, em: 1}, {unique: true});
+    UserSchema.index({ap: 1, em: 1}, {unique: true, sparse: true});
+    UserSchema.index({unm: 1}, {unique: true, sparse: true});
 
     // model options
     UserSchema.inspector.Options = {
