@@ -14,7 +14,9 @@ module.exports = function(app) {
         _auth = _c.user+':'+_c.pass+'@';
 
     var str = 'mongodb://'+_auth+_c.host+':'+_c.port+'/'+_c.db;
-    var db  = mongoose.connect(str);
+    var db  = mongoose.connect(str, {
+        server: {poolSize: 10}
+    });
 
     // _log.info('mongo config', _c);
     // _log.info('mongo str', str);

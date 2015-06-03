@@ -9,6 +9,11 @@ module.exports = function(app) {
     var _schema = app.lib.schema;
     var _jobs   = app.boot.kue;
 
+    if( ! app.boot.kue ) {
+        _log.error('kue not found (build-index)');
+        return false;
+    }
+
     app.boot.kue.process('set-index-job', 5, function(job, done) {
 
         /**

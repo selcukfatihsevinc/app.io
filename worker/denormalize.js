@@ -10,6 +10,12 @@ module.exports = function(app) {
     var _jobs     = app.boot.kue;
     var _mongoose = app.core.mongo.mongoose;
 
+    if( ! app.boot.kue ) {
+        _log.error('kue not found (denormalize)');
+        return false;
+    }
+
+
     app.boot.kue.process('denormalize-document', 1, function(job, done) {
 
         var params = job.data.params;
