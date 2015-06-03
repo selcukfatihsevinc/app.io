@@ -15,7 +15,7 @@ module.exports = function(app) {
 
     var str = 'mongodb://'+_auth+_c.host+':'+_c.port+'/'+_c.db;
     var db  = mongoose.connect(str, {
-        server: {poolSize: 10}
+        server: {poolSize: parseInt(_c.pool) || 10}
     });
 
     // _log.info('mongo config', _c);
