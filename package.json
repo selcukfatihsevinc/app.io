@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -19,7 +19,7 @@
     "serve-favicon": "2.2.0",
     "extend-error": "0.0.2",
     "async": "0.9.0",
-    "request": "2.47.0",
+    "request": "2.57.0",
     "request-replay": "0.3.0",
     "collective": "0.3.1",
     "mongoose": "3.8.18",
