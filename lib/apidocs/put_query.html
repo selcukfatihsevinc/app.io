@@ -1,0 +1,26 @@
+# API PUT Request Query Syntax
+
+### Increment
+**`{key: {__op: 'Increment', amount: 123}}`**  
+increment a number field
+
+### Add
+**`{key: {__op: 'Add', objects: [1,2,3]}}`**  
+add objects to array field
+
+### AddUnique
+**`{key: {__op: 'AddUnique', objects: [1,2,3]}}`**  
+add objects if not existed
+
+### RemoveAll
+**`{key: {__op: 'RemoveAll', objects: [1,2,3]}}`**  
+remove objects from array field
+
+### Delete
+**`{key: {__op: 'Delete'}}`**  
+delete a field
+
+### Set
+**`{key: 123}`**  
+replaces the value of a field to the specified value
+

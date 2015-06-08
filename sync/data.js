@@ -1,5 +1,6 @@
 var dot   = require('dotty');
 var async = require('async');
+var fs    = require('fs');
 var _     = require('underscore');
 
 module.exports = function(app) {
@@ -322,6 +323,15 @@ module.exports = function(app) {
                         });
 
                     });
+                };
+
+            }
+
+            // sync model documentation
+            if(dot.get(_c, 'sync.data.docs')) {
+
+                series['docs'] = function(cb) {
+                    new app.lib.apidocs.index(app, cb);
                 };
 
             }

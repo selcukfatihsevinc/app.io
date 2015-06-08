@@ -1,0 +1,33 @@
+# API Endpoints [Base]
+
+### /api/login [POST]
+> **`headers`** X-Client-Id, X-Client-Secret  
+**`params`** email, password
+
+### /api/token [GET]
+> **`headers`** X-Client-Id, X-Client-Secret, X-Access-Token  
+
+### /api/forgot [POST]
+> **`headers`** X-Client-Id, X-Client-Secret  
+**`params`** email
+
+### /api/reset/:token [GET]
+
+### /api/reset/:token [POST]
+> **`headers`** X-Client-Id, X-Client-Secret  
+**`params`** password
+
+### /api/invite [POST]
+> **`headers`** X-Client-Id, X-Client-Secret, X-Access-Token  
+**`params`** email
+
+### /api/invite/:token [GET]
+
+### /api/invite/:token [POST]
+> **`headers`** X-Client-Id, X-Client-Secret  
+**`params`** name, email, password
+
+### /api/change_password [POST]
+> **`headers`** X-Access-Token  
+**`params`** old_password, new_password, new_password_repeat
+
