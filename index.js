@@ -101,10 +101,6 @@ AppIo.prototype.listen = function () {
         if(err)
             throw err;
 
-        // start agenda
-        if(self.opts.agenda && self.app.boot.agenda)
-            self.app.boot.agenda.start();
-
         // socket route
         if(self.opts.socket) {
             var router = new self.app.lib.router();
