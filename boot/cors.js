@@ -1,8 +1,15 @@
+var cors = require('cors');
+
 module.exports = function(app) {
 
     var _log = app.system.logger;
 
     try {
+
+        app.use(cors());
+        app.options('*', cors());
+
+        /*
         app.all('/*', function(req, res, next) {
             // CORS headers
             res.header('Access-Control-Allow-Origin', '*'); // restrict it to the required domain
@@ -13,6 +20,8 @@ module.exports = function(app) {
 
             next();
         });
+        */
+
     }
     catch(e) {
         _log.error(e.stack);
