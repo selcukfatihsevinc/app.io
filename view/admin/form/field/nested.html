@@ -37,7 +37,7 @@ $(document).ready(function() {
             dataType: 'json',
             quietMillis: 100,
             data: function (term, page) {
-                return { t: 'tree' };
+                return { qt: 'tree' };
             },
             results: function (data, page) {
                 return { results: select2nested(data, '{{ field.settings.display }}') };
