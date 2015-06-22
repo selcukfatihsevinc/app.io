@@ -30,6 +30,8 @@ if(typeof select2nested !== 'function') {
 $(document).ready(function() {
 
     $('.f-{{ key }}').select2({
+        allowClear: true,
+        placeholder: 'Select',
         multiple: {% if field.type == 'array' %}true{% else %}false{% endif %},
         minimumInputLength: 0,
         ajax: {

@@ -47,6 +47,12 @@
                                         <i class="fa fa-filter"></i> filter
                                     </a>
 
+                                    {% if opts.nested %}
+                                    <a href="javascript:void(0);" onclick="nestedView();" class="btn btn-outline btn-primary">
+                                        <i class="fa fa-bars"></i> nested
+                                    </a>
+                                    {% endif %}
+
                                     {% if opts.actions || opts.nodelete == false %}
                                     <div class="btn-group">
                                         <button class="btn btn-primary btn-outline dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -139,6 +145,10 @@
                                     </thead>
                                 </table>
 
+                                {% if opts.nested %}
+                                    <div id="nestedtree" class="t-{{ object }}-nested hide"></div>
+                                {% endif %}
+
                             </div>
                         </div>
 
@@ -172,7 +182,7 @@
                 "hideEasing": "linear",
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
-            }
+            };
 
             object  = '{{ object }}';
             object  = object.replace(/\./g,'\\.');
@@ -191,6 +201,10 @@
             $table.on('load-success.bs.table', function (e, data) {
                 $('.fixed-table-pagination').find('button').addClass('btn-outline');
             });
+
+            {% if opts.nested %}
+                loadNested();
+            {% endif %}
         });
 
         function getIds() {
@@ -412,6 +426,81 @@
                 sFilter.html(resp);
                 $('#filter-title').html(title);
                 runFilter();
+            });
+        }
+
+        function nestedView() {
+            var $table  = $('.fixed-table-container');
+            var $nested = $('.t-'+object+'-nested');
+
+            var view = $table.css('display');
+            if(view == 'none')  {
+                $table.removeClass('hide');
+                $nested.addClass('hide');
+            }
+            else {
+                $table.addClass('hide');
+                $nested.removeClass('hide');
+            }
+        }
+
+        function loadNested() {
+            $('#nestedtree').jstree({
+                core: {
+                    themes: {stripes: true},
+                    data: {
+                        url: function (node) {
+                            return node.id === '#' ?
+                                '/admin/o/{{ object }}/nested' :
+                                '/admin/o/{{ object }}/nested?parentId='+node.id;
+                        },
+                        data : function (node) {
+                            return {id : node._id};
+                        }
+                    },
+                    check_callback : function (op, node, par, pos, more) {
+                        return true;
+                    }
+                },
+                plugins : ['dnd']
+            })
+            .on('move_node.jstree', function (e, data) {
+                if(data.parent == '#')
+                    return;
+
+                var id = data.node.id;
+                var dt = {};
+
+                if((data.parent != data.old_parent) || (data.position != data.old_position)) {
+                    if(data.parent != data.old_parent) {
+                        if(data.parent == 'root')
+                            dt.parentId = 'root';
+                        else
+                            dt.parentId = data.parent;
+                    }
+
+                    var count    = 0;
+                    var children = data.instance.get_node(data.parent).children;
+
+                    children.forEach(function(v, i) {
+                        var put = {order: i+1};
+                        if(v == id && dt.parentId)
+                            put.parentId = dt.parentId;
+
+                        $.ajax({
+                            type: 'PUT',
+                            url: '/admin/o/{{ object }}/nested/'+v,
+                            data: put
+                        })
+                        .done(function(resp) {
+                            count++;
+                            if(count == children.length)
+                                $table.bootstrapTable('refresh');
+                        });
+                    });
+
+
+                }
             });
         }
 

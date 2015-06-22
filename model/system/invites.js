@@ -8,7 +8,7 @@ var _      = require('underscore');
 module.exports = function(app) {
 
     var _env      = app.get('env');
-    var _log      = app.system.logger;
+    var _log      = app.lib.logger;
     var _conf     = app.config[_env];
     var _mailer   = app.lib.mailer;
     var mongoose  = app.core.mongo.mongoose;
@@ -17,6 +17,7 @@ module.exports = function(app) {
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
     var emitter   = app.lib.schemaEmitter;
+    var _group    = 'MODEL:system.invites';
 
     var Schema = {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
@@ -160,7 +161,7 @@ module.exports = function(app) {
     mongoose.connection.on('open', function() {
         if(app.acl && workerId == 0) {
             app.acl.allow('superadmin', 'system_invites', '*');
-            _log.info('[acl:allow] superadmin:system_invites:*');
+            _log.info(_group+':ACL:ALLOW', 'superadmin:system_invites:*');
         }
     });
 

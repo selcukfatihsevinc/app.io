@@ -5,10 +5,11 @@ var _     = require('underscore');
 
 module.exports = function(app) {
 
-    var _log     = app.system.logger;
+    var _log     = app.lib.logger;
     var _env     = app.get('env');
     var _schema  = app.lib.schema;
     var _c       = app.config[_env];
+    var _group   = 'SYNC:DATA';
 
     if(parseInt(process.env.worker_id) != 0)
         return false;
@@ -48,7 +49,7 @@ module.exports = function(app) {
     function guestRole(role, currApp) {
         if(role.slug == 'guest') {
             app.acl.addUserRoles('guest', currApp.slug+'_guest');
-            _log.info('[acl:addUserRoles] guest user acl created for '+currApp.name);
+            _log.info(_group+':GUEST:ACL:ADDUSERROLES', 'guest user acl created for '+currApp.name);
         }
     }
 
@@ -130,14 +131,14 @@ module.exports = function(app) {
             _.each(models, function(value, key) {
                 // inspector eklenmemiş veya appName'i olmayan modelleri resource kabul etmiyoruz
                 if( ! value.schema.inspector || ! value.appName ) {
-                    console.log('inspector or app name not found: ', key);
+                    _log.info(_group, 'inspector or app name not found, '+key);
                     return;
                 }
 
                 var currApp = apps['app_'+value.appName];
 
                 if( ! currApp ) {
-                    console.log('curr app not found: ', key);
+                    _log.info(_group, 'curr app not found, '+key);
                     return;
                 }
 
@@ -269,7 +270,7 @@ module.exports = function(app) {
                                                 //    _log.info(err);
 
                                                 if( ! err && affected )
-                                                    _log.info('action updated');
+                                                    _log.info(_group+':ACTION:UPDATED', currAction._id.toString());
 
                                                 mAction = null;
                                             });
@@ -290,7 +291,7 @@ module.exports = function(app) {
                                             //    _log.info(err);
 
                                             if( ! err && action )
-                                                _log.info('action created');
+                                                _log.info(_group+':ACTION:CREATED', action._id.toString());
 
                                             mAction = null;
                                         });
@@ -317,9 +318,9 @@ module.exports = function(app) {
                             new app.lib.user(app).addRole(user);
 
                         }).on('error', function (err) {
-                            _log.info(err.stack);
+                            _log.error(_group, err);
                         }).on('end', function () {
-                            _log.info('user roles sync stream end');
+                            _log.info(_group, 'user roles sync stream end');
                         });
 
                     });
@@ -338,7 +339,7 @@ module.exports = function(app) {
 
             // exec series
             async.series(series, function(err, results) {
-                _log.info('sync data executed');
+                _log.info(_group, 'sync data executed!');
             });
 
         });

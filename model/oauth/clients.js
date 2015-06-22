@@ -2,12 +2,13 @@ var crypto = require('crypto');
 
 module.exports = function(app) {
 
-    var _log      = app.system.logger;
+    var _log      = app.lib.logger;
     var mongoose  = app.core.mongo.mongoose;
     var ObjectId  = mongoose.Schema.Types.ObjectId;
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
+    var _group    = 'MODEL:oauth.clients';
 
     var random = function(len) {
         return crypto.randomBytes(Math.ceil(len/2))
@@ -96,7 +97,7 @@ module.exports = function(app) {
     mongoose.connection.on('open', function() {
         if(app.acl && workerId == 0) {
             app.acl.allow('superadmin', 'oauth_clients', '*');
-            _log.info('[acl:allow] superadmin:oauth_clients:*');
+            _log.info(_group+':ACL:ALLOW', 'superadmin:oauth_clients:*');
         }
     });
 

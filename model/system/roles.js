@@ -1,12 +1,13 @@
 module.exports = function(app) {
 
-    var _log      = app.system.logger;
+    var _log      = app.lib.logger;
     var mongoose  = app.core.mongo.mongoose;
     var ObjectId  = mongoose.Schema.Types.ObjectId;
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
     var emitter   = app.lib.schemaEmitter;
+    var _group    = 'MODEL:system.roles';
 
     var Schema = {
         ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
@@ -60,7 +61,7 @@ module.exports = function(app) {
     mongoose.connection.on('open', function() {
         if(app.acl && workerId == 0) {
             app.acl.allow('superadmin', 'system_roles', '*');
-            _log.info('[acl:allow] superadmin:system_roles:*');
+            _log.info(_group+':ACL:ALLOW', 'superadmin:system_roles:*');
         }
     });
 

@@ -6,7 +6,7 @@ var _     = require('underscore');
 module.exports = function(app) {
 
     var _env      = app.get('env');
-    var _log      = app.system.logger;
+    var _log      = app.lib.logger;
     var mongoose  = app.core.mongo.mongoose;
     var ObjectId  = mongoose.Schema.Types.ObjectId;
     var Inspector = app.lib.inspector;
@@ -14,6 +14,7 @@ module.exports = function(app) {
     var workerId  = parseInt(process.env.worker_id);
     var emitter   = app.lib.schemaEmitter;
     var syncConf  = app.config[_env].sync;
+    var _group    = 'MODEL:system.actions';
 
     var Schema = {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
@@ -310,7 +311,7 @@ module.exports = function(app) {
     mongoose.connection.on('open', function() {
         if(app.acl && workerId == 0) {
             app.acl.allow('superadmin', 'system_actions', '*');
-            _log.info('[acl:allow] superadmin:system_actions:*');
+            _log.info(_group+':ACL:ALLOW', 'superadmin:system_actions:*');
         }
     });
 

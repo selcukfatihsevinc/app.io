@@ -1,0 +1,17 @@
+{% if children %}
+    {% if parentId == '{null}' %}
+    <ul>
+        <li id="root" class="jstree-open">{{ opts.plural|title }}
+    {% endif %}
+
+            <ul>
+                {% for c in children %}
+                    <li id="{{ c._id.toString() }}" class="jstree-closed">{{ c.name_tr }} - {{ c.name_en }}</li>
+                {% endfor %}
+            </ul>
+
+    {% if parentId == '{null}' %}
+        </li>
+    </ul>
+    {% endif %}
+{% endif %}

@@ -208,6 +208,73 @@ module.exports = function(app) {
         }
     });
 
+    // get nested view
+    app.get('/admin/o/:object/nested', function(req, res, next) {
+        var o        = req.params.object;
+        var insp     = _inspector(req);
+
+        if( ! insp )
+            return res.redirect('/admin');
+
+        try {
+            var parentId = req.query.parentId || '{null}';
+            var obj      = {
+                parentId: parentId,
+                sort: 'order'
+            }
+
+            // istenecek field'lar (relation, nested vs. field'larda bütün data'yı çekmesin )
+            if(insp.Options.columns)
+                obj.f = insp.Options.columns.join(',');
+
+            // get children
+            new _schema(o).init(req, res, next).get(obj, function(err, children) {
+                res.render('admin/object/partial/list/nested', {
+                    children : children,
+                    opts     : insp.Options,
+                    parentId : parentId
+                });
+            });
+        }
+        catch(e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
+    // update nested data
+    app.put('/admin/o/:object/nested/:id', function(req, res, next) {
+        var o        = req.params.object;
+        var insp     = _inspector(req);
+
+        if( ! insp )
+            return res.redirect('/admin');
+
+        try {
+            var obj = {};
+            if(req.body.order)
+                obj.order = req.body.order;
+
+            if(req.body.parentId) {
+                if(req.body.parentId == 'root')
+                    obj.parentId = '';
+                else
+                    obj.parentId = req.body.parentId;
+            }
+
+            new _schema(o).init(req, res, next).put(req.params.id, obj, function(err, children) {
+                if(err)
+                    console.log(err);
+
+                res.json({});
+            });
+        }
+        catch(e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+
     app.get('/admin/o/:object/save', function(req, res, next) {
         res.redirect('/admin/o/'+req.params.object+'/new');
     });
@@ -470,6 +537,10 @@ module.exports = function(app) {
             // system.actions için sistem objelerine erişim izni olabilir
             if(req.query.apps && o == 'system.objects')
                 delete req.query.apps;
+
+            // istenecek field'lar (relation, nested vs. field'larda bütün data'yı çekmesin )
+            if(insp.Options.columns)
+                req.query.f = insp.Options.columns.join(',');
 
             new _schema(o).init(req, res, next).get(req.query, function(err, doc) {
                 res.json(doc || {});

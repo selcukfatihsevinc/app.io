@@ -44,7 +44,10 @@
 <script>
 $(document).ready(function() {
     if ($.fn.select2) {
-        $('.f-{{ key }}').select2();
+        $('.f-{{ key }}').select2({
+            allowClear: true,
+            placeholder: 'Select'
+        });
     }
 
     {% if opts.filter %}

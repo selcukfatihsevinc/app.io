@@ -2,10 +2,11 @@ var mongoose = require('mongoose');
 
 module.exports = function(app) {
 
-    var _env  = app.get('env');
-    var _log  = app.system.logger;
-    var _c    = app.config[_env].mongo;
-    var _auth = '';
+    var _env   = app.get('env');
+    var _log   = app.lib.logger;
+    var _group = 'CORE:MONGO';
+    var _c     = app.config[_env].mongo;
+    var _auth  = '';
 
     if( ! _c )
         return false;
@@ -18,15 +19,15 @@ module.exports = function(app) {
         server: {poolSize: parseInt(_c.pool) || 10}
     });
 
-    // _log.info('mongo config', _c);
-    // _log.info('mongo str', str);
+    _log.info(_group+':CONFIG', _c);
+    _log.info(_group+':STRING', str);
 
     mongoose.connection.on('error', function(err) {
         _log.error(err);
     });
 
     mongoose.connection.on('open', function() {
-        _log.info('mongodb client connected');
+        _log.info(_group, 'client connected');
     });
 
     return {db: db, str: str, mongoose: mongoose};

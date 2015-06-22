@@ -2,11 +2,12 @@ var redis = require('redis');
 
 module.exports = function(app) {
 
-    var _env = app.get('env');
-    var _log = app.system.logger;
-    var _c   = app.config[_env].redis;
+    var _env   = app.get('env');
+    var _c     = app.config[_env].redis;
+    var _log   = app.lib.logger;
+    var _group = 'CORE:REDIS';
 
-    // _log.info('redis config', _c);
+    _log.info(_group, _c);
 
     if( ! _c )
         return false;
@@ -20,11 +21,11 @@ module.exports = function(app) {
     }
 
     clientA.on('connect', function () {
-        _log.info('redis client A connected');
+        _log.info(_group, 'client A connected');
     });
 
     clientB.on('connect', function () {
-        _log.info('redis client B connected');
+        _log.info(_group, 'client B connected');
     });
 
     return {a: clientA, b: clientB};
