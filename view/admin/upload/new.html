@@ -1,18 +1,39 @@
 {% extends '../layout.html' %}
 
-{% block title %}File Upload{% endblock %}
+{% block title %}New Upload{% endblock %}
 
 {% block head %}
     {% parent %}
     <!-- use custom css, js here, if you want -->
+    <script type="text/javascript" src="/admin/insp/js/plugins/pace/pace.min.js"></script>
 {% endblock %}
 
 {% block content %}
-    {% include "../navbar.html" %}
+    <div id="wrapper">
+        {% include "../layout/navbar.html" %}
 
-    <div class="container">
-        {% include "partial/form/header.html" %}
-        {% include "partial/form/input.html" %}
+        <div class="gray-bg" id="page-wrapper">
+            {% include "../layout/topbar.html" %}
+            {% include "partial/form/breadcrumb.html" %}
+
+            <div class="wrapper wrapper-content">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>New File</h5>
+                            </div>
+                            <div class="ibox-content">
+                                {% include "partial/form/input.html" %}
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
 

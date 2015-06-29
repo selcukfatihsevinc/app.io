@@ -41,6 +41,8 @@
                                 <h5>Records <span id="records"></span></h5>
                             </div>
                             <div class="ibox-content">
+                                {# upload dropzone #}
+                                {% autoescape false %}{{ upload }}{% endautoescape %}
 
                                 <div id="custom-toolbar">
                                     <a href="javascript:void(0);" onclick="toggleFilter();" class="btn btn-outline btn-primary">
@@ -280,6 +282,9 @@
             if( ! value )
                 return '-';
 
+            // set cdn
+            value = '/i/h320-w320'+value;
+
             return '<img style="max-width: 320px; max-height: 320px;" src="'+value+'" /></div>';
         }
 
@@ -294,15 +299,12 @@
             if( ! value )
                 return '-';
 
-            var elem =
-                '<div style="width: 320px; height: 320px;">' +
-                    '<video onclick="this.paused ? this.play() : this.pause();">' +
-                        '<source src="'+value+'" type="video/mp4" />' +
-                        'Your browser does not support the video tag.' +
-                    '</video>' +
-                '</div>';
-
-            return elem;
+            return '<div style="width: 320px; height: 320px;">' +
+                       '<video onclick="this.paused ? this.play() : this.pause();">' +
+                            '<source src="'+value+'" type="video/mp4" />' +
+                            'Your browser does not support the video tag.' +
+                       '</video>' +
+                   '</div>';
         }
 
         function dateFormatter(value, row) {

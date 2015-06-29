@@ -1,0 +1,12 @@
+#files .file .btn {
+    margin: 3px 0 3px 0;
+}
+
+#files .file .file-name {
+    text-align: center;
+}
+
+#files .file .text-danger {
+    text-align: center;
+}
+

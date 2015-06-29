@@ -11,22 +11,26 @@ function uploadAll() {
 }
 </script>
 
-<div class="form-group">
-    <span class="btn btn-default fileinput-button">
+<div class="upload-form form-group">
+    <span class="btn btn-primary fileinput-button">
         <i class="glyphicon glyphicon-plus"></i>
         <span>Add files</span>
         <input name="files[]" id="f-file" type="file" multiple />
     </span>
 
-    <button class="btn btn-default" id="f-upload-all" onclick="uploadAll();">
+    <button class="btn btn-primary" id="f-upload-all" onclick="uploadAll();">
         <i class="glyphicon glyphicon-plus"></i>
         <span>Upload all</span>
     </button>
     <br>
     <br>
 
+    <form id="formtest">
+        <input id="test" type="text" name="test" />
+    </form>
+
     <div id="progress" class="progress">
-        <div class="progress-bar progress-bar-info progress-bar-striped"></div>
+        <div class="progress-bar progress-bar-default"></div>
     </div>
 
     <div id="files" class="files"></div>
@@ -36,7 +40,7 @@ function uploadAll() {
 $(document).ready(function() {
 
     var uploadButton = $('<button/>')
-        .addClass('btn btn-default')
+        .addClass('btn btn-primary btn-xs')
         .prop('disabled', true)
         .text('Processing...')
         .on('click', function () {
@@ -60,21 +64,22 @@ $(document).ready(function() {
         dataType: 'json',
         autoUpload: false,
         acceptFileTypes: /(\.|\/)(gif|jpe?g|png|mp4|mp3)$/i, // config'e çek
-        maxFileSize: 5000000000, // 5 MB config'e çek
+        maxFileSize: 16000000000, // 16 MB config'e çek
         disableImageResize: /Android(?!.*Chrome)|Opera/
                 .test(window.navigator.userAgent),
-        previewMaxWidth: 208,
-        previewMaxHeight: 117,
+        previewMaxWidth: 198,
+        previewMaxHeight: 133,
         previewCrop: true
     })
     .on('fileuploadadd', function (e, data) {
-        data.context = $('<div/>').appendTo('#files');
+        data.context = $('<div class="file-box"/>').appendTo('#files');
 
         $.each(data.files, function (index, file) {
-            var node = $('<p/>').append($('<span/>').text(file.name));
+            var node = $('<div class="file"/>').append($('<span class="corner"/>'));
+            node.append($('<div class="file-name"/>').text(file.name));
 
             if ( ! index )
-                node.append('<br>').append(uploadButton.clone(true).data(data));
+                node.append($('<div align="center"/>').append(uploadButton.clone(true).data(data)));
 
             node.appendTo(data.context);
         });
@@ -87,11 +92,14 @@ $(document).ready(function() {
         if (file.preview)
             node.prepend('<br>').prepend(file.preview);
 
-        if (file.error)
-            node.append('<br>').append($('<span class="text-danger"/>').text(file.error));
+        if (file.error) {
+            var error = $('<div align="center"/>').append($('<span class="text-danger"/>').text(file.error));
+            node.append(error);
+        }
 
         if (index + 1 === data.files.length)
             data.context.find('button').text('Upload').prop('disabled', !!data.files.error);
+
     })
     .on('fileuploadprogressall', function (e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -104,15 +112,22 @@ $(document).ready(function() {
                 $(data.context.children()[index]).wrap(link);
             }
             else if (file.error) {
-                var error = $('<span class="text-danger"/>').text(file.error);
-                $(data.context.children()[index]).append('<br>').append(error);
+                var error = $('<div align="center"/>').append($('<span class="text-danger"/>').text(file.error));
+                $(data.context.children()[index]).append(error);
             }
         });
+
+        setTimeout(function() {
+            $('.upload-form .progress-bar').css('width', 0);
+        }, 1500);
     }).on('fileuploadfail', function (e, data) {
         $.each(data.files, function (index) {
-            var error = $('<span class="text-danger"/>').text('File upload failed.');
-            $(data.context.children()[index]).append('<br>').append(error);
+            var error = $('<div align="center"/>').append($('<span class="text-danger"/>').text('File upload failed.'));
+            $(data.context.children()[index]).append(error);
         });
+    }).on('fileuploadsubmit', function (e, data) {
+        console.log($('#formtest').serializeArray());
+        // data.formData = $('#formtest').serializeArray();
     })
     .prop('disabled', !$.support.fileInput)
     .parent().addClass($.support.fileInput ? undefined : 'disabled');

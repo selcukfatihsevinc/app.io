@@ -29,7 +29,21 @@ if(typeof select2nested !== 'function') {
 
 $(document).ready(function() {
 
+    $.getJSON('{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}').done(function( data ) {
+        $('.f-{{ key }}').select2({
+            data: select2nested(data, '{{ field.settings.display }}'),
+            allowClear: true,
+            placeholder: 'Select',
+            multiple: {% if field.type == 'array' %}true{% else %}false{% endif %},
+            minimumInputLength: 0
+        });
+    });
+
+    /*
     $('.f-{{ key }}').select2({
+        matcher: function(term, text) {
+            return text.toUpperCase().indexOf(term.toUpperCase())==0;
+        },
         allowClear: true,
         placeholder: 'Select',
         multiple: {% if field.type == 'array' %}true{% else %}false{% endif %},
@@ -69,6 +83,7 @@ $(document).ready(function() {
             }
         }
     });
+    */
 
     {% if opts.filter %}
     Filter['{{ key }}'] = {

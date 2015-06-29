@@ -1,0 +1,56 @@
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <form id="my-awesome-dropzone" class="dropzone" action="#">
+            <button type="submit" class="btn btn-primary btn-xs pull-right">upload</button>
+            <div class="clearfix"></div>
+            <div class="dropzone-previews"></div>
+            <div class="dz-message"><h2>drop files here or click</h2></div>
+        </form>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<style>
+    .dropzone {
+        min-height: 180px;
+    }
+    .dz-message {
+        text-align: center;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+
+        Dropzone.options.myAwesomeDropzone = {
+
+            url: '/admin/upload',
+            autoProcessQueue: false,
+            uploadMultiple: false,
+            parallelUploads: 10,
+            maxFiles: 100,
+
+            // Dropzone settings
+            init: function() {
+                var myDropzone = this;
+
+                this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    myDropzone.processQueue();
+                });
+                this.on("sendingmultiple", function() {
+
+                });
+                this.on("successmultiple", function(files, response) {
+                    $table.bootstrapTable('refresh');
+                });
+                this.on("errormultiple", function(files, response) {
+
+                });
+            }
+
+        }
+
+    });
+</script>

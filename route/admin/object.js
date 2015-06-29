@@ -151,26 +151,44 @@ module.exports = function(app) {
         try {
             var filterForm = dot.get(insp, 'Forms.filter') || false;
 
-            // get filter form
-            new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').render(filterForm, function(err, form) {
-
-                // get filters
-                new _schema('system.filters').init(req, res, next).get({
-                    users: req.session.user._id,
-                    object: o
-                }, function(err, filters) {
-
-                    // render page
-                    res.render('admin/object/list', {
-                        object  : o,
-                        opts    : insp.Options,
-                        props   : insp.Save.properties,
-                        alias   : insp.Alias,
-                        sfilter : form,
-                        filters : filters,
-                        search  : insp.Searchable,
+            var a = {
+                form: function(cb) {
+                    // get filter form
+                    new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').render(filterForm, function(err, form) {
+                        cb(null, form);
                     });
+                },
+                filters: function(cb) {
+                    // get filters
+                    new _schema('system.filters').init(req, res, next).get({
+                        users: req.session.user._id,
+                        object: o
+                    }, function(err, filters) {
+                        cb(null, filters);
+                    });
+                }
+            }
 
+            if(o == 'system.images') {
+                a['upload'] = function(cb) {
+                    // render upload box
+                    app.render('admin/upload/box', {object: o}, function(err, upload) {
+                        cb(null, upload);
+                    });
+                }
+            }
+
+            async.parallel(a, function(err, results) {
+                // render page
+                res.render('admin/object/list', {
+                    object  : o,
+                    opts    : insp.Options,
+                    props   : insp.Save.properties,
+                    alias   : insp.Alias,
+                    sfilter : results.form,
+                    filters : results.filters,
+                    search  : insp.Searchable,
+                    upload  : results.upload
                 });
             });
         }
@@ -591,8 +609,15 @@ module.exports = function(app) {
                 p.s = insp.Options.sort;
 
             if(insp.Options.columns) {
+                var extra;
+                if(insp.Options.extra)
+                    extra = insp.Options.extra.join(',');
+
                 // istenecek field'lar
                 p.f = insp.Options.columns.join(',');
+
+                if(extra)
+                    p.f += ','+extra;
 
                 // istenecek field'lar içinde populate edilecek field'lar var mı kontrol ediyoruz
                 var populate = [];

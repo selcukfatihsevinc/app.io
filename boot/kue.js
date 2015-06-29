@@ -19,7 +19,8 @@ module.exports = function(app) {
         return kue.createQueue({
             prefix: 'q',
             redis: redisObj,
-            disableSearch: true
+            disableSearch: true,
+            jobEvents: false
         });
 
     }

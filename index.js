@@ -13,8 +13,10 @@ function AppIo(options) {
     this._map    = {};
     this._app    = false;
 
-    if (cluster.isMaster)
-        return this.fork();
+    if (cluster.isMaster) {
+        this.fork();
+        return this;
+    }
 
     this._app    = express();
     this._server = http.createServer(this._app);
@@ -71,13 +73,14 @@ AppIo.prototype.run = function () {
     this.external('boot', this._opts.external.boot || []);
     this.load('system/response/app'); // before routes
     this.load('route');
+    this.load('boot/resize'); // image resize middlware routes
     this.external('route', this._opts.external.route || []);
     this.load('system/handler/app'); // after routes
     this.load('sync/data');
     this.listen();
 };
 
-AppIo.prototype.worker = function () {
+AppIo.prototype.workers = function () {
     if (this._master)
         return;
 
@@ -145,7 +148,7 @@ AppIo.prototype.external = function (source, options) {
     if ( this._master || ! this._app.get('basedir') )
         return false;
 
-    load(source, {cwd: this._app.get('basedir')}).into(this._app, options || {});
+    load(source, {cwd: this._app.get('basedir'), verbose: false}).into(this._app, options || {});
 };
 
 AppIo.prototype.load = function (source, options) {
@@ -154,13 +157,13 @@ AppIo.prototype.load = function (source, options) {
 
     if(Object.prototype.toString.call(options) == '[object Array]') {
         for(o in options) {
-            load(source+'/'+options[o], {cwd: __dirname}).into(this._app);
+            load(source+'/'+options[o], {cwd: __dirname, verbose: false}).into(this._app);
         }
 
         return;
     }
 
-    load(source, {cwd: __dirname}).into(this._app, options || {});
+    load(source, {cwd: __dirname, verbose: false}).into(this._app, options || {});
 };
 
 AppIo.prototype.listen = function () {
