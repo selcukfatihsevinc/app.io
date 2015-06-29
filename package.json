@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -83,7 +83,6 @@
     "cors": "2.7.1",
     "bunyan": "1.4.0",
     "aws-sdk": "2.1.35",
-    "image-resizer": "1.1.0",
     "ejs": "2.3.1",
     "geonames-reader": "0.2.3"
   },

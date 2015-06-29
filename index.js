@@ -73,7 +73,7 @@ AppIo.prototype.run = function () {
     this.external('boot', this._opts.external.boot || []);
     this.load('system/response/app'); // before routes
     this.load('route');
-    this.load('boot/resize'); // image resize middlware routes
+    // this.load('boot/resize'); // image resize middlware routes
     this.external('route', this._opts.external.route || []);
     this.load('system/handler/app'); // after routes
     this.load('sync/data');
