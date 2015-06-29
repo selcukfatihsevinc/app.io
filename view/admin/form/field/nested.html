@@ -29,7 +29,7 @@ if(typeof select2nested !== 'function') {
 
 $(document).ready(function() {
 
-    $.getJSON('{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}').done(function( data ) {
+    $.getJSON('{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}?qt=tree').done(function( data ) {
         $('.f-{{ key }}').select2({
             data: select2nested(data, '{{ field.settings.display }}'),
             allowClear: true,

@@ -6,7 +6,7 @@ module.exports = function(app) {
 
     try {
         return true;
-        
+
         var target = ['local', 's3', 'cloudinary'];
         var conf   = app.config[_env].app.config.upload;
 
