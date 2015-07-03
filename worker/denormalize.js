@@ -22,9 +22,11 @@ module.exports = function(app) {
         var Model  = _mongoose.model(params.model);
 
         Model.findOne({_id: params.id}, function(err, doc) {
+            console.log('doc save: '+doc._id);
+
             doc.save(function(err) {
                 if(err)
-                    console.log(err.stack);
+                    console.log(err);
 
                 done();
             });
