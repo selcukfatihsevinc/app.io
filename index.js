@@ -28,6 +28,7 @@ function AppIo(options) {
     this._app.set('env', this._opts.env || env);
     this._app.set('port', this._opts.port || port);
     this._app.set('basedir', this._opts.basedir);
+    this._app.set('isworker', false);
 
     // other options
     this._opts.core     = this._opts.core || ['mongo', 'redis'];
@@ -86,6 +87,8 @@ AppIo.prototype.workers = function () {
 
     // base boot files
     var boot = 'cron|kue';
+
+    this._app.set('isworker', true);
 
     this.external('config/'+this._app.get('env'));
     this.load('system/logger');
