@@ -245,6 +245,9 @@ module.exports = function(app) {
             if(insp.Options.columns)
                 obj.f = insp.Options.columns.join(',');
 
+            // default 10 tane getiriyor, 1000 tane göster
+            obj.l = 1000;
+
             // get children
             new _schema(o).init(req, res, next).get(obj, function(err, children) {
                 res.render('admin/object/partial/list/nested', {

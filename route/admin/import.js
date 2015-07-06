@@ -5,58 +5,61 @@ var _        = require('underscore');
 
 module.exports = function(app) {
 
-    var _env    = app.get('env');
-    var _base   = app.get('basedir');
-    var _log    = app.system.logger;
-    var _form   = app.lib.form;
-    var _schema = app.lib.schema;
-    var _conf   = app.config[_env];
-    var _jobs   = app.boot.kue;
-    var _group  = 'ROUTE:ADMIN:IMPORT';
+    var _env      = app.get('env');
+    var _base     = app.get('basedir');
+    var _log      = app.system.logger;
+    var _form     = app.lib.form;
+    var _schema   = app.lib.schema;
+    var _conf     = app.config[_env];
+    var _jobs     = app.boot.kue;
+    var _mongoose = app.core.mongo.mongoose;
+    var _group    = 'ROUTE:ADMIN:IMPORT';
 
     app.get('/admin/import/countries', function(req, res, next) {
+
         try {
+            var Model = _mongoose.model('System_Locations');
             var conf = _conf.locations;
             var file = _base+'/'+conf.base+'/allCountries.txt';
-            var i    = 1;
+            var i    = 0;
+            var d    = [];
 
             geonames.read(file, function(feature, cb) {
 
-                console.log(i+'. '+feature.name);
                 i++;
+                console.log(i+'. '+feature.name);
 
-                var loc = new _schema('system.locations').init(app).post({
-                    import_id: feature.id,
-                    name: feature.name,
-                    asciiname: feature.asciiname,
-                    sortname: feature.asciiname.toLowerCase(),
-                    location: [feature.longitude, feature.latitude],
-                    feature_code: feature.feature_code,
-                    population: feature.population
-                }, function(err, doc) {
-                    if(err)
-                        _log.error(_group+':IMPORT-COUNTRIES', err);
-
-                    cb();
-                });
-
-                return;
-
-                /*
-                _jobs.create('import-countries', {
-                    params: {
+                try {
+                    d.push({
                         id: feature.id,
-                        name: feature.name,
-                        asciiname: feature.asciiname,
-                        longitude: feature.longitude,
-                        latitude: feature.latitude,
-                        feature_code: feature.feature_code,
-                        population: feature.population
-                    }
-                }).attempts(3).removeOnComplete(true).save();
+                        n: feature.name,
+                        an: feature.asciiname,
+                        sn: feature.asciiname.toLowerCase(),
+                        l: [feature.longitude, feature.latitude],
+                        fcl: feature.feature_class,
+                        fc: feature.feature_code,
+                        cc: feature.country_code,
+                        p: feature.population
+                    });
 
-                cb();
-                */
+                    if(d.length == 100) {
+                        Model.collection.insert(_.clone(d), function(err, docs) {
+                            if(err)
+                                _log.error(_group+':COUNTRIES', err);
+
+                            _log.info(_group+':COUNTRIES:DOCS', docs.length);
+                        });
+
+                        cb();
+                        d = [];
+                    }
+                    else
+                        cb();
+                }
+                catch(e) {
+                    _log.error(e);
+                    cb();
+                }
 
             }, function(err) {
                 console.log('All done!');
@@ -72,25 +75,41 @@ module.exports = function(app) {
 
     app.get('/admin/import/alternate', function(req, res, next) {
         try {
-            var conf = _conf.locations;
-            var file = _base+'/'+conf.base+'/alternateNames.txt';
-
-            /**
-             * @TODO
-             * parametre olarak optional dil al, eğer yoksa config'de belirtilen dilleri import et, varsa sadece o dili import et
-             * import edilecek diller dışındakileri kuyruğa atma
-             */
+            var Model = _mongoose.model('System_Locations');
+            var conf  = _conf.locations;
+            var file  = _base+'/'+conf.base+'/alternateNames.txt';
+            var i     = 0;
 
             geonames.read(file, function(feature, cb) {
-                _jobs.create('import-alternate', {
-                    params: {
-                        geoname_id: feature.geoname_id,
-                        isolanguage: feature.isolanguage,
-                        alternate_name: feature.alternate_name
-                    }
-                }).attempts(3).removeOnComplete(true).save();
+
+                i++;
+                console.log(i+'. '+feature.isolanguage+'::'+feature.alternate_name);
+
+                var iso = feature.isolanguage;
+                var field;
+
+                if(iso == 'eng' || iso == 'en')
+                    field = 'aen';
+                else if(iso == 'tur' || iso == 'tr')
+                    field = 'atr';
+
+                if( ! field ) {
+                    _log.info(_group+':NOTFOUND:FIELD', field);
+                    return cb();
+                }
+
+                var obj = {$set: {}};
+                obj.$set[field] = feature.alternate_name;
+
+                Model.collection.update({id: feature.geoname_id}, obj, function(err, affected) {
+                    if(err)
+                        _log.error(_group+':ALTERNATE', err);
+
+                    _log.info(_group+':ALTERNATE:AFFECTED', affected);
+                });
 
                 cb();
+
             }, function(err) {
                 console.log('All done!');
             });

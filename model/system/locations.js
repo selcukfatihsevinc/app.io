@@ -14,14 +14,16 @@ module.exports = function(app) {
 
     var Schema = {
         parentId : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Locations', alias: 'parentId', index: true},
-        id  : {type: String, typeStr: 'String', required: true, alias: 'import_id', unique: true},
+        id  : {type: Number, typeStr: 'Number', required: true, alias: 'import_id', unique: true},
         n   : {type: String, typeStr: 'String', alias: 'name'},
         an  : {type: String, typeStr: 'String', alias: 'asciiname'},
         sn  : {type: String, typeStr: 'String', alias: 'sortname'},
         aen : {type: String, typeStr: 'String', alias: 'alternate_en'},
         atr : {type: String, typeStr: 'String', alias: 'alternate_tr'},
         l   : [{type: Number, typeStr: 'Number', alias: 'location'}],
+        fcl : {type: String, typeStr: 'String', alias: 'feature_class'},
         fc  : {type: String, typeStr: 'String', alias: 'feature_code'},
+        cc  : {type: String, typeStr: 'String', alias: 'country_code'},
         p   : {type: Number, typeStr: 'Number', default: 0, alias: 'population'}
     };
 
@@ -33,7 +35,9 @@ module.exports = function(app) {
     Schema.aen.settings  = {initial: false};
     Schema.atr.settings  = {initial: false};
     Schema.l[0].settings = {initial: false};
+    Schema.fcl.settings  = {initial: false};
     Schema.fc.settings   = {initial: false};
+    Schema.cc.settings   = {initial: false};
     Schema.p.settings    = {initial: false};
 
     var inspector      = new Inspector(Schema).init();
