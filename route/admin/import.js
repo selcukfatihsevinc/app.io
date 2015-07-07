@@ -126,16 +126,36 @@ module.exports = function(app) {
         try {
             var conf = _conf.locations;
             var file = _base+'/'+conf.base+'/hierarchy.txt';
+            var loc  = _mongoose.model('System_Locations');
+            var i    = 0;
 
             geonames.read(file, function(feature, cb) {
-                _jobs.create('import-hierarchy', {
-                    params: {
-                        parent_id: feature.parent_id,
-                        child_id: feature.child_id
-                    }
-                }).attempts(3).removeOnComplete(true).save();
 
-                cb();
+                i++;
+
+                (function(loc, feature, i, cb) {
+                    loc.findOne({id: feature.child_id}, function(err, child) {
+                        if( err || ! child )
+                            return cb();
+
+                        loc.findOne({id: feature.parent_id}, function(err, parent) {
+                            console.log(i+'. '+child.an);
+
+                            if( err || ! parent )
+                                return cb();
+
+                            child.parentId = parent._id;
+                            child.save(function(err) {
+                                if(err)
+                                    _log.error(_group+':HIERARCHY', err);
+
+                                cb();
+                            });
+                        });
+
+                    });
+                })(loc, feature, i, cb);
+
             }, function(err) {
                 console.log('All done!');
             });

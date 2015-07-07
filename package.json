@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -39,7 +39,6 @@
     "dotty": "0.0.2",
     "cache-stampede": "https://github.com/export/cache-stampede/tarball/95cf172b979581785756e71e5ccd27f0a0ca4459",
     "parseable": "1.0.10",
-    "blueimp-file-upload-expressjs": "0.3.1",
     "multiparty": "4.0.0",
     "cloudinary": "1.0.13",
     "winston": "1.0.0",

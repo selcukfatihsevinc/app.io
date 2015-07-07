@@ -1,6 +1,7 @@
-var material = require('mongoose-materialized');
-var php      = require('phpjs');
-var _        = require('underscore');
+var material     = require('mongoose-materialized');
+var mongoosastic = require('mongoosastic');
+var php          = require('phpjs');
+var _            = require('underscore');
 
 module.exports = function(app) {
 
@@ -15,11 +16,11 @@ module.exports = function(app) {
     var Schema = {
         parentId : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Locations', alias: 'parentId', index: true},
         id  : {type: Number, typeStr: 'Number', required: true, alias: 'import_id', unique: true},
-        n   : {type: String, typeStr: 'String', alias: 'name'},
-        an  : {type: String, typeStr: 'String', alias: 'asciiname'},
+        n   : {type: String, typeStr: 'String', alias: 'name', es_indexed:true},
+        an  : {type: String, typeStr: 'String', alias: 'asciiname', es_indexed:true},
         sn  : {type: String, typeStr: 'String', alias: 'sortname'},
-        aen : {type: String, typeStr: 'String', alias: 'alternate_en'},
-        atr : {type: String, typeStr: 'String', alias: 'alternate_tr'},
+        aen : {type: String, typeStr: 'String', alias: 'alternate_en', es_indexed:true},
+        atr : {type: String, typeStr: 'String', alias: 'alternate_tr', es_indexed:true},
         l   : [{type: Number, typeStr: 'Number', alias: 'location'}],
         fcl : {type: String, typeStr: 'String', alias: 'feature_class'},
         fc  : {type: String, typeStr: 'String', alias: 'feature_code'},
@@ -50,6 +51,7 @@ module.exports = function(app) {
     // plugins
     LocationSchema.plugin(query);
     LocationSchema.plugin(material);
+    LocationSchema.plugin(mongoosastic, {auth: 'admin:admin'});
 
     // inspector
     LocationSchema.inspector = inspector;
@@ -71,7 +73,28 @@ module.exports = function(app) {
         }
     });
 
-    return mongoose.model('System_Locations', LocationSchema);
+    var Location = mongoose.model('System_Locations', LocationSchema);
+
+    /*
+    if(workerId == 0) {
+        var stream = Location.synchronize();
+        var count  = 0;
+
+        stream.on('data', function (err, doc) {
+            console.log(count++);
+        });
+
+        stream.on('close', function () {
+            console.log('indexed '+count+' documents!');
+        });
+
+        stream.on('error', function (err) {
+            console.log(err);
+        });
+    }
+    */
+
+    return Location;
 
 };
 
