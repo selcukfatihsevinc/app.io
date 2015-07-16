@@ -1,8 +1,8 @@
 var passport = require('passport');
 var strategy = require('passport-twitter').Strategy;
 var async    = require('async');
+var dot      = require('dotty');
 var _        = require('underscore');
-
 
 module.exports = function(app) {
 
@@ -60,6 +60,7 @@ module.exports = function(app) {
                             user_id_str: profile.id,
                             user_name: profile.username || '',
                             display_name: profile.displayName || '',
+                            profile_photo: dot.get(profile, '_json.profile_image_url') || '',
                             token: token,
                             token_secret: tokenSecret,
                         }, function(err, doc) {
@@ -85,6 +86,7 @@ module.exports = function(app) {
                         new _schema('system.accounts').init(app).put(account._id.toString(), {
                             user_name: profile.username,
                             display_name: profile.displayName,
+                            profile_photo: dot.get(profile, '_json.profile_image_url') || '',
                             token: token,
                             token_secret: tokenSecret
                         }, function(err, affected) {

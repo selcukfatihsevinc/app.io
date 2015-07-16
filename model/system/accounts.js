@@ -20,12 +20,13 @@ module.exports = function(app) {
         u   : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'users', index: true},
         una : {type: String, typeStr: 'String', alias: 'users_name'},
         t   : {type: String, typeStr: 'String', required: true, enum: ['F', 'T', 'I'], alias: 'type'},
-        sc  : {type: Number, typeStr: 'Number', alias: 'score'},
+        sc  : {type: Number, typeStr: 'Number', default: 0, alias: 'score'},
 
         uid : {type: Number, typeStr: 'Number', alias: 'user_id'},
         ust : {type: String, typeStr: 'String', alias: 'user_id_str'},
         un  : {type: String, typeStr: 'String', alias: 'user_name'},
         dn  : {type: String, typeStr: 'String', alias: 'display_name'},
+        pp  : {type: String, typeStr: 'String', alias: 'profile_photo'},
         tk  : {type: String, typeStr: 'String', required: true, alias: 'token'},
         rtk : {type: String, typeStr: 'String', alias: 'refresh_token'},
         tks : {type: String, typeStr: 'String', alias: 'token_secret'},
@@ -52,6 +53,7 @@ module.exports = function(app) {
     Schema.ust.settings = {initial: false};
     Schema.un.settings  = {initial: false};
     Schema.dn.settings  = {initial: false};
+    Schema.pp.settings  = {initial: false};
     Schema.tk.settings  = {initial: false};
     Schema.rtk.settings = {initial: false};
     Schema.tks.settings = {initial: false};

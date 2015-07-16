@@ -3,7 +3,6 @@ var strategy = require('passport-facebook').Strategy;
 var async    = require('async');
 var _        = require('underscore');
 
-
 module.exports = function(app) {
 
     var _env    = app.get('env');
@@ -60,6 +59,7 @@ module.exports = function(app) {
                             user_id_str: profile.id,
                             user_name: profile.username || '',
                             display_name: profile.displayName || '',
+                            profile_photo: 'http://graph.facebook.com/'+profile.id+'/picture?type=square',
                             token: accessToken,
                             refresh_token: refreshToken || '',
                         }, function(err, doc) {
@@ -84,6 +84,7 @@ module.exports = function(app) {
                         new _schema('system.accounts').init(app).put(account._id.toString(), {
                             user_name: profile.username || '',
                             display_name: profile.displayName || '',
+                            profile_photo: 'http://graph.facebook.com/'+profile.id+'/picture?type=square',
                             token: accessToken
                         }, function(err, affected) {
                             var obj = {
