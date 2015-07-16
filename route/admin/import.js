@@ -1,5 +1,7 @@
 var geonames = require('geonames-reader');
 var php      = require('phpjs');
+var crypto   = require('crypto');
+var slug     = require('speakingurl');
 var dot      = require('dotty');
 var _        = require('underscore');
 
@@ -15,6 +17,12 @@ module.exports = function(app) {
     var _mongoose = app.core.mongo.mongoose;
     var _group    = 'ROUTE:ADMIN:IMPORT';
 
+    var _random = function(len) {
+        return crypto.randomBytes(Math.ceil(len/2))
+            .toString('hex') // convert to hexadecimal format
+            .slice(0,len);   // return required number of characters
+    };
+
     app.get('/admin/import/countries', function(req, res, next) {
 
         try {
@@ -23,6 +31,7 @@ module.exports = function(app) {
             var file = _base+'/'+conf.base+'/allCountries.txt';
             var i    = 0;
             var d    = [];
+            var w    = require(_base+'/'+conf.base+'/weights');
 
             geonames.read(file, function(feature, cb) {
 
@@ -31,15 +40,19 @@ module.exports = function(app) {
 
                 try {
                     d.push({
+                        parentId: null,
+                        path: '',
                         id: feature.id,
                         n: feature.name,
                         an: feature.asciiname,
-                        sn: feature.asciiname.toLowerCase(),
+                        uri: slug(feature.asciiname.toLowerCase(), {separator: '-', mark: false}),
+                        uc: _random(8),
                         l: [feature.longitude, feature.latitude],
                         fcl: feature.feature_class,
                         fc: feature.feature_code,
                         cc: feature.country_code,
-                        p: feature.population
+                        p: feature.population,
+                        w: w[feature.feature_code] || 0
                     });
 
                     if(d.length == 100) {
@@ -86,12 +99,16 @@ module.exports = function(app) {
                 console.log(i+'. '+feature.isolanguage+'::'+feature.alternate_name);
 
                 var iso = feature.isolanguage;
-                var field;
+                var field, uriField;
 
-                if(iso == 'eng' || iso == 'en')
-                    field = 'aen';
-                else if(iso == 'tur' || iso == 'tr')
-                    field = 'atr';
+                if(iso == 'eng' || iso == 'en') {
+                    field    = 'aen';
+                    uriField = 'en';
+                }
+                else if(iso == 'tur' || iso == 'tr') {
+                    field    = 'atr';
+                    uriField = 'tr';
+                }
 
                 if( ! field ) {
                     _log.info(_group+':NOTFOUND:FIELD', field);
@@ -101,11 +118,17 @@ module.exports = function(app) {
                 var obj = {$set: {}};
                 obj.$set[field] = feature.alternate_name;
 
+                var _s_obj = {separator: '-', mark: false};
+                if(field == 'atr')
+                    _s_obj.lang = 'tr';
+
+                obj.$set['u'+uriField] = slug(feature.alternate_name, _s_obj),
+
                 Model.collection.update({id: feature.geoname_id}, obj, function(err, affected) {
                     if(err)
-                        _log.error(_group+':ALTERNATE', err);
+                        return _log.error(_group+':ALTERNATE', err);
 
-                    _log.info(_group+':ALTERNATE:AFFECTED', affected);
+                    _log.info(_group+':ALTERNATE:AFFECTED', 1);
                 });
 
                 cb();

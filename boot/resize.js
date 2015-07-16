@@ -5,8 +5,6 @@ module.exports = function(app) {
     var _env = app.get('env');
 
     try {
-        return true;
-
         var target = ['local', 's3', 'cloudinary'];
         var conf   = app.config[_env].app.config.upload;
 
@@ -40,8 +38,10 @@ module.exports = function(app) {
         var streams = ir.streams;
 
         function forwards(req, res, next) {
-            if(req.url.substr(0, 3) == '/i/')
-                req.url = req.url.substr(2);
+            var url = req.url.split('/_i/');
+
+            if(url.length > 1)
+                req.url = '/'+url[1];
 
             next('route');
         }

@@ -6,7 +6,7 @@ var s     = require('underscore.string');
 function AppUser(req, res, next) {
 
     var _app    = req.app;
-    var _env    = _app .get('env');
+    var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
 

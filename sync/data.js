@@ -233,6 +233,7 @@ module.exports = function(app) {
                             var role = results['role_'+key+'.'+act_key]._id.toString();
 
                             _.each(act_value, function(action, object) {
+                                console.log(object);
                                 object = results['object_'+object]._id.toString();
                                 master = [];
                                 var cAction = _.clone(action);
