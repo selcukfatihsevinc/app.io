@@ -10,6 +10,7 @@ module.exports = function(app) {
             res.locals.res = res;
             res.locals.segments = req.url.split('/');
             res.locals.config = app.config[_env];
+            res.locals.now = Date.now();
 
             if(app.boot.session)
                 res.locals.session = req.session;

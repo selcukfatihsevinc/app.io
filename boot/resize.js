@@ -22,6 +22,7 @@ module.exports = function(app) {
 
         process.env['DEFAULT_SOURCE']     = type;
         process.env['CACHE_DEV_REQUESTS'] = true;
+        process.env['IMAGE_QUALITY']      = 100;
 
         if(type == 'local')
             process.env['LOCAL_FILE_PATH'] = app.get('basedir')+'/public';

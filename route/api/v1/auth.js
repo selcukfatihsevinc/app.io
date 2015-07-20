@@ -47,7 +47,7 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/login', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
+    app.post('/api/login', _mdl.client, _mdl.appuser, _mdl.user.enabled, _mdl.access, function(req, res, next) {
         res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         if( ! req.body.password ) {
@@ -73,14 +73,18 @@ module.exports = function(app) {
 
             if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
                 a.profile = function(cb) {
-                    new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
-                        cb(err, doc);
+                    // generate profile if not exists
+                    new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: userId}, function(err, doc) {
+                        new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
+                            cb(err, doc);
+                        });
                     });
                 }
             }
 
             async.parallel(a, function(err, results) {
                 token.userId    = userId;
+                token.name      = req.userData.name;
                 token.roles     = results.resources.roles || {};
                 token.resources = results.resources.resources || {};
                 token.profile   = false;
@@ -112,7 +116,7 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.get('/api/token', _mdl.client, _mdl.appdata, _mdl.authtoken, _mdl.auth, function(req, res, next) {
+    app.get('/api/token', _mdl.client, _mdl.appdata, _mdl.authtoken, _mdl.auth, _mdl.access, function(req, res, next) {
         res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         var userId = req.user.id;
@@ -157,7 +161,7 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/forgot', _mdl.client, _mdl.appuser, _mdl.user.enabled, function(req, res, next) {
+    app.post('/api/forgot', _mdl.client, _mdl.appuser, _mdl.user.enabled, _mdl.access, function(req, res, next) {
         res.jsonResponse = true;  // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         // save token
@@ -251,7 +255,7 @@ module.exports = function(app) {
         }
     }
 
-    app.post('/api/invite', _mdl.authtoken, _mdl.auth, _mdl.client, _mdl.appdata, _mdl.user.found, function(req, res, next) {
+    app.post('/api/invite', _mdl.authtoken, _mdl.auth, _mdl.client, _mdl.appdata, _mdl.user.found, _mdl.access, function(req, res, next) {
         res.apiResponse = true;
 
         /**
@@ -312,7 +316,7 @@ module.exports = function(app) {
         _resp.OK({}, res);
     });
 
-    app.post('/api/invite/:token', _mdl.client, _mdl.appdata, _mdl.token.invite, function(req, res, next) {
+    app.post('/api/invite/:token', _mdl.client, _mdl.appdata, _mdl.token.invite, _mdl.access, function(req, res, next) {
         res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         // get initial role for app
@@ -344,6 +348,13 @@ module.exports = function(app) {
                 if(err)
                     return users.errResponse(err);
 
+                // create user profile
+                if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
+                    new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: user._id.toString()}, function(err, doc) {
+
+                    });
+                }
+
                 new _schema('system.invites').init(req, res, next).put(req.inviteData._id, {
                     invite_token: {__op: 'Delete'},
                     invite_expires: {__op: 'Delete'}
@@ -364,7 +375,7 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/register', _mdl.client, _mdl.appdata, function(req, res, next) {
+    app.post('/api/register', _mdl.client, _mdl.appdata, _mdl.access, function(req, res, next) {
         res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
 
         var appslug  = req.appData.slug;
@@ -404,6 +415,13 @@ module.exports = function(app) {
         users.post(obj, function(err, user) {
             if(err)
                 return users.errResponse(err);
+
+            // create user profile
+            if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
+                new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: user._id.toString()}, function(err, doc) {
+
+                });
+            }
 
             if(mailconf) {
                 var mailObj = mailconf.register;

@@ -75,7 +75,7 @@ AppIo.prototype.run = function () {
     this.load('system/response/app'); // before routes
     this.external('route', this._opts.external.route || []);
     this.load('route');
-    // this.load('boot/resize'); // image resize middlware routes
+    if( this._opts.resize) this.load('boot/resize'); // image resize middlware routes
     this.load('system/handler/app'); // after routes
     this.load('sync/data');
     this.listen();
@@ -98,6 +98,7 @@ AppIo.prototype.workers = function () {
     this.external('lib', this._opts.external.lib || []);
     this.load('model', ['acl', 'oauth', 'system']);
     this.external('model', this._opts.external.model || []);
+    this.load('middle');
     this.load('boot', boot.split('|'));
     this.load('boot', (this._opts.boot && this.type(this._opts.boot) == '[object String]')  ? this._opts.boot.split('|') : []);
     this.external('boot', this._opts.external.boot || []);

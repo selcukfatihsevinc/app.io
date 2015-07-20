@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -88,7 +88,8 @@
     "passport": "0.2.2",
     "passport-facebook": "2.0.0",
     "passport-twitter": "1.0.3",
-    "passport-instagram": "0.1.2"
+    "passport-instagram": "0.1.2",
+    "gm": "1.18.1"
   },
   "main": "index.js",
   "devDependencies": {},
