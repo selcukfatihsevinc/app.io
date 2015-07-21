@@ -38,8 +38,14 @@ function AppUser(req, res, next) {
                 qt: 'one'
             };
 
+            /**
+             * @TODO
+             * email hep küçük harfle kaydedilecek (register vs ekle)
+             * kullanıcı adının da lower versiyonu modelde tutulacak (unique olabilmesi için)
+             */
+
             if(req.body.email)
-                obj.email = req.body.email;
+                obj.email = req.body.email.toLowerCase();
             else if(req.body.username)
                 obj.username = req.body.username;
 
