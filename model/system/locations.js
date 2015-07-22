@@ -15,6 +15,7 @@ module.exports = function(app) {
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
     var syncConf  = app.config[_env].sync;
+    var elastic   = app.config[_env].elasticsearch;
     var _group    = 'MODEL:system.locations';
 
     var Schema = {
@@ -63,7 +64,10 @@ module.exports = function(app) {
     // plugins
     LocationSchema.plugin(query);
     LocationSchema.plugin(material);
-    LocationSchema.plugin(mongoosastic, {auth: 'admin:admin'});
+    LocationSchema.plugin(mongoosastic, {
+        host: elastic.host,
+        auth: elastic.auth
+    });
 
     // inspector
     LocationSchema.inspector = inspector;
