@@ -66,6 +66,7 @@ module.exports = function(app) {
     LocationSchema.plugin(material);
     LocationSchema.plugin(mongoosastic, {
         host: elastic.host,
+        port: elastic.port,
         auth: elastic.auth
     });
 
