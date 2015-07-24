@@ -173,6 +173,8 @@ module.exports = function(app) {
         new _schema('system.users').init(req, res, next).put(req.userData._id, obj, function(err, affected) {
             var mailconf = dot.get(req.app.config[_env], 'app.mail.'+req.appData.slug);
 
+            console.log(mailconf);
+
             if(mailconf) {
                 var mailObj = mailconf.reset;
 
