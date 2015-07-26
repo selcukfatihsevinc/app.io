@@ -22,6 +22,9 @@ module.exports = function(app) {
     _log.info(_group+':CONFIG', _c);
     _log.info(_group+':STRING', str);
 
+    // mongoose set event emitter max listeners
+    mongoose.connection.setMaxListeners(0);
+
     mongoose.connection.on('error', function(err) {
         _log.error(err);
     });

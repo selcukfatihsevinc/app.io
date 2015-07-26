@@ -51,8 +51,7 @@ module.exports = function(app) {
                         fcl: feature.feature_class,
                         fc: feature.feature_code,
                         cc: feature.country_code,
-                        p: feature.population,
-                        w: w[feature.feature_code] || 0
+                        p: feature.population
                     });
 
                     if(d.length == 100) {
@@ -115,14 +114,14 @@ module.exports = function(app) {
                     return cb();
                 }
 
-                var obj = {$set: {}};
-                obj.$set[field] = feature.alternate_name;
+                var obj = {$addToSet: {}};
+                obj.$addToSet[field] = feature.alternate_name;
 
                 var _s_obj = {separator: '-', mark: false};
                 if(field == 'atr')
                     _s_obj.lang = 'tr';
 
-                obj.$set['u'+uriField] = slug(feature.alternate_name, _s_obj),
+                obj.$addToSet['u'+uriField] = slug(feature.alternate_name, _s_obj),
 
                 Model.collection.update({id: feature.geoname_id}, obj, function(err, affected) {
                     if(err)
