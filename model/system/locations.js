@@ -70,7 +70,10 @@ module.exports = function(app) {
     LocationSchema.plugin(mongoosastic, {
         host: elastic.host,
         port: elastic.port,
-        auth: elastic.auth
+        auth: elastic.auth,
+        bulk: {
+            delay: 50
+        }
     });
 
     // inspector
