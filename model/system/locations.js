@@ -21,12 +21,6 @@ module.exports = function(app) {
 
     var Schema = {
         parentId : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Locations', alias: 'parentId', index: true},
-        pn  : {type: String, typeStr: 'String', alias: 'parent_name'},
-        pan : {type: String, typeStr: 'String', alias: 'parent_asciiname'},
-        pen : [{type: String, typeStr: 'String', alias: 'parent_alternate_en'}],
-        ptr : [{type: String, typeStr: 'String', alias: 'parent_alternate_tr'}],
-        pfc : {type: String, typeStr: 'String', alias: 'parent_feature_code'},
-
         id  : {type: Number, typeStr: 'Number', required: true, alias: 'import_id', unique: true},
         n   : {type: String, typeStr: 'String', alias: 'name', es_indexed: true},
         an  : {type: String, typeStr: 'String', alias: 'asciiname', es_indexed: true, index: true},
@@ -39,25 +33,13 @@ module.exports = function(app) {
         l   : [{type: Number, typeStr: 'Number', alias: 'location'}],
         fcl : {type: String, typeStr: 'String', alias: 'feature_class'},
         fc  : {type: String, typeStr: 'String', alias: 'feature_code', es_indexed: true, index: true},
-
         cc  : {type: String, typeStr: 'String', alias: 'country_code', es_indexed: true, index: true},
-        cn  : {type: String, typeStr: 'String', alias: 'country_name'},
-        can : {type: String, typeStr: 'String', alias: 'country_asciiname'},
-        cen : [{type: String, typeStr: 'String', alias: 'country_alternate_en'}],
-        ctr : [{type: String, typeStr: 'String', alias: 'country_alternate_tr'}],
-
         p   : {type: Number, typeStr: 'Number', default: 0, alias: 'population', es_indexed: true},
         w   : {type: Number, typeStr: 'Number', default: 0, alias: 'weight', es_indexed: true},
         s   : {type: Number, typeStr: 'Number', default: 0, alias: 'score', es_indexed: true}
     };
 
     Schema.parentId.settings = {initial: false};
-    Schema.pn.settings     = {initial: false};
-    Schema.pan.settings    = {initial: false};
-    Schema.pen[0].settings = {initial: false};
-    Schema.ptr[0].settings = {initial: false};
-    Schema.pfc.settings    = {initial: false};
-
     Schema.id.settings     = {initial: false};
     Schema.n.settings      = {initial: false};
     Schema.an.settings     = {label: 'Ascii Name'};
@@ -70,13 +52,7 @@ module.exports = function(app) {
     Schema.l[0].settings   = {initial: false};
     Schema.fcl.settings    = {initial: false};
     Schema.fc.settings     = {initial: false};
-
     Schema.cc.settings     = {initial: false};
-    Schema.cn.settings     = {initial: false};
-    Schema.can.settings    = {initial: false};
-    Schema.cen[0].settings = {initial: false};
-    Schema.ctr[0].settings = {initial: false};
-
     Schema.p.settings      = {initial: false};
     Schema.w.settings      = {initial: false};
     Schema.s.settings      = {initial: false};
