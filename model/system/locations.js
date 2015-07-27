@@ -92,27 +92,6 @@ module.exports = function(app) {
 
     /**
      * ----------------------------------------------------------------
-     * Denormalization
-     * ----------------------------------------------------------------
-     */
-
-    var denorm = [
-        {ref: 'System_Locations', source: 'parentId', fields: {pn: 'n', pan: 'an', pen: 'aen', ptr: 'atr', pfc: 'fc'}}
-    ];
-
-    emitter.on('location_updated', function(location) {
-        app.lib.denormalize.update('System_Locations', 'System_Locations', location.doc, denorm);
-    });
-
-    if(workerId == 0 && dot.get(syncConf, 'denormalize.system_locations')) {
-        // lib modelden önce çalıştığı için hemen çalıştırınca schema register olmuyor, 5sn sonra çalıştır
-        setTimeout(function() {
-            app.lib.denormalize.sync('System_Locations', app.boot.kue);
-        }, 10000);
-    }
-
-    /**
-     * ----------------------------------------------------------------
      * Pre Save Hook
      * ----------------------------------------------------------------
      */
@@ -121,25 +100,7 @@ module.exports = function(app) {
 
         var self    = this;
         self._isNew = self.isNew;
-
-        // location'lar bulk olarak index'lenmiyorsa denormalize et
-        if( ! _index && this.fc != 'PCLI') {
-            var loc = mongoose.model('System_Locations');
-
-            loc.findOne({fc: 'PCLI', cc: this.cc}, function(err, parent) {
-                if( err || ! parent )
-                    return app.lib.denormalize.fill(self, denorm, function() { next(); });
-
-                self.cn  = parent.n;
-                self.can = parent.an;
-                self.cen = parent.aen;
-                self.ctr = parent.atr;
-
-                app.lib.denormalize.fill(self, denorm, function() { next(); });
-            });
-        }
-        else
-            app.lib.denormalize.fill(this, denorm, function() { next(); });
+        next();
 
     });
 
@@ -150,10 +111,6 @@ module.exports = function(app) {
      */
 
     LocationSchema.post('save', function (doc) {
-
-        // location'lar bulk olarak index'lenmiyorsa event emit çalıştır
-        if( ! _index )
-            emitter.emit('location_updated', {doc: doc, isNew: this._isNew});
 
     });
 
