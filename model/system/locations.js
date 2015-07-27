@@ -14,10 +14,12 @@ module.exports = function(app) {
     var Inspector = app.lib.inspector;
     var query     = app.lib.query;
     var workerId  = parseInt(process.env.worker_id);
+    var isWorker  = app.get('isworker');
     var syncConf  = app.config[_env].sync;
     var elastic   = app.config[_env].elasticsearch;
     var emitter   = app.lib.schemaEmitter;
     var _group    = 'MODEL:system.locations';
+    var _index    = dot.get(syncConf, 'index.system_locations');
 
     var Schema = {
         parentId : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Locations', alias: 'parentId', index: true},
@@ -120,7 +122,8 @@ module.exports = function(app) {
         var self    = this;
         self._isNew = self.isNew;
 
-        if(this.fc != 'PCLI') {
+        // location'lar bulk olarak index'lenmiyorsa denormalize et
+        if( ! _index && this.fc != 'PCLI') {
             var loc = mongoose.model('System_Locations');
 
             loc.findOne({fc: 'PCLI', cc: this.cc}, function(err, parent) {
@@ -148,8 +151,9 @@ module.exports = function(app) {
 
     LocationSchema.post('save', function (doc) {
 
-        // emit event
-        emitter.emit('location_updated', {doc: doc, isNew: this._isNew});
+        // location'lar bulk olarak index'lenmiyorsa event emit çalıştır
+        if( ! _index )
+            emitter.emit('location_updated', {doc: doc, isNew: this._isNew});
 
     });
 
@@ -176,7 +180,7 @@ module.exports = function(app) {
     });
     */
 
-    if(workerId == 0 && dot.get(syncConf, 'index.system_locations')) {
+    if(workerId == 0 && isWorker && _index) {
         var stream = Location.synchronize();
         var count  = 0;
 
