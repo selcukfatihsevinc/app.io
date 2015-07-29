@@ -423,6 +423,9 @@ module.exports = function(app) {
                     return res.redirect('/admin/o/'+o);
                 }
 
+                if(err)
+                    _log.error(err);
+
                 var editForm = dot.get(insp, 'Forms.edit') || dot.get(insp, 'Forms.new') || false;
 
                 new _form(o, {edit: true}).init(req, res, next).prefix('/admin/p/').data(req.body).render(editForm, function(formErr, form) {
@@ -438,7 +441,7 @@ module.exports = function(app) {
             });
         }
         catch (e) {
-            _log.error(e.stack);
+            _log.error(e);
             res.redirect('/admin');
         }
     });
