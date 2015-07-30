@@ -17,7 +17,7 @@ module.exports = function(app) {
 
     var Schema = {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        na  : {type: String, typeStr: 'String', required: true, alias: 'name'},
+        na  : {type: String, typeStr: 'String', required: true, alias: 'name', index: true},
         em  : {type: String, typeStr: 'String', alias: 'email', pattern: 'email'},
         unm : {type: String, typeStr: 'String', alias: 'username'},
         pa  : {type: String, typeStr: 'String', optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi

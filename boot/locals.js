@@ -6,11 +6,12 @@ module.exports = function(app) {
         var _env = app.get('env');
 
         app.use(function(req, res, next) {
-            res.locals.req = req;
-            res.locals.res = res;
+            res.locals.req      = req;
+            res.locals.res      = res;
             res.locals.segments = req.url.split('/');
-            res.locals.config = app.config[_env];
-            res.locals.now = Date.now();
+            res.locals.env      = _env;
+            res.locals.config   = app.config[_env];
+            res.locals.now      = Date.now();
 
             if(app.boot.session)
                 res.locals.session = req.session;

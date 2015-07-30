@@ -74,7 +74,9 @@ module.exports = function(app) {
         };
 
         async.parallel(a, function(err, results) {
-            _log.info(results);
+            if(results)
+                _log.info(results);
+
             var render = true;
 
             if(err)
@@ -179,6 +181,9 @@ module.exports = function(app) {
             }
 
             async.parallel(a, function(err, results) {
+                if(err)
+                    _log.error(err);
+
                 // render page
                 res.render('admin/object/list', {
                     object  : o,
@@ -211,6 +216,9 @@ module.exports = function(app) {
             var newForm = dot.get(insp, 'Forms.new') || false;
 
             new _form(o).init(req, res, next).prefix('/admin/p/').render(newForm, function(err, form) {
+                if(err)
+                    _log.error(err);
+
                 res.render('admin/object/new', {
                     action : 'save',
                     opts   : insp.Options,
@@ -250,6 +258,9 @@ module.exports = function(app) {
 
             // get children
             new _schema(o).init(req, res, next).get(obj, function(err, children) {
+                if(err)
+                    _log.error(err);
+
                 res.render('admin/object/partial/list/nested', {
                     children : children,
                     opts     : insp.Options,
@@ -285,7 +296,7 @@ module.exports = function(app) {
 
             new _schema(o).init(req, res, next).put(req.params.id, obj, function(err, children) {
                 if(err)
-                    console.log(err);
+                    _log.error(err);
 
                 res.json({});
             });
@@ -319,6 +330,9 @@ module.exports = function(app) {
                 req.body.users = req.session.user._id;
 
             new _schema(o).init(req, res, next).post(req.body, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 if( ! err && doc ) {
                     req.flash('flash', {type: 'success', message: _.s.titleize(o)+' saved'});
                     return res.redirect('/admin/o/'+o);
@@ -327,6 +341,9 @@ module.exports = function(app) {
                 var newForm = dot.get(insp, 'Forms.new') || false;
 
                 new _form(o).init(req, res, next).prefix('/admin/p/').data(req.body).render(newForm, function(formErr, form) {
+                    if(formErr)
+                        _log.error(formErr);
+
                     res.render('admin/object/new', {
                         action : 'save',
                         opts   : insp.Options,
@@ -369,6 +386,9 @@ module.exports = function(app) {
                 params.users = req.session.user._id;
 
             new _schema(o, {format: false}).init(req, res, next).get(params, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 if( err || ! doc ) {
                     req.flash('flash', {type: 'danger', message: _.s.titleize(o)+' not found'});
                     return res.redirect('/admin/o/'+o);
@@ -377,6 +397,9 @@ module.exports = function(app) {
                 var editForm = dot.get(insp, 'Forms.edit') || dot.get(insp, 'Forms.new') || false;
 
                 new _form(o, {edit: true}).init(req, res, next).prefix('/admin/p/').data(doc).render(editForm, function(err, form) {
+                    if(err)
+                        _log.error(err);
+
                     res.render('admin/object/new', {
                         action : 'update',
                         opts   : insp.Options,
@@ -418,17 +441,20 @@ module.exports = function(app) {
                 req.body.users = req.session.user._id;
 
             new _schema(o).init(req, res, next).put(id, req.body, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 if( ! err || doc ) {
                     req.flash('flash', {type: 'success', message: _.s.titleize(o)+' updated'});
                     return res.redirect('/admin/o/'+o);
                 }
 
-                if(err)
-                    _log.error(err);
-
                 var editForm = dot.get(insp, 'Forms.edit') || dot.get(insp, 'Forms.new') || false;
 
                 new _form(o, {edit: true}).init(req, res, next).prefix('/admin/p/').data(req.body).render(editForm, function(formErr, form) {
+                    if(formErr)
+                        _log.error(formErr);
+
                     res.render('admin/object/new', {
                         action : 'update',
                         opts   : insp.Options,
@@ -478,6 +504,9 @@ module.exports = function(app) {
             }
 
             async.parallel(a, function(err, results) {
+                if(err)
+                    _log.error(err);
+
                 req.flash('flash', {type: 'success', message: _.s.titleize(o)+' removed'});
                 res.redirect('/admin/o/'+o);
             });
@@ -508,6 +537,9 @@ module.exports = function(app) {
             };
 
             new _schema(o).init(req, res, next).put(params, {is_enabled: 'Y'}, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 req.flash('flash', {type: 'success', message: _.s.titleize(o)+' enabled'});
                 res.redirect('/admin/o/'+o);
             });
@@ -567,6 +599,9 @@ module.exports = function(app) {
                 req.query.f = insp.Options.columns.join(',');
 
             new _schema(o).init(req, res, next).get(req.query, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 res.json(doc || {});
             });
         }
@@ -658,6 +693,9 @@ module.exports = function(app) {
             }
 
             new _schema(o).init(req, res, next).get(p, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 o = q= p = filter = null;
 
                 if( err || ! doc )
@@ -729,8 +767,10 @@ module.exports = function(app) {
             }
 
             async.parallel(a, function(err, results) {
-                if(err)
+                if(err) {
+                    _log.error(err);
                     return res.json({err: true});
+                }
 
                 // decode filter
                 var filter;
@@ -745,6 +785,9 @@ module.exports = function(app) {
                 var filterForm = dot.get(insp, 'Forms.filter') || false;
 
                 new _form(o, {filter: true}).init(req, res, next).prefix('/admin/p/').data(filter).render(filterForm, function(err, form) {
+                    if(err)
+                        _log.error(err);
+
                     res.render('admin/layout/filter', {
                         sfilter: form,
                         filters: results['filters']
@@ -772,6 +815,9 @@ module.exports = function(app) {
             req.body.users = req.session.user._id; // set user id
 
             new _schema('system.filters').init(req, res, next).post(req.body, function(err, doc) {
+                if(err)
+                    _log.error(err);
+
                 if( ! err && doc )
                     return res.json({err: false});
 
