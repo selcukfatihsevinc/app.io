@@ -1,6 +1,7 @@
 var material     = require('mongoose-materialized');
 var mongoosastic = require('mongoosastic');
 var request      = require('request');
+var slug         = require('speakingurl');
 var php          = require('phpjs');
 var dot          = require('dotty');
 var _            = require('underscore');
@@ -24,7 +25,7 @@ module.exports = function(app) {
     var Schema = {
         parentId : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Locations', alias: 'parentId', index: true},
         id  : {type: Number, typeStr: 'Number', required: true, alias: 'import_id', unique: true},
-        n   : {type: String, typeStr: 'String', alias: 'name', es_indexed: true},
+        n   : {type: String, typeStr: 'String', alias: 'name', es_indexed: true, index: true},
         an  : {type: String, typeStr: 'String', alias: 'asciiname', es_indexed: true, index: true},
         uri : {type: String, typeStr: 'String', alias: 'uri', index: true},
         uen : [{type: String, typeStr: 'String', alias: 'uri_en', index: true}],
@@ -41,21 +42,21 @@ module.exports = function(app) {
         s   : {type: Number, typeStr: 'Number', default: 0, alias: 'score', es_indexed: true}
     };
 
-    Schema.parentId.settings = {initial: false};
+    Schema.parentId.settings = {label: 'Parent', display: 'asciiname'};
     Schema.id.settings     = {initial: false};
-    Schema.n.settings      = {initial: false};
+    Schema.n.settings      = {label: 'Name'};
     Schema.an.settings     = {label: 'Ascii Name'};
     Schema.uri.settings    = {initial: false};
     Schema.uen[0].settings = {initial: false};
     Schema.utr[0].settings = {initial: false};
     Schema.uc.settings     = {initial: false};
-    Schema.aen[0].settings = {initial: false};
-    Schema.atr[0].settings = {initial: false};
+    Schema.aen[0].settings = {label: 'English Name'};
+    Schema.atr[0].settings = {label: 'Turkish Name'};
     Schema.l[0].settings   = {initial: false};
     Schema.fcl.settings    = {initial: false};
-    Schema.fc.settings     = {initial: false};
-    Schema.cc.settings     = {initial: false};
-    Schema.p.settings      = {initial: false};
+    Schema.fc.settings     = {label: 'Feature Code'};
+    Schema.cc.settings     = {label: 'Country Code'};
+    Schema.p.settings      = {label: 'Population'};
     Schema.w.settings      = {initial: false};
     Schema.s.settings      = {initial: false};
 
@@ -65,6 +66,8 @@ module.exports = function(app) {
     // indexes
     LocationSchema.index({l: '2d'});
     LocationSchema.index({p: -1});
+    LocationSchema.index({aen: 1});
+    LocationSchema.index({atr: 1});
 
     // plugins
     LocationSchema.plugin(query);
@@ -85,9 +88,13 @@ module.exports = function(app) {
     LocationSchema.inspector.Options = {
         singular : 'System Location',
         plural   : 'System Locations',
-        columns  : ['name'],
+        columns  : ['name', 'asciiname', 'alternate_tr', 'alternate_en'],
         main     : 'name',
         perpage  : 10
+    };
+
+    LocationSchema.inspector.Forms = {
+        'filter': ['name', 'asciiname', 'alternate_tr', 'alternate_en', 'uri_code', 'feature_code', 'country_code']
     };
 
     /**
@@ -100,6 +107,28 @@ module.exports = function(app) {
 
         var self    = this;
         self._isNew = self.isNew;
+
+        if(self.an)
+            self.uri = slug(self.an.toLowerCase(), {separator: '-', mark: false});
+
+        if(self.aen.length) {
+            var uen = [];
+            _.each(self.aen, function(aen, key) {
+                uen.push( slug(aen.toLowerCase(), {separator: '-', mark: false}) );
+            });
+
+            self.uen = uen;
+        }
+
+        if(self.atr.length) {
+            var utr = [];
+            _.each(self.atr, function(atr, key) {
+                utr.push( slug(atr.toLowerCase(), {separator: '-', mark: false, lang: 'tr'}) );
+            });
+
+            self.utr = utr;
+        }
+
         next();
 
     });
