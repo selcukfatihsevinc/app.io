@@ -92,6 +92,9 @@ module.exports = function(app) {
                 if(results.profile)
                     token.profile = results.profile;
 
+                if(req.userData.last_login)
+                    token.lastLogin = req.userData.last_login;
+
                 _resp.OK(token, res);
 
                 // update last login
@@ -207,6 +210,24 @@ module.exports = function(app) {
         res.jsonResponse = true;  // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
         var password     = req.body.password;
         var userId       = req.userData._id;
+
+        /**
+         * @TODO
+         * kuralları config'e al
+         */
+
+        var rules = {
+            password: 'required|min:4|max:32',
+        };
+
+        var validation = new Validator(req.body, rules);
+
+        if(validation.fails()) {
+            return next( _resp.UnprocessableEntity({
+                type: 'ValidationError',
+                errors: validation.errors.all()
+            }));
+        }
 
         var a = {
             setUser: function(cb) {
