@@ -33,7 +33,7 @@ module.exports = function(app) {
             process.env['S3_BUCKET']             = conf.bucket;
         }
 
-        var ir      = require('image-resizer');
+        var ir      = require('image-resizer-tmp');
         var env     = ir.env;
         var Img     = ir.img;
         var streams = ir.streams;
@@ -49,14 +49,16 @@ module.exports = function(app) {
 
         app.get('*', forwards);
         app.get('/*?', function(req, res, next) {
-            var image = new Img(req);
+            var image = new Img(req, res);
 
-            image.getFile()
-                .pipe(new streams.identify())
-                .pipe(new streams.resize())
-                .pipe(new streams.filter())
-                .pipe(new streams.optimize())
-                .pipe(streams.response(req, res));
+            if( ! req.tmpcache ) {
+                image.getFile()
+                    .pipe(new streams.identify())
+                    .pipe(new streams.resize())
+                    .pipe(new streams.filter())
+                    .pipe(new streams.optimize())
+                    .pipe(streams.response(req, res));
+            }
         });
 
         return true;

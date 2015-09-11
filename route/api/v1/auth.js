@@ -47,85 +47,26 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/login', _mdl.client, _mdl.appuser, _mdl.user.enabled, _mdl.access, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-
-        if( ! req.body.password ) {
+    app.post('/api/login',
+        _mdl.client,
+        _mdl.appuser,
+        _mdl.user.enabled,
+        _mdl.access,
+        _mdl.json,
+        _mdl.check.body.password,
+    function(req, res, next) {
+        if( req.userData.hash !== _hash(req.body.password, req.userData.salt) ) {
             return next( _resp.Unauthorized({
-                type: 'InvalidCredentials',
-                errors: ['password not found']}
-            ));
-        }
-
-        if( req.userData.hash === _hash(req.body.password, req.userData.salt) ) {
-            var userId = req.userData._id.toString();
-            var token  = _genToken({_id: userId}, _conf.token.secret, _conf.token.expires);
-
-            var a = {
-                resources: function(cb) {
-                    app.acl.userRoles(userId, function(err, roles) {
-                        app.acl.whatResources(roles, function(err, resources) {
-                            cb(err, {roles: roles, resources: resources});
-                        });
-                    });
-                }
-            };
-
-            if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
-                a.profile = function(cb) {
-                    // generate profile if not exists
-                    new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: userId}, function(err, doc) {
-                        new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
-                            cb(err, doc);
-                        });
-                    });
-                }
-            }
-
-            async.parallel(a, function(err, results) {
-                token.userId    = userId;
-                token.name      = req.userData.name;
-                token.roles     = results.resources.roles || {};
-                token.resources = results.resources.resources || {};
-                token.profile   = false;
-
-                if(results.profile)
-                    token.profile = results.profile;
-
-                if(req.userData.last_login)
-                    token.lastLogin = req.userData.last_login;
-
-                _resp.OK(token, res);
-
-                // update last login
-                new _schema('system.users').init(req, res, next).put(userId, {last_login: Date.now()}, function(err, affected) {
-
-                });
-
-                a = null;
-            });
-        }
-        else {
-            next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
                 errors: ['wrong password']
             }));
         }
-    });
 
-    /**
-     * ----------------------------------------------------------------
-     * Token (send user data for verified token)
-     * ----------------------------------------------------------------
-     */
-
-    app.get('/api/token', _mdl.client, _mdl.appdata, _mdl.authtoken, _mdl.auth, _mdl.access, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-
-        var userId = req.user.id;
-        var resp   = {};
+        var userId = req.userData._id.toString();
+        var token  = _genToken({_id: userId}, _conf.token.secret, _conf.token.expires);
 
         var a = {
+            // get acl resources
             resources: function(cb) {
                 app.acl.userRoles(userId, function(err, roles) {
                     app.acl.whatResources(roles, function(err, resources) {
@@ -135,6 +76,66 @@ module.exports = function(app) {
             }
         };
 
+        // generate profile if not exists
+        if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
+            a.profile = function(cb) {
+                new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: userId}, function(err, doc) {
+                    new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
+                        cb(err, doc);
+                    });
+                });
+            }
+        }
+
+        async.parallel(a, function(err, results) {
+            token.userId    = userId;
+            token.name      = req.userData.name;
+            token.roles     = results.resources.roles || {};
+            token.resources = results.resources.resources || {};
+            token.profile   = false;
+
+            if(results.profile)
+                token.profile = results.profile;
+
+            if(req.userData.last_login)
+                token.lastLogin = req.userData.last_login;
+
+            _resp.OK(token, res);
+
+            // update last login
+            new _schema('system.users').init(req, res, next).put(userId, {last_login: Date.now()}, function(err, affected) {});
+        });
+    });
+
+    /**
+     * ----------------------------------------------------------------
+     * Token (send user data for verified token)
+     * ----------------------------------------------------------------
+     */
+
+    app.get('/api/token',
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.authtoken,
+        _mdl.auth,
+        _mdl.access,
+        _mdl.json,
+    function(req, res, next) {
+        var userId = req.user.id;
+        var resp   = {};
+
+        var a = {
+            // get acl resources
+            resources: function(cb) {
+                app.acl.userRoles(userId, function(err, roles) {
+                    app.acl.whatResources(roles, function(err, resources) {
+                        cb(err, {roles: roles, resources: resources});
+                    });
+                });
+            }
+        };
+
+        // get user profile
         if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
             a.profile = function(cb) {
                 new _schema(req.appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
@@ -153,8 +154,6 @@ module.exports = function(app) {
                 resp.profile = results.profile;
 
             _resp.OK(resp, res);
-
-            a = null;
         });
     });
 
@@ -164,19 +163,22 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/forgot', _mdl.client, _mdl.appuser, _mdl.user.enabled, _mdl.access, function(req, res, next) {
-        res.jsonResponse = true;  // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-
+    app.post('/api/forgot',
+        _mdl.client,
+        _mdl.appuser,
+        _mdl.user.enabled,
+        _mdl.access,
+        _mdl.json,
+    function(req, res, next) {
         // save token
         var obj = {
             reset_token: _random(24), // update token on every request
             reset_expires: Date.now()+3600000
         };
 
+        // update user reset token
         new _schema('system.users').init(req, res, next).put(req.userData._id, obj, function(err, affected) {
             var mailconf = dot.get(req.app.config[_env], 'app.mail.'+req.appData.slug);
-
-            console.log(mailconf);
 
             if(mailconf) {
                 var mailObj = mailconf.reset;
@@ -201,15 +203,20 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/api/reset/:token', _mdl.token.reset, function(req, res, next) {
-        res.apiResponse = true;
+    app.get('/api/reset/:token',
+        _mdl.token.reset,
+        _mdl.json,
+    function(req, res, next) {
         _resp.OK({}, res);
     });
 
-    app.post('/api/reset/:token', _mdl.client, _mdl.token.reset, function(req, res, next) {
-        res.jsonResponse = true;  // apiResponse = true owner protction için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-        var password     = req.body.password;
-        var userId       = req.userData._id;
+    app.post('/api/reset/:token',
+        _mdl.client,
+        _mdl.token.reset,
+        _mdl.json,
+    function(req, res, next) {
+        var password = req.body.password;
+        var userId   = req.userData._id;
 
         /**
          * @TODO
@@ -278,9 +285,15 @@ module.exports = function(app) {
         }
     }
 
-    app.post('/api/invite', _mdl.authtoken, _mdl.auth, _mdl.client, _mdl.appdata, _mdl.user.found, _mdl.access, function(req, res, next) {
-        res.apiResponse = true;
-
+    app.post('/api/invite',
+        _mdl.authtoken,
+        _mdl.auth,
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.user.found,
+        _mdl.access,
+        _mdl.json,
+    function(req, res, next) {
         /**
          * @TODO
          * expire süresini config'e bağla
@@ -334,14 +347,20 @@ module.exports = function(app) {
 
     });
 
-    app.get('/api/invite/:token', _mdl.token.invite, function(req, res, next) {
-        res.apiResponse = true;
+    app.get('/api/invite/:token',
+        _mdl.token.invite,
+        _mdl.json,
+    function(req, res, next) {
         _resp.OK({}, res);
     });
 
-    app.post('/api/invite/:token', _mdl.client, _mdl.appdata, _mdl.token.invite, _mdl.access, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-
+    app.post('/api/invite/:token',
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.token.invite,
+        _mdl.access,
+        _mdl.json,
+    function(req, res, next) {
         // get initial role for app
         var slug = dot.get(app.config[_env], 'roles.'+req.appData.slug+'.initial.invite');
 
@@ -350,8 +369,8 @@ module.exports = function(app) {
             if(err || ! doc) {
                 return next( _resp.Unauthorized({
                     type: 'InvalidCredentials',
-                    errors: ['initial role not found']}
-                ));
+                    errors: ['initial role not found']
+                }));
             }
 
             var obj = {
@@ -373,9 +392,7 @@ module.exports = function(app) {
 
                 // create user profile
                 if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
-                    new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: user._id.toString()}, function(err, doc) {
-
-                    });
+                    new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: user._id.toString()}, function(err, doc) {});
                 }
 
                 new _schema('system.invites').init(req, res, next).put(req.inviteData._id, {
@@ -398,9 +415,12 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/register', _mdl.client, _mdl.appdata, _mdl.access, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-
+    app.post('/api/register',
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.access,
+        _mdl.json,
+    function(req, res, next) {
         var appslug  = req.appData.slug;
         var mailconf = dot.get(req.app.config[_env], 'app.mail.'+appslug);
 
@@ -423,8 +443,7 @@ module.exports = function(app) {
         }
 
         var token = _random(24);
-
-        var obj = {
+        var obj   = {
             apps: req.appId,
             name: req.body.name,
             email: req.body.email,
@@ -441,9 +460,7 @@ module.exports = function(app) {
 
             // create user profile
             if(dot.get(req.app.model, req.appData.slug+'.profiles')) {
-                new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: user._id.toString()}, function(err, doc) {
-
-                });
+                new _schema(req.appData.slug+'.profiles').init(req, res, next).post({users: user._id.toString()}, function(err, doc) {});
             }
 
             if(mailconf) {
@@ -469,13 +486,18 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/api/verify/:token', _mdl.token.verify, function(req, res, next) {
-        res.apiResponse = true;
+    app.get('/api/verify/:token',
+        _mdl.token.verify,
+        _mdl.json,
+    function(req, res, next) {
         _resp.OK({}, res);
     });
 
-    app.post('/api/verify/:token', _mdl.client, _mdl.token.verify, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
+    app.post('/api/verify/:token',
+        _mdl.client,
+        _mdl.token.verify,
+        _mdl.json,
+    function(req, res, next) {
         var userId = req.userData._id;
 
         var a = {
@@ -505,9 +527,12 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    app.post('/api/change_password', _mdl.authtoken, _mdl.auth, _mdl.user.data, function(req, res, next) {
-        res.jsonResponse = true; // apiResponse = true owner protection için kullanılıyor, o yüzden jsonResponse kullanıyoruz
-
+    app.post('/api/change_password',
+        _mdl.authtoken,
+        _mdl.auth,
+        _mdl.user.data,
+        _mdl.json,
+    function(req, res, next) {
         var data = {
             old_password        : req.body.old_password,
             new_password        : req.body.new_password,

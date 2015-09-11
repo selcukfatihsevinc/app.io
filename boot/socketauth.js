@@ -7,7 +7,6 @@ module.exports = function(app) {
     var _conf = app.config[_env].api; // api config
 
     try {
-
         app.io.use(socketioJwt.authorize({
             secret: _conf.token.secret,
             handshake: true

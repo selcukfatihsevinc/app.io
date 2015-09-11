@@ -129,7 +129,7 @@ module.exports = function(app) {
     };
 
     UserSchema.pre('save', function (next) {
-        var self = this;
+        var self   = this;
 
         // yeni kullanıcı veya güncelleme durumunda password hash'i kaydediyoruz
         if( ! php.empty(self.pa) ) {
@@ -153,6 +153,9 @@ module.exports = function(app) {
             catch(e) {}
         }
 
+        // login'de user_updated emit etme
+        self._emit = ! self.isModified('ll');
+
         next();
     });
 
@@ -162,7 +165,8 @@ module.exports = function(app) {
 
     UserSchema.post('save', function (doc) {
         // emit event
-        emitter.emit('user_updated', {doc: doc, isNew: this._isNew});
+        if(this._emit)
+            emitter.emit('user_updated', {doc: doc, isNew: this._isNew});
 
         var self  = this;
         var roles = [];

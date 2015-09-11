@@ -8,6 +8,7 @@ module.exports = function(app) {
         _log.info('app env', app.get('env'));
         _log.info('app port', app.get('port'));
         _log.info('app basedir', app.get('basedir'));
+        return true;
     }
     catch(e) {
         _log.error(e.stack);

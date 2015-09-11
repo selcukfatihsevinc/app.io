@@ -7,7 +7,6 @@ module.exports = function(app) {
     var _c   = app.config[_env].redis;
 
     try {
-
         var redisObj = {
             port: _c.port,
             host: _c.host
@@ -22,7 +21,6 @@ module.exports = function(app) {
             disableSearch: true,
             jobEvents: false
         });
-
     }
     catch(e) {
         _log.error(e.stack);

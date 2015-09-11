@@ -6,6 +6,7 @@ module.exports = function(app) {
 
     try {
         app.use(favicon(app.get('basedir')+'/public/favicon.ico'));
+        return true;
     }
     catch(e) {
         _log.error(e.stack);

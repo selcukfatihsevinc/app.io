@@ -1,4 +1,3 @@
-var dot    = require('dotty');
 var path   = require('path');
 var swig   = require('swig');
 var extras = require('swig-extras');

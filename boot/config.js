@@ -13,7 +13,6 @@ module.exports = function(app) {
         switch(_env) {
             case 'development':
                 app.use(morgan('dev', {skip: _skip}));
-
                 break;
 
             case 'testing':

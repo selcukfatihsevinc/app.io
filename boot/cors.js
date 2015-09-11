@@ -5,10 +5,9 @@ module.exports = function(app) {
     var _log = app.system.logger;
 
     try {
-
         app.use(cors());
         app.options('*', cors());
-
+        return true;
     }
     catch(e) {
         _log.error(e.stack);

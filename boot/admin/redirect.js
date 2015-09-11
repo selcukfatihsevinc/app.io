@@ -8,7 +8,9 @@ module.exports = function(app) {
     var _log = app.system.logger;
 
     try {
-        app.all('/admin*', app.middle.basic, function (req, res, next) {
+        app.all('/admin*',
+            app.middle.basic,
+        function (req, res, next) {
             var segment = res.locals.segments[2];
             var routes  = ['login', 'logout'];
 

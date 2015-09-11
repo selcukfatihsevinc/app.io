@@ -14,7 +14,7 @@ module.exports = function(app) {
     if(parseInt(process.env.worker_id) != 0)
         return false;
 
-    // create default roles
+    // async object
     var a = {};
 
     /**

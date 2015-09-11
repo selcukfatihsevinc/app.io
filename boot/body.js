@@ -1,4 +1,3 @@
-var dot  = require('dotty');
 var body = require('body-parser');
 
 module.exports = function(app) {

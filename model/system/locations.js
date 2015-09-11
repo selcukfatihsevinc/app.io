@@ -24,19 +24,19 @@ module.exports = function(app) {
 
     var Schema = {
         parentId : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Locations', alias: 'parentId', index: true},
-        id  : {type: Number, typeStr: 'Number', required: true, alias: 'import_id', unique: true},
-        n   : {type: String, typeStr: 'String', alias: 'name', es_indexed: true, index: true},
-        an  : {type: String, typeStr: 'String', alias: 'asciiname', es_indexed: true, index: true},
-        uri : {type: String, typeStr: 'String', alias: 'uri', index: true},
+        id  : {type: Number, typeStr: 'Number', default: 0, alias: 'import_id', unique: true, sparse: true},
+        n   : {type: String, typeStr: 'String', required: true, alias: 'name', es_indexed: true, index: true},
+        an  : {type: String, typeStr: 'String', required: true, alias: 'asciiname', es_indexed: true, index: true},
+        uri : {type: String, typeStr: 'String', required: true, alias: 'uri', index: true},
         uen : [{type: String, typeStr: 'String', alias: 'uri_en', index: true}],
         utr : [{type: String, typeStr: 'String', alias: 'uri_tr', index: true}],
-        uc  : {type: String, typeStr: 'String', alias: 'uri_code', index: true},
+        uc  : {type: String, typeStr: 'String', required: true, alias: 'uri_code', index: true},
         aen : [{type: String, typeStr: 'String', alias: 'alternate_en', es_indexed: true}],
         atr : [{type: String, typeStr: 'String', alias: 'alternate_tr', es_indexed: true}],
         l   : [{type: Number, typeStr: 'Number', alias: 'location'}],
         fcl : {type: String, typeStr: 'String', alias: 'feature_class'},
-        fc  : {type: String, typeStr: 'String', alias: 'feature_code', es_indexed: true, index: true},
-        cc  : {type: String, typeStr: 'String', alias: 'country_code', es_indexed: true, index: true},
+        fc  : {type: String, typeStr: 'String', required: true, alias: 'feature_code', es_indexed: true, index: true},
+        cc  : {type: String, typeStr: 'String', required: true, alias: 'country_code', es_indexed: true, index: true},
         p   : {type: Number, typeStr: 'Number', default: 0, alias: 'population', es_indexed: true},
         w   : {type: Number, typeStr: 'Number', default: 0, alias: 'weight', es_indexed: true},
         s   : {type: Number, typeStr: 'Number', default: 0, alias: 'score', es_indexed: true}
@@ -103,6 +103,13 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
+    String.prototype.trToLower = function() {
+        var string = this;
+        var letters = { "İ": "i", "I": "ı", "Ş": "ş", "Ğ": "ğ", "Ü": "ü", "Ö": "ö", "Ç": "ç" };
+        string = string.replace(/(([İIŞĞÜÇÖ]))/g, function(letter){ return letters[letter]; });
+        return string.toLowerCase();
+    };
+
     LocationSchema.pre('save', function (next) {
 
         var self    = this;
@@ -123,7 +130,7 @@ module.exports = function(app) {
         if(self.atr.length) {
             var utr = [];
             _.each(self.atr, function(atr, key) {
-                utr.push( slug(atr.toLowerCase(), {separator: '-', mark: false, lang: 'tr'}) );
+                utr.push( slug(atr.trToLower(), {separator: '-', mark: false, lang: 'tr'}) );
             });
 
             self.utr = utr;

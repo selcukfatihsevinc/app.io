@@ -6,11 +6,10 @@ module.exports = function(app) {
     var _log = app.system.logger;
 
     try {
-
         var _conf = app.lib.bootConf(app, 'oauthproxy');
         app.all('/api/oauthproxy', oauthshim);
         oauthshim.init(_conf);
-
+        return true;
     }
     catch(e) {
         _log.error(e.stack);
