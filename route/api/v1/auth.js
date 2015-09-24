@@ -63,7 +63,6 @@ module.exports = function(app) {
         }
 
         var userId = req.userData._id.toString();
-        var token  = _genToken({_id: userId}, _conf.token.secret, _conf.token.expires);
 
         var a = {
             // get acl resources
@@ -88,6 +87,13 @@ module.exports = function(app) {
         }
 
         async.parallel(a, function(err, results) {
+            var data = {_id: userId};
+
+            if(results.profile)
+                data.profile = results.profile._id.toString();
+
+            var token = _genToken(data, _conf.token.secret, _conf.token.expires);
+
             token.userId    = userId;
             token.name      = req.userData.name;
             token.roles     = results.resources.roles || {};

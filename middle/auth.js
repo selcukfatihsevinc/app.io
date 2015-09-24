@@ -22,8 +22,12 @@ function _access_token(req, res, next) {
                 type: 'TokenExpired'
             }) );
 
-        if(decoded.user)
+        if(decoded.user) {
             req.user = {id: decoded.user._id};
+
+            if(decoded.user.profile)
+                req.user.profile = decoded.user.profile;
+        }
 
         next();
     }
