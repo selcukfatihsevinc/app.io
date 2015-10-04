@@ -19,7 +19,7 @@ module.exports = function(app) {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
         u   : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'users', index: true},
         una : {type: String, typeStr: 'String', alias: 'users_name'},
-        t   : {type: String, typeStr: 'String', required: true, enum: ['F', 'T', 'I'], alias: 'type'},
+        t   : {type: String, typeStr: 'String', required: true, enum: ['F', 'T', 'I', 'G', 'L', 'D'], alias: 'type'},
         sc  : {type: Number, typeStr: 'Number', default: 0, alias: 'score'},
 
         uid : {type: Number, typeStr: 'Number', alias: 'user_id'},
@@ -44,7 +44,10 @@ module.exports = function(app) {
         options: [
             {label: 'Facebook', value: 'F'},
             {label: 'Twitter', value: 'T'},
-            {label: 'Instagram', value: 'I'}
+            {label: 'Instagram', value: 'I'},
+            {label: 'Github', value: 'G'},
+            {label: 'Linkedin', value: 'L'},
+            {label: 'Dribbble', value: 'D'}
         ]
     };
 
