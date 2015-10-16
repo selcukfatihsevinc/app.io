@@ -4,6 +4,7 @@ var jwt       = require('jwt-simple');
 var Validator = require('validatorjs');
 var addrs     = require('email-addresses');
 var dot       = require('dotty');
+var _         = require('underscore');
 
 module.exports = function(app) {
 
@@ -190,8 +191,10 @@ module.exports = function(app) {
         new _schema('system.users').init(req, res, next).put(req.userData._id, obj, function(err, affected) {
             var mailconf = dot.get(req.app.config[_env], 'app.mail.'+req.appData.slug);
 
+            console.log(mailconf);
+            
             if(mailconf) {
-                var mailObj = mailconf.reset;
+                var mailObj = _.clone(mailconf.reset);
 
                 req.app.render('email/templates/reset', {
                     baseUrl: mailconf.baseUrl,
