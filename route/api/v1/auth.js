@@ -191,8 +191,6 @@ module.exports = function(app) {
         new _schema('system.users').init(req, res, next).put(req.userData._id, obj, function(err, affected) {
             var mailconf = dot.get(req.app.config[_env], 'app.mail.'+req.appData.slug);
 
-            console.log(mailconf);
-            
             if(mailconf) {
                 var mailObj = _.clone(mailconf.reset);
 
@@ -201,9 +199,14 @@ module.exports = function(app) {
                     endpoint: mailconf.endpoints.reset,
                     token: obj.reset_token
                 }, function(err, html) {
+                    if(err)
+                        console.log(err);
+
                     if(html) {
                         mailObj.to = req.userData.email;
                         mailObj.html = html;
+
+                        console.log(mailObj);
 
                         new _mailer(_transport).send(mailObj);
                     }
