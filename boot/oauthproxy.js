@@ -2,8 +2,9 @@ var oauthshim = require('oauth-shim');
 
 module.exports = function(app) {
 
-    var _env = app.get('env');
-    var _log = app.system.logger;
+    var _env   = app.get('env');
+    var _log   = app.lib.logger;
+    var _group = 'BOOT:OAUTHPROXY';
 
     try {
         var _conf = app.lib.bootConf(app, 'oauthproxy');
@@ -12,7 +13,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

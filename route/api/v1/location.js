@@ -58,6 +58,7 @@ module.exports = function(app) {
         if(shouldArr.length)
             query.filtered.filter.bool.should = shouldArr;
 
+        // execute search
         schema.search(query, {
             hydrate: true,
             hydrateOptions: {

@@ -3,7 +3,7 @@ var jwt         = require('jwt-simple');
 var _           = require('underscore');
 
 function _guest(req, res, next) {
-    req.user = {id: 'guest'};
+    req.__user = {id: 'guest'};
     next();
 }
 
@@ -23,10 +23,10 @@ function _access_token(req, res, next) {
             }) );
 
         if(decoded.user) {
-            req.user = {id: decoded.user._id};
+            req.__user = {id: decoded.user._id};
 
             if(decoded.user.profile)
-                req.user.profile = decoded.user.profile;
+                req.__user.profile = decoded.user.profile;
         }
 
         next();
@@ -58,12 +58,15 @@ function Auth(req, res, next) {
     // guest user
     if( ! req.query.access_token && ! req.headers['x-access-token'])
         _guest(req, res, next);
+
     // oauth user
     else if(req.query.access_token && _app.oauth)
         _app.oauth.authorise()(req, res, next);
+
     // auth user
     else if(req.headers['x-access-token'])
         _access_token(req, res, next);
+
     else
         _guest(req, res, next);
 

@@ -1,6 +1,4 @@
 var kue = require('kue');
-var _   = require('underscore');
-_.s     = require('underscore.string');
 
 module.exports = function(app) {
 
@@ -22,11 +20,11 @@ module.exports = function(app) {
         var Model  = _mongoose.model(params.model);
 
         Model.findOne({_id: params.id}, function(err, doc) {
-            console.log('doc save: '+doc._id);
+            _log.info(_group+':'+params.model, doc._id.toString());
 
             doc.save(function(err) {
                 if(err)
-                    console.log(err);
+                    _log.error(_group, err);
 
                 done();
             });

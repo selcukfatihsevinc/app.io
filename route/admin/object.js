@@ -15,11 +15,13 @@ module.exports = function(app) {
     var _conf   = app.config[_env].admin; // admin config
     var _system = [
         'oauth.clients',
+        'system.accounts',
         'system.actions',
         'system.filters',
+        'system.images',
+        'system.invites',
         'system.objects',
-        'system.roles',
-        'system.users'
+        'system.roles'
     ];
 
     var _inspector = function(req, redirect) {
@@ -67,7 +69,7 @@ module.exports = function(app) {
                 });
             },
             a: function(cb) {
-                new _schema('system.apps').init(req, res, next).get({s: 'name'}, function(err, doc) {
+                new _schema('system.apps').init(req, res, next).get({sort: 'name'}, function(err, doc) {
                     cb(err, doc)
                 });
             }
@@ -100,6 +102,9 @@ module.exports = function(app) {
             req.session.apps = {};
             _.each(results.a, function(value, key) {
                 req.session.apps[value._id.toString()] = value;
+
+                if(value.slug == 'system')
+                    req.session.systemApp = value;
             });
 
             // set resources session data
@@ -588,15 +593,18 @@ module.exports = function(app) {
 
             // set app id
             if(_system.indexOf(o) != -1)
-                req.query.apps = req.session.app._id;
+                req.query.apps = '{in}'+req.session.app._id;
 
             // system.actions için sistem objelerine erişim izni olabilir
-            if(req.query.apps && o == 'system.objects')
-                delete req.query.apps;
+            if(req.query.apps && o == 'system.objects' && req.session.systemApp)
+                req.query.apps += ','+req.session.systemApp._id.toString();
 
             // istenecek field'lar (relation, nested vs. field'larda bütün data'yı çekmesin )
             if(insp.Options.columns)
                 req.query.f = insp.Options.columns.join(',');
+
+            // obje sayısı 10'dan fazla olabilir
+            req.query.limit = 1000;
 
             new _schema(o).init(req, res, next).get(req.query, function(err, doc) {
                 if(err)

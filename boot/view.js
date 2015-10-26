@@ -7,7 +7,8 @@ extras.useFilter(swig, 'split');
 
 module.exports = function(app) {
 
-    var _log = app.system.logger;
+    var _log   = app.lib.logger;
+    var _group = 'BOOT:VIEW';
 
     try {
         // get config
@@ -31,7 +32,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

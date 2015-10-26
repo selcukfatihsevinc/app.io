@@ -1,11 +1,15 @@
 function Client(req, res, next) {
 
     var _app    = req.app;
-    var _env    = _app .get('env');
+    var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
 
-    if( ! req.headers['x-client-id'] || ! req.headers['x-client-secret'] ) {
+    // headers
+    var _clientId     = req.headers['x-client-id'];
+    var _clientSecret = req.headers['x-client-secret'];
+        
+    if( ! _clientId || _clientId == '' || ! _clientSecret || _clientSecret == '' ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
             errors: ['check your client id and client secret headers']}
@@ -13,8 +17,8 @@ function Client(req, res, next) {
     }
 
     new _schema('oauth.clients').init(req, res, next).get({
-        clientId: req.headers['x-client-id'],
-        clientSecret: req.headers['x-client-secret'],
+        clientId: _clientId,
+        clientSecret: _clientSecret,
         qt: 'one'
     },
     function(err, doc) {
@@ -25,7 +29,7 @@ function Client(req, res, next) {
             ));
         }
 
-        req.appId = doc.apps.toString();
+        req.__appId = doc.apps.toString();
 
         next();
     });

@@ -2,18 +2,19 @@ var Sequelize = require('sequelize');
 
 module.exports = function(app) {
 
-    var _env = app.get('env');
-    var _log = app.system.logger;
-    var _c   = app.config[_env].db;
+    var _env   = app.get('env');
+    var _log   = app.lib.logger;
+    var _conf  = app.config[_env].db;
+    var _group = 'CORE:DB';
 
-    // _log.info('db config', _c);
-
-    if( ! _c )
+    if( ! _conf )
         return false;
 
-    if( ! _c.enabled )
+    if( ! _conf.enabled )
         return false;
 
-    return new Sequelize(_c.uri);
+    _log.info(_group+':CONFIG', _conf);
+
+    return new Sequelize(_conf.uri);
 
 };

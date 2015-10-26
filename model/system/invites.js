@@ -10,7 +10,6 @@ module.exports = function(app) {
     var _env      = app.get('env');
     var _log      = app.lib.logger;
     var _conf     = app.config[_env];
-    var _mailer   = app.lib.mailer;
     var mongoose  = app.core.mongo.mongoose;
     var ObjectId  = mongoose.Schema.Types.ObjectId;
     var Inspector = app.lib.inspector;
@@ -19,10 +18,18 @@ module.exports = function(app) {
     var emitter   = app.lib.schemaEmitter;
     var _group    = 'MODEL:system.invites';
 
+    var _mailer   = app.lib.mailer;
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
+
     var Schema = {
         ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter', index: true},
         em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email', index: true},
+        ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter', index: true},
         na  : {type: String, typeStr: 'String', alias: 'name'},
         ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
         it  : {type: String, typeStr: 'String', required: true, alias: 'invite_token', index: true},
@@ -32,10 +39,16 @@ module.exports = function(app) {
         st  : {type: String, typeStr: 'String', default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'status', index: true}
     };
 
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
+
     Schema.ap.settings  = {initial: false};
     Schema.em.settings  = {initial: false};
-    Schema.na.settings  = {initial: false};
     Schema.ir.settings  = {initial: false};
+    Schema.na.settings  = {initial: false};
     Schema.ca.settings  = {initial: false};
     Schema.it.settings  = {initial: false};
     Schema.iex.settings = {initial: false};
@@ -50,6 +63,12 @@ module.exports = function(app) {
             {label: 'Declined', value: 'DC'}
         ]
     };
+
+    /**
+     * ----------------------------------------------------------------
+     * Inspector
+     * ----------------------------------------------------------------
+     */
 
     var inspector  = new Inspector(Schema).init();
     var InviteSchema = app.core.mongo.db.Schema(Schema);
@@ -113,25 +132,31 @@ module.exports = function(app) {
             var Apps = mongoose.model('System_Apps');
 
             Apps.findById(doc.ap, function(err, apps) {
-                if(err || ! apps)
+                if( err || ! apps )
                     return _log.info('not found app data for system.invites');
 
-                var moderate = dot.get(_conf, 'app.config.'+apps.s+'.auth.invite_moderation');
+                var slug     = apps.s;
+                var moderate = dot.get(_conf, 'app.config.'+slug+'.auth.invite_moderation');
 
                 if(moderate && doc.es == 'N' && doc.st == 'AC' && doc.it && doc.em) {
-                    var mailconf = dot.get(_conf, 'app.mail.'+apps.s);
+                    var mailConf = dot.get(_conf, 'app.mail.'+slug);
 
-                    if(mailconf) {
-                        var mailObj = mailconf.invite;
+                    if(mailConf) {
+                        var mailObj = _.clone(mailConf.invite);
 
                         app.render('email/templates/invite', {
-                            baseUrl: mailconf.baseUrl,
-                            endpoint: mailconf.endpoints.invite,
+                            baseUrl: mailConf.baseUrl,
+                            endpoint: mailConf.endpoints.invite,
                             token: doc.it
                         }, function(err, html) {
+                            if(err)
+                                _log.error(_group, err);
+
                             if(html) {
-                                mailObj.to = doc.em;
+                                mailObj.to   = doc.em;
                                 mailObj.html = html;
+
+                                _log.info(_group+':MAIL_OBJ', mailObj);
 
                                 var _transport = app.boot.mailer;
                                 new _mailer(_transport).send(mailObj);
@@ -142,9 +167,11 @@ module.exports = function(app) {
                         doc.es = 'Y';
                         doc.save(function(err) {
                             if(err)
-                                return _log.info(err);
+                                _log.error(_group, err);
                         });
                     }
+                    else
+                        _log.info(_group+':MAIL_OBJ', 'not found');
                 }
             });
         }

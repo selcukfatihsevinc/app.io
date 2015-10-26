@@ -6,46 +6,49 @@ var _      = require('underscore');
 
 module.exports = function(app) {
 
-    var _log      = app.lib.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var emitter   = app.lib.schemaEmitter;
-    var _group    = 'MODEL:system.users';
+    var _helper    = app.lib.utils.helper;
+    var _log       = app.lib.logger;
+    var _mongoose  = app.core.mongo.mongoose;
+    var _objectId  = _mongoose.Schema.Types.ObjectId;
+    var _inspector = app.lib.inspector;
+    var _query     = app.lib.query;
+    var _emitter   = app.lib.schemaEmitter;
+    var _workerId  = parseInt(process.env.worker_id);
+    var _group     = 'MODEL:system.users';
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
 
     var Schema = {
-        ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        na  : {type: String, typeStr: 'String', required: true, alias: 'name', index: true},
-        em  : {type: String, typeStr: 'String', alias: 'email', pattern: 'email'},
-        unm : {type: String, typeStr: 'String', alias: 'username'},
+        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email', unique: true},
         pa  : {type: String, typeStr: 'String', optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
         sa  : {type: String, typeStr: 'String', alias: 'salt'},
         ha  : {type: String, typeStr: 'String', alias: 'hash'},
-        ie  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled'},
+        ie  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled', index: true},
         ty  : {type: String, typeStr: 'String', default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
-        ro  : [{type: ObjectId, typeStr: 'ObjectId', ref: 'System_Roles', alias: 'roles'}],
+        ro  : [{type: _objectId, typeStr: 'ObjectId', ref: 'System_Roles', alias: 'roles'}],
         ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
-        rgt : {type: String, typeStr: 'String', alias: 'register_token'},
-        rt  : {type: String, typeStr: 'String', alias: 'reset_token'},
+        rgt : {type: String, typeStr: 'String', alias: 'register_token', index: true},
+        rt  : {type: String, typeStr: 'String', alias: 'reset_token', index: true},
         re  : {type: Date, typeStr: 'Date', alias: 'reset_expires'},
-        fbt : {type: String, typeStr: 'String', alias: 'facebook_token'},
-        twt : {type: String, typeStr: 'String', alias: 'twitter_token'},
-        tws : {type: String, typeStr: 'String', alias: 'twitter_token_secret'},
-        apn : {type: String, typeStr: 'String', alias: 'push_apn'}, // ios push notification apn
         ii  : {type: String, typeStr: 'String', default: 'N', enum: ['Y', 'N'], alias: 'is_invited', index: true},
-        inv : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
+        inv : {type: _objectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
         ll  : {type: Date, typeStr: 'Date', alias: 'last_login', index: true}
     };
 
-    Schema.ap.settings  = {initial: false};
-    Schema.na.settings  = {label: 'Name'};
-    Schema.em.settings  = {label: 'Email'};
-    Schema.unm.settings = {label: 'Username'};
-    Schema.pa.settings  = {label: 'Password'};
-    Schema.sa.settings  = {initial: false};
-    Schema.ha.settings  = {initial: false};
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
+
+    Schema.em.settings = {label: 'Email'};
+    Schema.pa.settings = {label: 'Password'};
+    Schema.sa.settings = {initial: false};
+    Schema.ha.settings = {initial: false};
 
     Schema.ie.settings = {
         label: 'Is Enabled ?',
@@ -72,10 +75,6 @@ module.exports = function(app) {
     Schema.rgt.settings = {initial: false};
     Schema.rt.settings  = {initial: false};
     Schema.re.settings  = {initial: false};
-    Schema.fbt.settings = {initial: false};
-    Schema.twt.settings = {initial: false};
-    Schema.tws.settings = {initial: false};
-    Schema.apn.settings = {initial: false};
 
     Schema.ii.settings = {
         initial: false,
@@ -88,226 +87,195 @@ module.exports = function(app) {
     Schema.inv.settings = {initial: false};
     Schema.ll.settings  = {initial: false};
 
-    var inspector  = new Inspector(Schema).init();
+    /**
+     * ----------------------------------------------------------------
+     * Inspector
+     * ----------------------------------------------------------------
+     */
+
+    var inspector  = new _inspector(Schema).init();
     var UserSchema = app.core.mongo.db.Schema(Schema);
 
-    // some keys
-    inspector.Save.someKeys = ['em', 'unm'];
-
     // plugins
-    UserSchema.plugin(query);
+    UserSchema.plugin(_query);
 
     // inspector
     UserSchema.inspector = inspector;
-
-    // compound index
-    UserSchema.index({em: 1}, {unique: true, sparse: true});
-    UserSchema.index({unm: 1}, {unique: true, sparse: true});
 
     // model options
     UserSchema.inspector.Options = {
         singular : 'System User',
         plural   : 'System Users',
-        columns  : ['name', 'email', 'roles'],
-        main     : 'name',
+        columns  : ['email', 'roles'],
+        main     : 'email',
         perpage  : 25
     };
 
-    // schema owner
-    UserSchema.inspector.Owner = {
-        field : '_id',
-        alias : '_id',
-        protect : {
-            'get': true,
-            'getid': true,
-            'put': true
-        }
-    };
-
-    var hash = function(passwd, salt) {
-        return crypto.createHmac('sha256', salt).update(passwd).digest('hex');
-    };
+    /**
+     * ----------------------------------------------------------------
+     * Pre Save Hook
+     * ----------------------------------------------------------------
+     */
 
     UserSchema.pre('save', function (next) {
-        var self   = this;
+        var self = this;
+
+        // unique durumunu korumak için email hep küçük harf olarak kaydedilecek
+        self.em = self.em.toLowerCase();
 
         // yeni kullanıcı veya güncelleme durumunda password hash'i kaydediyoruz
         if( ! php.empty(self.pa) ) {
             self.sa = uuid.v1();
-            self.ha = hash(self.pa, self.sa);
+            self.ha = _helper.hash(self.pa, self.sa);
             self.pa = '';
         }
 
         self._isNew = self.isNew;
 
-        // twitter token parse (hello.js)
-        if(self.twt && self.twt.indexOf(':') != -1 && self.twt.indexOf('@') != -1) {
-            try {
-                var tokenData = self.twt.split('@');
-                tokenData = tokenData[0];
-                tokenData = tokenData.split(':');
-
-                self.twt = tokenData[0];
-                self.tws = tokenData[1];
-            }
-            catch(e) {}
-        }
-
-        // login'de user_updated emit etme
-        self._emit = ! self.isModified('ll');
-
         next();
     });
 
-    var _unique_objects = function(doc, original, key) {
-
-    };
+    /**
+     * ----------------------------------------------------------------
+     * Post Save Hook
+     * ----------------------------------------------------------------
+     */
 
     UserSchema.post('save', function (doc) {
-        // emit event
-        if(this._emit)
-            emitter.emit('user_updated', {doc: doc, isNew: this._isNew});
+        var self = this;
 
-        var self  = this;
+        // emit event
+        if( ! self._isNew ) {
+            _emitter.emit('user_updated', {
+                source: 'System_Users',
+                doc: doc
+            });
+        }
+
         var roles = [];
         doc       = doc.toJSON();
         var id    = doc._id.toString();
 
         // mevcut kaydedilen roller
         if(doc.ro.length) {
-            doc.ro = _.map(doc.ro, function(obj) { return obj.toString(); });
+            doc.ro = _helper.mapToString(doc.ro);
             roles.push(doc.ro);
         }
 
         // kaydedilmeden önceki roller
-        if(self._original) {
-            if(self._original.ro) {
-                self._original.ro = _.map(self._original.ro, function(obj) { return obj.toString(); });
-                roles.push(self._original.ro);
-            }
+        if(self._original && self._original.ro) {
+            self._original.ro = _helper.mapToString(self._original.ro);
+            roles.push(self._original.ro);
         }
 
-        // roles id'lerini unique array haline getiriyoruz
+        // role id'lerini unique array haline getiriyoruz
         roles = _.union.apply(_, roles);
-        roles = _.map(roles, function(obj) { return obj.toString(); });
+        roles = _helper.mapToString(roles);
         roles = _.uniq(roles);
 
-        var Apps  = mongoose.model('System_Apps');
-        var Roles = mongoose.model('System_Roles');
+        var Apps  = _mongoose.model('System_Apps');
+        var Roles = _mongoose.model('System_Roles');
         var a;
 
         if(roles) {
-            a = {};
-
-            // app data'sını alıyoruz
-            a['app'] = function(cb) {
-                Apps.findById(doc.ap, function (err, apps) {
-                    cb(err, apps);
-                });
-            };
-
-            a['roles'] = function(cb) {
-                // rolleri alırken superadmin olmayanlar için işlem yapacağız
-                // kullanıcı app id'si ile aynı olan roller üzerinde işlem yapıyoruz
-                Roles.find({_id: {$in: roles}, s: {$ne: 'superadmin'}, ap: doc.ap}).exec(function(err, roles) {
-                    cb(err, roles);
-                });
+            a = {
+                roles: function(cb) {
+                    // rolleri alırken superadmin olmayanlar için işlem yapacağız
+                    Roles.find({_id: {$in: roles}, s: {$ne: 'superadmin'}}).exec(function(err, roles) {
+                        cb(err, roles);
+                    });
+                }
             };
 
             async.parallel(a, function(err, results) {
                 if(err)
                     return _log.error(err);
 
-                if( ! results || ! results['app'] || ! results['roles'] || ! results['roles'].length )
-                    return _log.info('app or roles not found');
+                if( ! results || ! results['roles'] || ! results['roles'].length )
+                    return _log.info('roles not found');
 
-                var appData  = results['app'];
                 var roleData = results['roles'];
 
-                // acl'e parametre olarak role id yerine role slug vereceğiz
-                // (node_acl'den sorgularken anlamlı olması için)
-                var rolesObj = {};
-
+                // collect app ids from role data
+                var apps = [];
                 _.each(roleData, function(value, key) {
-                    rolesObj[value._id.toString()] = appData.s+'_'+value.s;
+                    apps.push(value.ap.toString());
                 });
 
-                var _role_name = function(obj) {
-                    return _.map(obj, function(key) { return rolesObj[key]; });
-                };
+                // get apps data
+                Apps.find({_id: {$in: apps}}).exec(function(err, apps) {
+                    if( err || ! apps )
+                        return _log.info('apps not found');
 
-                // yeni kayıt durumunda rolleri ekliyoruz
-                if(self._isNew) {
-                    if (app.acl && doc.ro.length) {
-                        doc.ro = _role_name(doc.ro);
+                    // use apps _id as key
+                    var appsObj = {};
+                    apps.forEach(function (doc) {
+                        appsObj[doc._id.toString()] = doc;
+                    });
 
-                        if(doc.ro) {
-                            app.acl.addUserRoles(doc._id.toString(), doc.ro);
-                            return _log.info('[acl:addUserRoles] new user acl roles: '+doc.ro);
+                    // acl'e parametre olarak role id yerine role slug vereceğiz
+                    // (node_acl'den sorgularken anlamlı olması için)
+                    var rolesObj = {};
+
+                    // use roles _id as key, appSlug_roleSlug as value
+                    _.each(roleData, function(value, key) {
+                        rolesObj[value._id.toString()] = appsObj[value.ap.toString()].s+'_'+value.s;
+                    });
+
+                    var _role_name = function(obj, rolesObj) {
+                        return _.map(obj, function(key) { return rolesObj[key]; });
+                    };
+
+                    /**
+                     * yeni kayıt durumunda rolleri ekliyoruz
+                     */
+
+                    if(self._isNew) {
+                        if (app.acl && doc.ro.length) {
+                            doc.ro = _role_name(doc.ro, rolesObj);
+
+                            if(doc.ro) {
+                                app.acl.addUserRoles(doc._id.toString(), doc.ro);
+                                return _log.info('ACL:ADD_USER_ROLES:'+doc._id, doc.ro);
+                            }
                         }
+
+                        return;
                     }
 
-                    return;
-                }
+                    /**
+                     * update durumunda rolleri güncelliyoruz
+                     */
 
-                /**
-                 * update durumunda rolleri güncelliyoruz
-                 */
+                    // new roles (role slug'larını alıyoruz)
+                    var newRoles = php.array_diff(doc.ro, self._original.ro);
+                    newRoles     = _.map(Object.keys(newRoles), function(key) { return newRoles[key]; });
+                    newRoles     = _role_name(newRoles, rolesObj);
 
-                // new roles (role slug'larını alıyoruz)
-                var newRoles = php.array_diff(doc.ro, self._original.ro);
-                newRoles     = _.map(Object.keys(newRoles), function(key) { return newRoles[key]; });
-                newRoles     = _role_name(newRoles);
+                    if(app.acl && newRoles.length) {
+                        app.acl.addUserRoles(doc._id.toString(), newRoles);
+                        _log.info('ACL:ADD_USER_ROLES:'+doc._id, newRoles);
+                    }
 
-                if(app.acl && newRoles.length) {
-                    app.acl.addUserRoles(doc._id.toString(), newRoles);
-                    _log.info('[acl:addUserRoles] current user new acl roles: '+newRoles);
-                }
+                    // old roles (role slug'larını alıyoruz)
+                    var oldRoles = php.array_diff(self._original.ro, doc.ro);
+                    oldRoles     = _.map(Object.keys(oldRoles), function(key) { return oldRoles[key]; });
+                    oldRoles     = _role_name(oldRoles, rolesObj);
 
-                // old roles (role slug'larını alıyoruz)
-                var oldRoles = php.array_diff(self._original.ro, doc.ro);
-                oldRoles     = _.map(Object.keys(oldRoles), function(key) { return oldRoles[key]; });
-                oldRoles     = _role_name(oldRoles);
-
-                if(app.acl && oldRoles.length) {
-                    _log.info('[acl:removeUserRoles] current user old acl roles: '+oldRoles);
-                    app.acl.removeUserRoles(doc._id.toString(), oldRoles);
-                }
-            });
-        }
-
-        // add default user role
-        if(app.acl && self._isNew) {
-            a = {};
-
-            // app data'sını alıyoruz
-            a['app'] = function(cb) {
-                Apps.findById(doc.ap, function (err, apps) {
-                    cb(err, apps);
+                    if(app.acl && oldRoles.length) {
+                        app.acl.removeUserRoles(doc._id.toString(), oldRoles);
+                        _log.info('ACL:REMOVE_USER_ROLES:'+doc._id, oldRoles);
+                    }
                 });
-            };
-
-            a['roles'] = function(cb) {
-                Roles.findOne({s: 'user', ap: doc.ap}).exec(function(err, role) {
-                    cb(err, role);
-                });
-            };
-
-            async.parallel(a, function(err, results) {
-                if(err)
-                    return _log.error(err);
-
-                if( ! results || ! results['app'] || ! results['roles'] )
-                    return _log.info('app or roles not found (save)');
-
-                var appData  = results['app'];
-                var roleData = results['roles'];
-
-                app.acl.addUserRoles(id, appData.s+'_user');
-                _log.info('[acl:addUserRoles] add default user role as '+appData.s+'_user');
             });
         }
     });
+
+    /**
+     * ----------------------------------------------------------------
+     * Post Remove Hook
+     * ----------------------------------------------------------------
+     */
 
     UserSchema.post('remove', function (doc) {
         var self = this;
@@ -316,58 +284,69 @@ module.exports = function(app) {
 
         // kayıt silinmesi durumunda rolleri siliyoruz
         if (app.acl && doc.ro.length) {
-            doc.ro = _.map(doc.ro, function(obj) { return obj.toString(); });
+            doc.ro = _helper.mapToString(doc.ro);
 
-            var Apps  = mongoose.model('System_Apps');
-            var Roles = mongoose.model('System_Roles');
+            var Apps  = _mongoose.model('System_Apps');
+            var Roles = _mongoose.model('System_Roles');
 
-            var a = {};
-
-            // app data'sını alıyoruz
-            a['app'] = function(cb) {
-                Apps.findById(doc.ap, function (err, apps) {
-                    cb(err, apps);
-                });
-            };
-
-            a['roles'] = function(cb) {
-                Roles.find({_id: {$in: doc.ro}}).exec(function(err, roles) {
-                    cb(err, roles);
-                });
+            var a = {
+                roles: function(cb) {
+                    Roles.find({_id: {$in: doc.ro}}).exec(function(err, roles) {
+                        cb(err, roles);
+                    });
+                }
             };
 
             async.parallel(a, function(err, results) {
                 if(err)
                     return _log.error(err);
 
-                if( ! results || ! results['app'] || ! results['roles'] )
-                    return _log.info('app or roles not found (remove)');
+                if( ! results || ! results['roles'] )
+                    return _log.info('roles not found (remove)');
 
-                var appData  = results['app'];
                 var roleData = results['roles'];
 
-                var rolesObj = {};
-
+                // collect app ids from role data
+                var apps = [];
                 _.each(roleData, function(value, key) {
-                    rolesObj[value._id] = appData.s+'_'+value.s;
+                    apps.push(value.ap.toString());
                 });
 
-                doc.ro = _.map(doc.ro, function(key) { return rolesObj[key]; });
-                app.acl.removeUserRoles(doc._id.toString(), doc.ro);
-                _log.info('[acl:removeUserRoles] old user acl roles: '+doc.ro);
+                // get apps data
+                Apps.find({_id: {$in: apps}}).exec(function(err, apps) {
+                    if (err || !apps)
+                        return _log.info('apps not found');
+
+                    // use apps _id as key
+                    var appsObj = {};
+                    apps.forEach(function (doc) {
+                        appsObj[doc._id.toString()] = doc;
+                    });
+
+                    var rolesObj = {};
+
+                    // use roles _id as key, appSlug_roleSlug as value
+                    _.each(roleData, function(value, key) {
+                        rolesObj[value._id] = appsObj[value.ap.toString()].s+'_'+value.s;
+                    });
+
+                    doc.ro = _.map(doc.ro, function(key) { return rolesObj[key]; });
+                    app.acl.removeUserRoles(doc._id.toString(), doc.ro);
+                    _log.info('ACL:REMOVE_USER_ROLES:'+doc._id, doc.ro);
+                });
             });
         }
     });
 
     // allow superadmin (mongoose connection bekliyor)
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
+    _mongoose.connection.on('open', function() {
+        if(app.acl && _workerId == 0) {
             app.acl.allow('superadmin', 'system_users', '*');
             _log.info(_group+':ACL:ALLOW', 'superadmin:system_users:*');
         }
     });
 
-    return mongoose.model('System_Users', UserSchema);
+    return _mongoose.model('System_Users', UserSchema);
 
 };
 

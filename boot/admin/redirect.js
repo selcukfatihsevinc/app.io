@@ -2,14 +2,16 @@ module.exports = function(app) {
 
     /**
      * @TODO
-     * config'e çek
+     * routing config'e çekilebilir
      */
 
-    var _log = app.system.logger;
+    var _log   = app.lib.logger;
+    var _mdl   = app.middle;
+    var _group = 'BOOT:ADMIN:REDIRECT';
 
     try {
         app.all('/admin*',
-            app.middle.basic,
+            _mdl.basic,
         function (req, res, next) {
             var segment = res.locals.segments[2];
             var routes  = ['login', 'logout'];
@@ -23,7 +25,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

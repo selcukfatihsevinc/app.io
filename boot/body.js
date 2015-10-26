@@ -2,7 +2,8 @@ var body = require('body-parser');
 
 module.exports = function(app) {
 
-    var _log = app.system.logger;
+    var _log   = app.lib.logger;
+    var _group = 'BOOT:BODY';
 
     try {
         var _conf = app.lib.bootConf(app, 'body');
@@ -13,7 +14,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

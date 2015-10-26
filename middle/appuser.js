@@ -10,63 +10,69 @@ function AppUser(req, res, next) {
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
 
-    if( ! req.appId ) {
+    if( ! req.__appId ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
             errors: ['app id not found']}
         ));
     }
 
-    var login_field = req.body.email || req.body.username;
+    var _profiles = req.__appData.slug+'.profiles';
+    var _email    = req.body.email;
+    var _username = req.body.username;
+    var _login    = _email || _username;
 
-    if( ! login_field ) {
+    if( ! _login || _login == '' ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
             errors: ['user credentials not found']}
         ));
     }
 
-    var a = {
-        app: function(cb) {
-            new _schema('system.apps').init(req, res, next).getById(req.appId, function(err, doc) {
-                cb(err, doc);
-            });
-        },
-        user: function(cb) {
-            var obj = {
-                apps: req.appId,
+    // async object
+    var a = {};
+
+    if(_email) {
+        a.email = function(cb) {
+            new _schema('system.users').init(req, res, next).get({
+                email: _email.toLowerCase(),
                 qt: 'one'
-            };
-
-            /**
-             * @TODO
-             * email hep küçük harfle kaydedilecek (register vs ekle)
-             * kullanıcı adının da lower versiyonu modelde tutulacak (unique olabilmesi için)
-             */
-
-            if(req.body.email)
-                obj.email = req.body.email.toLowerCase();
-            else if(req.body.username)
-                obj.username = req.body.username;
-
-            new _schema('system.users').init(req, res, next).get(obj, function(err, doc) {
+            }, function(err, doc) {
                 cb(err, doc);
             });
         }
-    };
+    }
+    else if(_username) {
+        a.username = function(cb) {
+            var model = new _schema(_profiles).init(req, res, next);
+
+            if( ! model )
+                return cb(true);
+
+            model.get({
+                username_lc: _username.toLowerCase(),
+                qt: 'one'
+            }, function(err, doc) {
+                var userId = doc.users;
+
+                new _schema('system.users').init(req, res, next).getById(userId, function(err, doc) {
+                    cb(err, doc);
+                })
+            });
+        }
+    }
 
     async.parallel(a, function(err, results) {
 
-        if( ! results.user ) {
+        if( ! results.email && ! results.username ) {
             return next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
                 errors: ['user not found']}
             ));
         }
 
-        req.appData      = results.app;
-        req.userData     = results.user;
-        req.userData._id = req.userData._id.toString();
+        req.__userData     = results.email || results.username;
+        req.__userData._id = req.__userData._id.toString();
 
         next();
     });

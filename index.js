@@ -66,6 +66,8 @@ AppIo.prototype.run = function () {
     this.load('core', this._opts.core);
     this.load('lib');
     this.external('lib', this._opts.external.lib || []);
+    this.load('libpost');
+    this.external('libpost', this._opts.external.libpost || []);
     this.load('model', ['acl', 'oauth', 'system']);
     this.external('model', this._opts.external.model || []);
     this.load('middle');
@@ -96,6 +98,8 @@ AppIo.prototype.workers = function () {
     this.load('core', this._opts.core);
     this.load('lib');
     this.external('lib', this._opts.external.lib || []);
+    this.load('libpost');
+    this.external('libpost', this._opts.external.libpost || []);
     this.load('model', ['acl', 'oauth', 'system']);
     this.external('model', this._opts.external.model || []);
     this.load('middle');

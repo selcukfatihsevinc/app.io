@@ -1,5 +1,5 @@
-var dot   = require('dotty');
 var async = require('async');
+var dot   = require('dotty');
 var fs    = require('fs');
 var _     = require('underscore');
 
@@ -18,7 +18,9 @@ module.exports = function(app) {
     var a = {};
 
     /**
-     * save or get apps
+     * ----------------------------------------------------------------
+     * get or save apps
+     * ----------------------------------------------------------------
      */
 
     var apps = _c.apps.list;
@@ -28,16 +30,15 @@ module.exports = function(app) {
             (function(a, value, key) {
                 a['app_'+value.slug] = function(cb) {
                     var schema = new _schema('system.apps').init(app);
-                    var _v     = _.clone(value);
 
-                    schema.post(value, function(err, apps) {
+                    schema.get({slug: value.slug, qt: 'one'}, function(err, apps) {
                         if( ! err && apps ) {
-                            schema = _v = null;
+                            schema = null;
                             return cb(err, apps);
                         }
 
-                        schema.get({slug: _v.slug, qt: 'one'}, function(err, apps) {
-                            schema = _v = null;
+                        schema.post(value, function(err, apps) {
+                            schema = null;
                             cb(err, apps);
                         });
                     });
@@ -46,10 +47,12 @@ module.exports = function(app) {
         });
     }
 
+    // auth middleware'de eğer kullanıcı yoksa user.id = 'guest' olarak set ediliyor,
+    // user.id = 'guest' için guest role'ü set edilmeli
     function guestRole(role, currApp) {
         if(role.slug == 'guest') {
             app.acl.addUserRoles('guest', currApp.slug+'_guest');
-            _log.info(_group+':GUEST:ACL:ADDUSERROLES', 'guest user acl created for '+currApp.name);
+            _log.info(_group+':GUEST:ACL:ADD_USER_ROLES', 'guest user acl created for '+currApp.name);
         }
     }
 
@@ -57,10 +60,13 @@ module.exports = function(app) {
     async.parallel(a, function(err, apps) {
         // console.log(apps);
 
+        // async object
         a = {};
 
         /**
-         * save or get roles
+         * ----------------------------------------------------------------
+         * get or save roles
+         * ----------------------------------------------------------------
          */
 
         if(dot.get(_c, 'sync.data.roles')) {
@@ -70,29 +76,24 @@ module.exports = function(app) {
                 if( ! currApp )
                     return;
 
-                // get app id
-                var currId = currApp._id.toString();
-
-                // roles
-                var roles = value.default;
+                var currId = currApp._id.toString(); // get app id
+                var roles  = value.default;
 
                 _.each(roles, function(role_value, role_key) {
                     (function(a, key, role_value, role_key, currId, currApp) {
                         a['role_'+key+'.'+role_value.slug] = function(cb) {
                             var schema = new _schema('system.roles').init(app);
-                            var _v     = _.clone(role_value); // klonlamayınca alias'tan geçtiği için slug => s oluyor, get edilemiyor
+                            guestRole(role_value, currApp);
 
-                            role_value.ap = currId;
-                            schema.post(role_value, function(err, role) {
-                                guestRole(_v, currApp);
-
+                            schema.get({apps: currId, slug: role_value.slug, qt: 'one'}, function(err, role) {
                                 if( ! err && role ) {
-                                    schema = _v = null;
+                                    schema = null;
                                     return cb(err, role);
                                 }
 
-                                schema.get({apps: currId, slug: _v.slug, qt: 'one'}, function(err, role) {
-                                    schema = _v = null;
+                                role_value.apps = currId;
+                                schema.post(role_value, function(err, role) {
+                                    schema = null;
                                     cb(err, role);
                                 });
                             });
@@ -102,6 +103,12 @@ module.exports = function(app) {
                 });
             });
         }
+
+        /**
+         * ----------------------------------------------------------------
+         * collect model properties
+         * ----------------------------------------------------------------
+         */
 
         var collect = function(models, obj, mainKey) {
             _.each(models, function(value, key) {
@@ -124,7 +131,9 @@ module.exports = function(app) {
         models = collect(app.model, models);
 
         /**
-         * save or get objects
+         * ----------------------------------------------------------------
+         * get or save objects
+         * ----------------------------------------------------------------
          */
 
         if(dot.get(_c, 'sync.data.objects')) {
@@ -150,13 +159,13 @@ module.exports = function(app) {
                         var schema = new _schema('system.objects').init(app);
                         var plural = dot.get(value.schema, 'inspector.Options.plural');
 
-                        schema.post({apps: currId, name: plural || key, slug: key}, function(err, object) {
+                        schema.get({apps: currId, slug: key, qt: 'one'}, function(err, object) {
                             if( ! err && object ) {
                                 schema = plural = null;
                                 return cb(err, object);
                             }
 
-                            schema.get({apps: currId, slug: key, qt: 'one'}, function(err, object) {
+                            schema.post({apps: currId, name: plural || key, slug: key}, function(err, object) {
                                 schema = plural = null;
                                 cb(err, object);
                             });
@@ -173,11 +182,15 @@ module.exports = function(app) {
             var series = {};
 
             /**
+             * ----------------------------------------------------------------
              * create superadmin user
+             * ----------------------------------------------------------------
              */
 
             if(dot.get(_c, 'sync.data.superadmin')) {
                 series['superadmin'] = function(cb) {
+                    // superadmin sistem app kullanıcısı olarak kaydedilecek
+                    // (superadmin tüm object'ler için full acl izinlerine sahip)
                     var currApp = apps['app_system'];
 
                     if( ! currApp )
@@ -185,23 +198,27 @@ module.exports = function(app) {
 
                     // get app id
                     var currId = currApp._id.toString();
-
-                    _c.api.admin.user.ap = currId;
-                    _c.api.admin.user.ro = results['role_system.superadmin']._id.toString(); // get role id
-
                     var schema = new _schema('system.users').init(app);
-                    schema.post(_c.api.admin.user, function(err, user) {
+
+                    // users modelinde superadmin role'üne izin vermediğimiz için burda ekliyoruz
+                    schema.get({email: _c.api.admin.user.email, qt: 'one'}, function(err, user) {
                         if( ! err && user ) {
-                            // users modelinde superadmin role'üne izin vermediğimiz için burda ekliyoruz
+                            schema = null;
                             app.acl.addUserRoles(user._id.toString(), 'superadmin');
+                            _log.info(_group+':GUEST:ACL:ADD_USER_ROLES', 'superadmin user acl created for '+currApp.name);
                             return cb(err, user);
                         }
 
-                        schema.get({apps: currId, email: _c.api.admin.user.email, qt: 'one'}, function(err, user) {
-                            // users modelinde superadmin role'üne izin vermediğimiz için burda ekliyoruz
-                            if(user)
-                                app.acl.addUserRoles(user._id.toString(), 'superadmin');
+                        // set role id
+                        _c.api.admin.user.roles = results['role_system.superadmin']._id.toString(); // get role id
 
+                        schema.post(_c.api.admin.user, function(err, user) {
+                            if(user) {
+                                app.acl.addUserRoles(user._id.toString(), 'superadmin');
+                                _log.info(_group+':GUEST:ACL:ADD_USER_ROLES', 'superadmin user acl created for '+currApp.name);
+                            }
+
+                            schema = null;
                             cb(err, user);
                         });
                     });
@@ -209,7 +226,9 @@ module.exports = function(app) {
             }
 
             /**
+             * ----------------------------------------------------------------
              * create actions
+             * ----------------------------------------------------------------
              */
 
             if(dot.get(_c, 'sync.data.actions')) {
@@ -233,8 +252,9 @@ module.exports = function(app) {
                             var role = results['role_'+key+'.'+act_key]._id.toString();
 
                             _.each(act_value, function(action, object) {
-                                console.log(object);
                                 object = results['object_'+object]._id.toString();
+
+                                // collect master actions
                                 master = [];
                                 var cAction = _.clone(action);
                                 _.each(cAction, function(actVal, actKey) {
@@ -255,7 +275,7 @@ module.exports = function(app) {
                                  * eğer izinler daha önceden kaydedilmişse üzerine ek yapabilmek veya çıkarmak için önce izni kontrol et
                                  */
 
-                                (function(currId, role, object, master) {
+                                (function(currId, role, object, master, action) {
                                     var mAction = new _schema('system.actions').init(app);
 
                                     mAction.get({
@@ -283,8 +303,8 @@ module.exports = function(app) {
                                             apps    : currId,
                                             roles   : role,
                                             objects : object,
-                                            action  : action,
-                                            master  : master
+                                            master  : master,
+                                            action  : action
                                         };
 
                                         mAction.post(obj, function(err, action) {
@@ -297,7 +317,7 @@ module.exports = function(app) {
                                             mAction = null;
                                         });
                                     });
-                                })(currId, role, object, master);
+                                })(currId, role, object, master, action);
                             });
                         });
                     });
@@ -306,7 +326,12 @@ module.exports = function(app) {
                 };
             }
 
-            // sync user roles
+            /**
+             * ----------------------------------------------------------------
+             * sync user roles
+             * ----------------------------------------------------------------
+             */
+
             if(dot.get(_c, 'sync.data.userroles')) {
 
                 series['userroles'] = function(cb) {
@@ -316,6 +341,10 @@ module.exports = function(app) {
 
                         users.on('data', function (user) {
 
+                            /**
+                             * @TODO
+                             * fazla sayıda kullanıcı olması durumunda burasının kuyrukta çalışması gerekecek
+                             */
                             new app.lib.user(app).addRole(user);
 
                         }).on('error', function (err) {
@@ -329,7 +358,12 @@ module.exports = function(app) {
 
             }
 
-            // sync model documentation
+            /**
+             * ----------------------------------------------------------------
+             * sync model documentation
+             * ----------------------------------------------------------------
+             */
+
             if(dot.get(_c, 'sync.data.docs')) {
 
                 series['docs'] = function(cb) {
@@ -338,7 +372,12 @@ module.exports = function(app) {
 
             }
 
-            // exec series
+            /**
+             * ----------------------------------------------------------------
+             * execute series
+             * ----------------------------------------------------------------
+             */
+
             async.series(series, function(err, results) {
                 _log.info(_group, 'sync data executed!');
             });

@@ -1,8 +1,8 @@
-
 module.exports = function(app) {
 
-    var _log = app.system.logger;
-    var _env = app.get('env');
+    var _log   = app.lib.logger;
+    var _env   = app.get('env');
+    var _group = 'BOOT:FORWARD';
 
     try {
         var _conf = app.lib.bootConf(app, 'forward');
@@ -20,7 +20,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

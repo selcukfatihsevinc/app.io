@@ -2,18 +2,19 @@ var solr = require('solr-client');
 
 module.exports = function(app) {
 
-    var _env = app.get('env');
-    var _log = app.system.logger;
-    var _c   = app.config[_env].solr;
+    var _env   = app.get('env');
+    var _log   = app.lib.logger;
+    var _conf  = app.config[_env].solr;
+    var _group = 'CORE:SOLR';
 
-    // _log.info('solr config', _c);
-
-    if( ! _c )
+    if( ! _conf )
         return false;
 
-    if( ! _c.enabled )
+    if( ! _conf.enabled )
         return false;
 
-    return solr.createClient(_c);
+    _log.info(_group+':CONFIG', _conf);
+
+    return solr.createClient(_conf);
 
 };

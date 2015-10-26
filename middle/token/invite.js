@@ -1,11 +1,14 @@
-function Invite(req, res, next) {
+function TokenInvite(req, res, next) {
 
     var _app    = req.app;
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
 
-    new _schema('system.invites').init(req, res, next).get({invite_token: req.params.token, qt: 'one'}, function(err, doc) {
+    new _schema('system.invites').init(req, res, next).get({
+        invite_token: req.params.token,
+        qt: 'one'
+    }, function(err, doc) {
         if( ! doc ) {
             return next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
@@ -23,8 +26,8 @@ function Invite(req, res, next) {
             }));
         }
 
-        req.inviteData     = doc;
-        req.inviteData._id = req.inviteData._id.toString();
+        req.__inviteData     = doc;
+        req.__inviteData._id = doc._id.toString();
 
         next();
     });
@@ -32,5 +35,5 @@ function Invite(req, res, next) {
 }
 
 module.exports = function(app) {
-    return Invite;
+    return TokenInvite;
 };

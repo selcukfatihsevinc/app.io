@@ -1,5 +1,5 @@
 function Api(req, res, next) {
-    res.apiResponse = true;
+    res.__api = true;
     next();
 }
 

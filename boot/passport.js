@@ -2,7 +2,8 @@ var passport = require('passport');
 
 module.exports = function(app) {
 
-    var _log = app.system.logger;
+    var _log   = app.lib.logger;
+    var _group = 'BOOT:PASSPORT';
 
     try {
         app.use(passport.initialize());
@@ -19,7 +20,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

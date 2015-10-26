@@ -1,22 +1,22 @@
-
 module.exports = function(app) {
 
-    var _log = app.system.logger;
-    var _env = app.get('env');
+    var _log   = app.lib.logger;
+    var _env   = app.get('env');
+    var _group = 'BOOT:RESIZE';
 
     try {
         var target = ['local', 's3', 'cloudinary'];
         var conf   = app.config[_env].app.config.upload;
 
         if( ! conf ) {
-            _log.info('upload conf not found');
+            _log.info(_group, 'upload conf not found');
             return;
         }
 
         var type = conf.type;
 
         if( target.indexOf(type) == -1) {
-            _log.info('upload type not found');
+            _log.info(_group, 'upload type not found');
             return;
         }
 
@@ -64,7 +64,7 @@ module.exports = function(app) {
         return true;
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

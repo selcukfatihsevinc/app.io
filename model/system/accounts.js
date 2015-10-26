@@ -52,14 +52,14 @@ module.exports = function(app) {
     };
 
     Schema.sc.settings  = {initial: false};
-    Schema.uid.settings = {initial: false};
+    Schema.uid.settings = {label: 'User Id'};
     Schema.ust.settings = {initial: false};
-    Schema.un.settings  = {initial: false};
-    Schema.dn.settings  = {initial: false};
-    Schema.pp.settings  = {initial: false};
-    Schema.tk.settings  = {initial: false};
-    Schema.rtk.settings = {initial: false};
-    Schema.tks.settings = {initial: false};
+    Schema.un.settings  = {label: 'Username'};
+    Schema.dn.settings  = {label: 'Display Name'};
+    Schema.pp.settings  = {label: 'Profile Photo'};
+    Schema.tk.settings  = {label: 'Token'};
+    Schema.rtk.settings = {label: 'Refresh Token'};
+    Schema.tks.settings = {label: 'Token Secret'};
     Schema.ua.settings  = {initial: false};
     Schema.ca.settings  = {initial: false};
 
@@ -75,9 +75,9 @@ module.exports = function(app) {
 
     // model options
     AccountSchema.inspector.Options = {
-        singular   : 'Account',
-        plural     : 'Accounts',
-        columns    : ['users'],
+        singular   : 'System Account',
+        plural     : 'System Accounts',
+        columns    : ['users', 'type', 'user_id', 'user_name', 'display_name', 'profile_photo', 'token', 'token_secret'],
         main       : 'users',
         perpage    : 25
     };

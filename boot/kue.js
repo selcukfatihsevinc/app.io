@@ -2,18 +2,19 @@ var kue = require('kue');
 
 module.exports = function(app) {
 
-    var _env = app.get('env');
-    var _log = app.system.logger;
-    var _c   = app.config[_env].redis;
+    var _env   = app.get('env');
+    var _log   = app.lib.logger;
+    var _conf  = app.config[_env].redis;
+    var _group = 'BOOT:KUE';
 
     try {
         var redisObj = {
-            port: _c.port,
-            host: _c.host
+            port: _conf.port,
+            host: _conf.host
         };
 
-        if(_c.pass)
-            redisObj.auth = _c.pass;
+        if(_conf.pass)
+            redisObj.auth = _conf.pass;
 
         return kue.createQueue({
             prefix: 'q',
@@ -23,7 +24,7 @@ module.exports = function(app) {
         });
     }
     catch(e) {
-        _log.error(e.stack);
+        _log.error(_group, e.stack);
         return false;
     }
 

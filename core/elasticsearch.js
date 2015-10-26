@@ -2,17 +2,19 @@ var elasticsearch = require('elasticsearch');
 
 module.exports = function(app) {
 
-    var _env  = app.get('env');
-    var _log  = app.system.logger;
-    var _c    = app.config[_env].elasticsearch;
-    var _auth = '';
+    var _env   = app.get('env');
+    var _log   = app.lib.logger;
+    var _conf  = app.config[_env].elasticsearch;
+    var _group = 'CORE:ELASTICSEARCH';
 
-    if( ! _c )
+    if( ! _conf )
         return false;
 
-    if( ! _c.enabled )
+    if( ! _conf.enabled )
         return false;
 
-    return new elasticsearch.Client(_c);
+    _log.info(_group+':CONFIG', _conf);
+
+    return new elasticsearch.Client(_conf);
 
 };

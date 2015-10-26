@@ -1,8 +1,10 @@
 function error(err, req, res, next) {
 
-    var _app    = req.app;
-    var _log    = _app.system.logger;
-    var _api    = res.apiResponse || res.jsonResponse;
+    var _app = req.app;
+    var _log = _app.system.logger;
+    var _api = res.__api || res.__json;
+
+    // error
     var code    = err.code || 500;
     var name    = err.name || 'InternalServerError';
     var message = err.message || false;

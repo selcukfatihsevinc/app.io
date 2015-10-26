@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.1.29",
+  "version": "0.2.0",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -48,7 +48,7 @@
     "knox-mpu-alt": "0.2.0",
     "oauth2-server": "2.3.0",
     "acl": "0.4.6",
-    "validatorjs": "1.2.1",
+    "validatorjs": "2.0.1",
     "node-uuid": "1.4.1",
     "crypto": "0.0.3",
     "jwt-simple": "0.2.0",
@@ -56,7 +56,7 @@
     "qs": "2.3.3",
     "moment": "2.8.4",
     "method-override": "2.3.0",
-    "extend": "2.0.0",
+    "extend": "3.0.0",
     "kue": "0.9.3",
     "kue-ui": "0.0.5",
     "he": "0.5.0",

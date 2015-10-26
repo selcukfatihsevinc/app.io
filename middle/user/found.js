@@ -3,11 +3,12 @@ var async = require('async');
 function UserFound(req, res, next) {
 
     var _app    = req.app;
-    var _env    = _app .get('env');
+    var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
+    var _email  = req.body.email;
 
-    if( ! req.body.email ) {
+    if( ! _email || _email == '' ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
             errors: ['email not found']}
@@ -15,8 +16,7 @@ function UserFound(req, res, next) {
     }
 
     var obj = {
-        apps: req.appId,
-        email: req.body.email,
+        email: _email.toLowerCase(),
         qt: 'one'
     };
 

@@ -1,5 +1,5 @@
 function Json(req, res, next) {
-    res.jsonResponse = true;
+    res.__json = true;
     next();
 }
 

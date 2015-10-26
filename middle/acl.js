@@ -1,5 +1,4 @@
-var acl   = require('acl');
-var async = require('async');
+var acl = require('acl');
 
 function Acl(req, res, next) {
 
@@ -12,7 +11,7 @@ function Acl(req, res, next) {
     if(_app.oauth)
         delete req.query.access_token;
 
-    var user = req.user ? req.user.id : false;
+    var user = req.__user ? req.__user.id : false;
 
     if(user) {
         var id     = req.params.id;
@@ -29,7 +28,7 @@ function Acl(req, res, next) {
                 return next( _resp.Forbidden() );
 
             if(results[object].indexOf(method+'*') != -1)
-                req.methodMaster = true;
+                req.__master = true;
 
             next();
         });
@@ -48,4 +47,5 @@ module.exports = function(app) {
     app.acl = new acl( new acl.mongodbBackend(mongoose.connection.db, 'acl_', true) ); // useSingle: true
 
     return Acl;
+
 };

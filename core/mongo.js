@@ -4,34 +4,34 @@ module.exports = function(app) {
 
     var _env   = app.get('env');
     var _log   = app.lib.logger;
-    var _group = 'CORE:MONGO';
-    var _c     = app.config[_env].mongo;
+    var _conf  = app.config[_env].mongo;
     var _auth  = '';
+    var _group = 'CORE:MONGO';
 
-    if( ! _c )
+    if( ! _conf )
         return false;
 
-    if(_c.user && _c.pass)
-        _auth = _c.user+':'+_c.pass+'@';
+    if(_conf.user && _conf.pass)
+        _auth = _conf.user+':'+_conf.pass+'@';
 
-    var str = 'mongodb://'+_auth+_c.host+':'+_c.port+'/'+_c.db;
+    var str = 'mongodb://'+_auth+_conf.host+':'+_conf.port+'/'+_conf.db;
     var db  = mongoose.connect(str, {
-        server: {poolSize: parseInt(_c.pool) || 10}
+        server: {poolSize: parseInt(_conf.pool) || 10}
     });
-
-    _log.info(_group+':CONFIG', _c);
-    _log.info(_group+':STRING', str);
 
     // mongoose set event emitter max listeners
     mongoose.connection.setMaxListeners(0);
 
     mongoose.connection.on('error', function(err) {
-        _log.error(err);
+        _log.error(_group, err);
     });
 
     mongoose.connection.on('open', function() {
         _log.info(_group, 'client connected');
     });
+
+    _log.info(_group+':CONFIG', _conf);
+    _log.info(_group+':STRING', str);
 
     return {db: db, str: str, mongoose: mongoose};
 
