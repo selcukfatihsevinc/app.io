@@ -1,24 +1,22 @@
-var async  = require('async');
-var crypto = require('crypto');
-var uuid   = require('node-uuid');
-var php    = require('phpjs');
-var dot    = require('dotty');
-var _      = require('underscore');
+var async = require('async');
+var php   = require('phpjs');
+var dot   = require('dotty');
+var _     = require('underscore');
 
 module.exports = function(app) {
 
     var _env      = app.get('env');
     var _log      = app.lib.logger;
     var _conf     = app.config[_env];
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var emitter   = app.lib.schemaEmitter;
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
+    var _mailer   = app.lib.mailer;
     var _group    = 'MODEL:system.invites';
 
-    var _mailer   = app.lib.mailer;
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
 
     /**
      * ----------------------------------------------------------------
@@ -27,16 +25,16 @@ module.exports = function(app) {
      */
 
     var Schema = {
-        ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email', index: true},
-        ir  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter', index: true},
-        na  : {type: String, typeStr: 'String', alias: 'name'},
-        ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
-        it  : {type: String, typeStr: 'String', required: true, alias: 'invite_token', index: true},
-        iex : {type: Date, typeStr: 'Date', required: true, alias: 'invite_expires'},
-        dt  : {type: String, typeStr: 'String', required: true, alias: 'detail'},
-        es  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'email_sent', index: true},
-        st  : {type: String, typeStr: 'String', default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'status', index: true}
+        ap  : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
+        em  : {type: String, required: true, alias: 'email', pattern: 'email', index: true},
+        ir  : {type: ObjectId, ref: 'System_Users', alias: 'inviter', index: true},
+        na  : {type: String, alias: 'name'},
+        ca  : {type: Date, alias: 'created_at', default: Date.now},
+        it  : {type: String, required: true, alias: 'invite_token', index: true},
+        iex : {type: Date, required: true, alias: 'invite_expires'},
+        dt  : {type: String, required: true, alias: 'detail'},
+        es  : {type: String, default: 'Y', enum: ['Y', 'N'], alias: 'email_sent', index: true},
+        st  : {type: String, default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'status', index: true}
     };
 
     /**
@@ -45,18 +43,7 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    Schema.ap.settings  = {initial: false};
-    Schema.em.settings  = {initial: false};
-    Schema.ir.settings  = {initial: false};
-    Schema.na.settings  = {initial: false};
-    Schema.ca.settings  = {initial: false};
-    Schema.it.settings  = {initial: false};
-    Schema.iex.settings = {initial: false};
-    Schema.dt.settings  = {initial: false};
-    Schema.es.settings  = {initial: false};
-
     Schema.st.settings = {
-        initial: false,
         options: [
             {label: 'Waiting', value: 'WA'},
             {label: 'Accepted', value: 'AC'},
@@ -66,42 +53,36 @@ module.exports = function(app) {
 
     /**
      * ----------------------------------------------------------------
-     * Inspector
+     * Load Schema
      * ----------------------------------------------------------------
      */
 
-    var inspector  = new Inspector(Schema).init();
-    var InviteSchema = app.core.mongo.db.Schema(Schema);
+    var InviteSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_Invites',
+        Options: {
+            singular : 'System Invite',
+            plural   : 'System Invites',
+            columns  : ['email'],
+            main     : 'email',
+            perpage  : 25
+        },
+        Owner: {
+            field : 'ir',
+            alias : 'inviter',
+            protect : {
+                'get': true,
+                'getid': true,
+                'post': true,
+                'put': true
+            }
+        }
+    });
 
     // plugins
-    InviteSchema.plugin(query);
-
-    // inspector
-    InviteSchema.inspector = inspector;
+    InviteSchema.plugin(_query);
 
     // compound index
     InviteSchema.index({ap: 1, em: 1}, {unique: true});
-
-    // model options
-    InviteSchema.inspector.Options = {
-        singular : 'System Invite',
-        plural   : 'System Invites',
-        columns  : ['email'],
-        main     : 'email',
-        perpage  : 25
-    };
-
-    // schema owner
-    InviteSchema.inspector.Owner = {
-        field : 'ir',
-        alias : 'inviter',
-        protect : {
-            'get': true,
-            'getid': true,
-            'post': true,
-            'put': true
-        }
-    };
 
     /**
      * ----------------------------------------------------------------
@@ -110,11 +91,11 @@ module.exports = function(app) {
      */
 
     InviteSchema.pre('save', function (next) {
+
         var self = this;
-
         self._isNew = self.isNew;
-
         next();
+
     });
 
     /**
@@ -129,11 +110,11 @@ module.exports = function(app) {
         if( ! this._isNew ) {
 
             // get app data
-            var Apps = mongoose.model('System_Apps');
+            var Apps = _mongoose.model('System_Apps');
 
             Apps.findById(doc.ap, function(err, apps) {
                 if( err || ! apps )
-                    return _log.info('not found app data for system.invites');
+                    return _log.info(_group, 'not found app data for system.invites');
 
                 var slug     = apps.s;
                 var moderate = dot.get(_conf, 'app.config.'+slug+'.auth.invite_moderation');
@@ -178,21 +159,7 @@ module.exports = function(app) {
 
     });
 
-    /**
-     * ----------------------------------------------------------------
-     * Superadmin Acl
-     * ----------------------------------------------------------------
-     */
-
-    // allow superadmin (mongoose connection bekliyor)
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
-            app.acl.allow('superadmin', 'system_invites', '*');
-            _log.info(_group+':ACL:ALLOW', 'superadmin:system_invites:*');
-        }
-    });
-
-    return mongoose.model('System_Invites', InviteSchema);
+    return _mongoose.model('System_Invites', InviteSchema);
 
 };
 

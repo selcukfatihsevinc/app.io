@@ -7,40 +7,37 @@ module.exports = function(app) {
 
     var _env      = app.get('env');
     var _log      = app.lib.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var emitter   = app.lib.schemaEmitter;
-    var syncConf  = app.config[_env].sync;
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
     var _group    = 'MODEL:system.actions';
 
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
+
     var Schema = {
-        ap  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        r   : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Roles', alias: 'roles'},
-        rna : {type: String, typeStr: 'String', alias: 'roles_name'},
-        o   : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Objects', alias: 'objects'},
-        ona : {type: String, typeStr: 'String', alias: 'objects_name'},
-        a   : [{type: String, typeStr: 'String', required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}],
-        m   : [{type: String, typeStr: 'String', enum: ['get*', 'post*', 'put*', 'delete*'], alias: 'master'}]
+        ap  : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
+        r   : {type: ObjectId, required: true, ref: 'System_Roles', alias: 'roles'},
+        o   : {type: ObjectId, required: true, ref: 'System_Objects', alias: 'objects'},
+        a   : [{type: String, required: true, enum: ['get', 'post', 'put', 'delete'], alias: 'action'}],
+        m   : [{type: String, enum: ['get*', 'post*', 'put*', 'delete*'], alias: 'master'}]
     };
 
-    Schema.ap.settings = {initial: false};
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
 
-    Schema.r.settings = {
-        label: 'Role',
-        display: 'name'
-    };
-
-    Schema.rna.settings = {initial: false};
-
-    Schema.o.settings = {
-        label: 'Object',
-        display: 'name'
-    };
-
-    Schema.ona.settings = {initial: false};
+    Schema.r.settings = {label: 'Role', display: 'name'};
+    Schema.o.settings = {label: 'Object', display: 'name'};
 
     Schema.a[0].settings = {
         label: 'Action',
@@ -62,83 +59,75 @@ module.exports = function(app) {
         ]
     };
 
-    var inspector    = new Inspector(Schema).init();
-    var ActionSchema = app.core.mongo.db.Schema(Schema);
+    /**
+     * ----------------------------------------------------------------
+     * Load Schema
+     * ----------------------------------------------------------------
+     */
+
+    var ActionSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_Actions',
+        Options: {
+            singular : 'System Action',
+            plural   : 'System Actions',
+            columns  : ['roles', 'objects', 'action', 'master'],
+            main     : 'action',
+            perpage  : 25
+        }
+    });
 
     // plugins
-    ActionSchema.plugin(query);
-
-    // inspector
-    ActionSchema.inspector = inspector;
+    ActionSchema.plugin(_query);
 
     // compound index
     ActionSchema.index({ap: 1, r: 1, o: 1}, {unique: true});
 
-    // model options
-    ActionSchema.inspector.Options = {
-        singular : 'System Action',
-        plural   : 'System Actions',
-        columns  : ['roles', 'objects', 'action', 'master'],
-        main     : 'action',
-        perpage  : 25
-    };
-
     /**
+     * ----------------------------------------------------------------
      * Denormalization
+     * ----------------------------------------------------------------
      */
 
-    var denorm = [
-        {ref: 'System_Roles', source: 'r', fields: {rna: 'n'}},
-        {ref: 'System_Objects', source: 'o', fields: {ona: 'n'}}
-    ];
-
-    emitter.on('role_updated', function(role) {
-        app.lib.denormalize.update('System_Actions', 'System_Roles', role.doc, denorm);
-    });
-
-    emitter.on('object_updated', function(object) {
-        app.lib.denormalize.update('System_Actions', 'System_Objects', object.doc, denorm);
-    });
-
-    if(workerId == 0 && dot.get(syncConf, 'denormalize.system_actions')) {
-        // lib modelden önce çalıştığı için hemen çalıştırınca schema register olmuyor, 5sn sonra çalıştır
-        setTimeout(function() {
-            app.lib.denormalize.sync('System_Actions');
-        }, 5000);
-    }
+    /**
+     * ----------------------------------------------------------------
+     * Pre Save Hook
+     * ----------------------------------------------------------------
+     */
 
     ActionSchema.pre('save', function (next) {
 
         var self = this;
         self._isNew = self.isNew;
-
-        app.lib.denormalize.fill(this, denorm, function() {
-            next();
-        });
+        next();
 
     });
 
-    // init acl role
+    /**
+     * ----------------------------------------------------------------
+     * Post Save Hook
+     * ----------------------------------------------------------------
+     */
+
     ActionSchema.post('save', function (doc) {
         var self = this;
         doc      = doc.toJSON();
 
         if(app.acl) {
-            var Apps    = mongoose.model('System_Apps');
-            var Roles   = mongoose.model('System_Roles');
-            var Objects = mongoose.model('System_Objects');
+            var Apps    = _mongoose.model('System_Apps');
+            var Roles   = _mongoose.model('System_Roles');
+            var Objects = _mongoose.model('System_Objects');
 
             var a = {};
 
             a['role'] = function(cb) {
                 Roles.findById(doc.r, function (err, role) {
-                   cb(err, role);
+                    cb(err, role);
                 });
             };
 
             a['object'] = function(cb) {
                 Objects.findById(doc.o, function (err, object) {
-                   cb(err, object);
+                    cb(err, object);
                 });
             };
 
@@ -243,15 +232,20 @@ module.exports = function(app) {
         }
     });
 
-    // delete acl role
+    /**
+     * ----------------------------------------------------------------
+     * Post Remove Hook
+     * ----------------------------------------------------------------
+     */
+
     ActionSchema.post('remove', function (doc) {
         var self = this;
         doc      = doc.toJSON();
 
         if(app.acl) {
-            var Apps    = mongoose.model('System_Apps');
-            var Roles   = mongoose.model('System_Roles');
-            var Objects = mongoose.model('System_Objects');
+            var Apps    = _mongoose.model('System_Apps');
+            var Roles   = _mongoose.model('System_Roles');
+            var Objects = _mongoose.model('System_Objects');
 
             var a = {};
 
@@ -307,15 +301,7 @@ module.exports = function(app) {
         }
     });
 
-    // allow superadmin (mongoose connection bekliyor)
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
-            app.acl.allow('superadmin', 'system_actions', '*');
-            _log.info(_group+':ACL:ALLOW', 'superadmin:system_actions:*');
-        }
-    });
-
-    return mongoose.model('System_Actions', ActionSchema);
+    return _mongoose.model('System_Actions', ActionSchema);
 
 };
 

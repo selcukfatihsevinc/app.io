@@ -3,64 +3,98 @@ var _   = require('underscore');
 
 module.exports = function(app) {
 
+    var _env      = app.get('env');
     var _log      = app.lib.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var _group    = 'MODEL:system.images';
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
+
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
 
     var Schema = {
-        ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps', index: true},
-        ir : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Users', alias: 'users', index: true},
-        n  : {type: String, typeStr: 'String', required: true, alias: 'name'},
-        ut : {type: String, typeStr: 'String', default: 'U', required: true, enum: ['A', 'U'], alias: 'upload_type'}, // A: Admin, U: User
-        ty : {type: String, typeStr: 'String', required: true, enum: ['L', 'S', 'C'], alias: 'type'}, // L: Local, S: Aws S3, C: Cloudinary
-        b  : {type: Number, typeStr: 'Number', default: 0, alias: 'bytes'},
-        u  : {type: String, typeStr: 'String', alias: 'url'},
-        p  : {type: String, typeStr: 'String', alias: 'path'},
-        ca : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now}
+        ap : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps', index: true},
+        ir : {type: ObjectId, required: true, ref: 'System_Users', alias: 'users', index: true},
+        n  : {type: String, required: true, alias: 'name'},
+        ut : {type: String, default: 'U', required: true, enum: ['A', 'U'], alias: 'upload_type'}, // A: Admin, U: User
+        ty : {type: String, required: true, enum: ['L', 'S', 'C'], alias: 'type'}, // L: Local, S: Aws S3, C: Cloudinary
+        b  : {type: Number, default: 0, alias: 'bytes'},
+        u  : {type: String, alias: 'url'},
+        p  : {type: String, alias: 'path'},
+        ca : {type: Date, alias: 'created_at', default: Date.now}
     };
 
-    Schema.ap.settings = {initial: false};
-    Schema.ir.settings = {initial: false};
-    Schema.n.settings  = {label: 'Name'};
-    Schema.ut.settings = {initial: false};
-    Schema.ty.settings = {initial: false};
-    Schema.b.settings  = {initial: false};
-    Schema.u.settings  = {initial: false};
-    Schema.p.settings  = {initial: false, image: true};
-    Schema.ca.settings = {initial: false};
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
 
-    var inspector   = new Inspector(Schema).init();
-    var ImageSchema = app.core.mongo.db.Schema(Schema);
+    Schema.n.settings = {label: 'Name'};
 
-    // plugins
-    ImageSchema.plugin(query);
+    /**
+     * ----------------------------------------------------------------
+     * Load Schema
+     * ----------------------------------------------------------------
+     */
 
-    // inspector
-    ImageSchema.inspector = inspector;
-
-    // model options
-    ImageSchema.inspector.Options = {
-        singular : 'System Image',
-        plural   : 'System Images',
-        columns  : ['name', 'path'],
-        extra    : ['type'], // extra fields
-        main     : 'name',
-        perpage  : 10
-    };
-
-    // allow superadmin (mongoose connection bekliyor)
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
-            app.acl.allow('superadmin', 'system_images', '*');
-            _log.info(_group+':ACL:ALLOW', 'superadmin:system_images:*');
+    var ImageSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_Images',
+        Options: {
+            singular : 'System Image',
+            plural   : 'System Images',
+            columns  : ['name', 'path'],
+            extra    : ['type'], // extra fields
+            main     : 'name',
+            perpage  : 10
         }
     });
 
-    return mongoose.model('System_Images', ImageSchema);
+
+    // plugins
+    ImageSchema.plugin(_query);
+
+    /**
+     * ----------------------------------------------------------------
+     * Denormalization
+     * ----------------------------------------------------------------
+     */
+
+    /**
+     * ----------------------------------------------------------------
+     * Pre Save Hook
+     * ----------------------------------------------------------------
+     */
+
+    ImageSchema.pre('save', function (next) {
+
+        var self    = this;
+        self._isNew = self.isNew;
+        next();
+
+    });
+
+    /**
+     * ----------------------------------------------------------------
+     * Post Save Hook
+     * ----------------------------------------------------------------
+     */
+
+    ImageSchema.post('save', function (doc) {
+
+        var self = this;
+        if(self._isNew) {}
+
+    });
+
+    return _mongoose.model('System_Images', ImageSchema);
 
 };
 

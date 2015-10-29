@@ -3,64 +3,94 @@ var _   = require('underscore');
 
 module.exports = function(app) {
 
+    var _env      = app.get('env');
     var _log      = app.lib.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var _group    = 'MODEL:system.filters';
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
+
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
 
     var Schema = {
-        ap : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Apps', alias: 'apps'},
-        u  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Users', alias: 'users'},
-        n  : {type: String, typeStr: 'String', required: true, alias: 'name'},
-        o  : {type: String, typeStr: 'String', required: true, alias: 'object'},
-        f  : {type: String, typeStr: 'String', required: true, alias: 'filter'}
+        ap : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
+        u  : {type: ObjectId, required: true, ref: 'System_Users', alias: 'users'},
+        n  : {type: String, required: true, alias: 'name'},
+        o  : {type: String, required: true, alias: 'object'},
+        f  : {type: String, required: true, alias: 'filter'}
     };
 
-    Schema.ap.settings = {initial: false};
-    Schema.u.settings = {initial: false};
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
 
-    Schema.n.settings = {
-        label: 'Name'
-    };
+    Schema.n.settings = {label: 'Name'};
+    Schema.o.settings = {label: 'Object'};
+    Schema.f.settings = {label: 'Filter'};
 
-    Schema.o.settings = {
-        label: 'Object'
-    };
+    /**
+     * ----------------------------------------------------------------
+     * Load Schema
+     * ----------------------------------------------------------------
+     */
 
-    Schema.f.settings = {
-        label: 'Filter'
-    };
-
-    var inspector    = new Inspector(Schema).init();
-    var FilterSchema = app.core.mongo.db.Schema(Schema);
-
-    // plugins
-    FilterSchema.plugin(query);
-
-    // inspector
-    FilterSchema.inspector = inspector;
-
-    // model options
-    FilterSchema.inspector.Options = {
-        singular : 'System Filter',
-        plural   : 'System Filters',
-        columns  : ['name', 'object'],
-        main     : 'name',
-        perpage  : 25
-    };
-
-    // allow superadmin (mongoose connection bekliyor)
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
-            app.acl.allow('superadmin', 'system_filters', '*');
-            _log.info(_group+':ACL:ALLOW', 'superadmin:system_filters:*');
+    var FilterSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_Filters',
+        Options: {
+            singular : 'System Filter',
+            plural   : 'System Filters',
+            columns  : ['name', 'object'],
+            main     : 'name',
+            perpage  : 25
         }
     });
 
-    return mongoose.model('System_Filters', FilterSchema);
+    // plugins
+    FilterSchema.plugin(_query);
+
+    /**
+     * ----------------------------------------------------------------
+     * Denormalization
+     * ----------------------------------------------------------------
+     */
+
+    /**
+     * ----------------------------------------------------------------
+     * Pre Save Hook
+     * ----------------------------------------------------------------
+     */
+
+    FilterSchema.pre('save', function (next) {
+
+        var self    = this;
+        self._isNew = self.isNew;
+        next();
+
+    });
+
+    /**
+     * ----------------------------------------------------------------
+     * Post Save Hook
+     * ----------------------------------------------------------------
+     */
+
+    FilterSchema.post('save', function (doc) {
+
+        var self = this;
+        if(self._isNew) {}
+
+    });
+
+    return _mongoose.model('System_Filters', FilterSchema);
 
 };
 

@@ -6,15 +6,17 @@ var _      = require('underscore');
 
 module.exports = function(app) {
 
-    var _helper    = app.lib.utils.helper;
-    var _log       = app.lib.logger;
-    var _mongoose  = app.core.mongo.mongoose;
-    var _objectId  = _mongoose.Schema.Types.ObjectId;
-    var _inspector = app.lib.inspector;
-    var _query     = app.lib.query;
-    var _emitter   = app.lib.schemaEmitter;
-    var _workerId  = parseInt(process.env.worker_id);
-    var _group     = 'MODEL:system.users';
+    var _env      = app.get('env');
+    var _log      = app.lib.logger;
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
+    var _helper   = app.lib.utils.helper;
+    var _group    = 'MODEL:system.users';
+
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
 
     /**
      * ----------------------------------------------------------------
@@ -23,20 +25,20 @@ module.exports = function(app) {
      */
 
     var Schema = {
-        em  : {type: String, typeStr: 'String', required: true, alias: 'email', pattern: 'email', unique: true},
-        pa  : {type: String, typeStr: 'String', optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
-        sa  : {type: String, typeStr: 'String', alias: 'salt'},
-        ha  : {type: String, typeStr: 'String', alias: 'hash'},
-        ie  : {type: String, typeStr: 'String', default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled', index: true},
-        ty  : {type: String, typeStr: 'String', default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
-        ro  : [{type: _objectId, typeStr: 'ObjectId', ref: 'System_Roles', alias: 'roles'}],
-        ca  : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now},
-        rgt : {type: String, typeStr: 'String', alias: 'register_token', index: true},
-        rt  : {type: String, typeStr: 'String', alias: 'reset_token', index: true},
-        re  : {type: Date, typeStr: 'Date', alias: 'reset_expires'},
-        ii  : {type: String, typeStr: 'String', default: 'N', enum: ['Y', 'N'], alias: 'is_invited', index: true},
-        inv : {type: _objectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'inviter'},
-        ll  : {type: Date, typeStr: 'Date', alias: 'last_login', index: true}
+        em  : {type: String, required: true, alias: 'email', pattern: 'email', unique: true},
+        pa  : {type: String, optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
+        sa  : {type: String, alias: 'salt'},
+        ha  : {type: String, alias: 'hash'},
+        ie  : {type: String, default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled', index: true},
+        ty  : {type: String, default: 'U', enum: ['U', 'A'], alias: 'type', index: true}, // U: User, A: Admin
+        ro  : [{type: ObjectId, ref: 'System_Roles', alias: 'roles'}],
+        ca  : {type: Date, alias: 'created_at', default: Date.now},
+        rgt : {type: String, alias: 'register_token', index: true},
+        rt  : {type: String, alias: 'reset_token', index: true},
+        re  : {type: Date, alias: 'reset_expires'},
+        ii  : {type: String, default: 'N', enum: ['Y', 'N'], alias: 'is_invited', index: true},
+        inv : {type: ObjectId, ref: 'System_Users', alias: 'inviter'},
+        ll  : {type: Date, alias: 'last_login', index: true}
     };
 
     /**
@@ -47,9 +49,6 @@ module.exports = function(app) {
 
     Schema.em.settings = {label: 'Email'};
     Schema.pa.settings = {label: 'Password'};
-    Schema.sa.settings = {initial: false};
-    Schema.ha.settings = {initial: false};
-
     Schema.ie.settings = {
         label: 'Is Enabled ?',
         options: [
@@ -71,45 +70,38 @@ module.exports = function(app) {
         display: 'name'
     };
 
-    Schema.ca.settings  = {initial: false};
-    Schema.rgt.settings = {initial: false};
-    Schema.rt.settings  = {initial: false};
-    Schema.re.settings  = {initial: false};
-
     Schema.ii.settings = {
-        initial: false,
         options: [
             {label: 'Yes', value: 'Y'},
             {label: 'No', value: 'N'}
         ]
     };
 
-    Schema.inv.settings = {initial: false};
-    Schema.ll.settings  = {initial: false};
-
     /**
      * ----------------------------------------------------------------
-     * Inspector
+     * Load Schema
      * ----------------------------------------------------------------
      */
 
-    var inspector  = new _inspector(Schema).init();
-    var UserSchema = app.core.mongo.db.Schema(Schema);
+    var UserSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_Users',
+        Options: {
+            singular : 'System User',
+            plural   : 'System Users',
+            columns  : ['email', 'roles'],
+            main     : 'email',
+            perpage  : 25
+        }
+    });
 
     // plugins
     UserSchema.plugin(_query);
 
-    // inspector
-    UserSchema.inspector = inspector;
-
-    // model options
-    UserSchema.inspector.Options = {
-        singular : 'System User',
-        plural   : 'System Users',
-        columns  : ['email', 'roles'],
-        main     : 'email',
-        perpage  : 25
-    };
+    /**
+     * ----------------------------------------------------------------
+     * Denormalization
+     * ----------------------------------------------------------------
+     */
 
     /**
      * ----------------------------------------------------------------
@@ -335,14 +327,6 @@ module.exports = function(app) {
                     _log.info('ACL:REMOVE_USER_ROLES:'+doc._id, doc.ro);
                 });
             });
-        }
-    });
-
-    // allow superadmin (mongoose connection bekliyor)
-    _mongoose.connection.on('open', function() {
-        if(app.acl && _workerId == 0) {
-            app.acl.allow('superadmin', 'system_users', '*');
-            _log.info(_group+':ACL:ALLOW', 'superadmin:system_users:*');
         }
     });
 

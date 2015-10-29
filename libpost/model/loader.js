@@ -30,14 +30,14 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
     extend(Schema.inspector, options);
 
     // allow superadmin (mongoose connection bekliyor)
-    this._mongoose.connection.on('open', function() {
-        if(self._app.acl && self._worker == 0) {
+    if(this._app.acl && this._worker == 0 && dot.get(this._syncConf, 'data.superacl')) {
+        this._mongoose.connection.on('open', function() {
             self._app.acl.allow('superadmin', lower, '*');
-            self._log.info(group+':ACL:ALLOW', 'superadmin:'+lower+':*');
-        }
-    });
+            self._log.info(group+':ACL:ALLOW', 'superadmin:'+lower+':*', 'gray');
+        });
+    }
 
-    if(self._worker == 0 && dot.get(this._syncConf, 'denormalize.'+lower)) {
+    if(this._worker == 0 && dot.get(this._syncConf, 'denormalize.'+lower)) {
         setTimeout(function() {
             self._app.lib.denormalize.sync(options.Name, self._app.boot.kue);
         }, 10000);

@@ -14,6 +14,7 @@ function AppIo(options) {
     this._app    = false;
 
     if (cluster.isMaster) {
+        console.log('app.io is loading...');
         this.fork();
         return this;
     }
@@ -29,6 +30,7 @@ function AppIo(options) {
     this._app.set('port', this._opts.port || port);
     this._app.set('basedir', this._opts.basedir);
     this._app.set('isworker', false);
+    this._app.set('workerid', parseInt(process.env.worker_id));
 
     // other options
     this._opts.core     = this._opts.core || ['mongo', 'redis'];
@@ -202,7 +204,7 @@ AppIo.prototype.listen = function () {
         }
 
         self._server.listen(self.get('port'), function() {
-            self._app.lib.logger.appio('APP.IO', 'server listening, port:'+self.get('port'));
+            self._app.lib.logger.appio('APP.IO', 'server listening, port:'+self.get('port')+', worker: '+self.get('workerid'));
         });
     });
 };

@@ -379,7 +379,8 @@ module.exports = function(app) {
              */
 
             async.series(series, function(err, results) {
-                _log.info(_group, 'sync data executed!');
+                if(Object.keys(results).length)
+                    _log.info(_group, 'sync data executed!');
             });
 
         });

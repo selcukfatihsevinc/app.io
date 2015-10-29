@@ -1,11 +1,15 @@
 var redis = require('redis');
+var dot   = require('dotty');
 
 module.exports = function(app) {
 
-    var _env   = app.get('env');
-    var _conf  = app.config[_env].redis;
-    var _log   = app.lib.logger;
-    var _group = 'CORE:REDIS';
+    var _env    = app.get('env');
+    var _conf   = app.config[_env].redis;
+    var _log    = app.lib.logger;
+    var _worker = app.get('workerid');
+    var _sConf  = app.config[_env].sync;
+    var _logs   = dot.get(_sConf, 'data.core');
+    var _group  = 'W'+_worker+':CORE:REDIS';
 
     if( ! _conf )
         return false;
@@ -19,14 +23,17 @@ module.exports = function(app) {
     }
 
     clientA.on('connect', function () {
-        _log.info(_group, 'client A connected');
+        if(_logs)
+            _log.info(_group, 'client A connected', 'black');
     });
 
     clientB.on('connect', function () {
-        _log.info(_group, 'client B connected');
+        if(_logs)
+            _log.info(_group, 'client B connected', 'black');
     });
 
-    _log.info(_group, _conf);
+    if(_logs)
+        _log.info(_group, _conf, 'black');
 
     return {a: clientA, b: clientB};
 

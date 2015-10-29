@@ -3,55 +3,64 @@ var dot = require('dotty');
 module.exports = function(app) {
 
     var _env      = app.get('env');
-    var _log      = app.system.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var emitter   = app.lib.schemaEmitter;
-    var syncConf  = app.config[_env].sync;
+    var _log      = app.lib.logger;
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
+
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
 
     var Schema = {
-        n  : {type: String, typeStr: 'String', required: true, alias: 'name'},
-        s  : {type: String, typeStr: 'String', alias: 'slug'},
-        d  : {type: String, typeStr: 'String', alias: 'detail'},
-        rm : {type: String, typeStr: 'String', required: true, alias: 'ref_model'},
-        ri : {type: String, typeStr: 'String', required: true, alias: 'ref_id'},
-        au : [{type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Users', alias: 'allowed_users'}],
-        bu : [{type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'banned_users'}],
-        u  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Users', alias: 'users'}, // room owner if necessary (unique index, sparse: true)
-        ca : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now}
+        n  : {type: String, required: true, alias: 'name'},
+        s  : {type: String, alias: 'slug'},
+        d  : {type: String, alias: 'detail'},
+        rm : {type: String, required: true, alias: 'ref_model'},
+        ri : {type: String, required: true, alias: 'ref_id'},
+        au : [{type: ObjectId, required: true, ref: 'System_Users', alias: 'allowed_users'}],
+        bu : [{type: ObjectId, ref: 'System_Users', alias: 'banned_users'}],
+        u  : {type: ObjectId, ref: 'System_Users', alias: 'users'}, // room owner if necessary (unique index, sparse: true)
+        ca : {type: Date, alias: 'created_at', default: Date.now}
     };
 
-    Schema.n.settings     = {initial: false};
-    Schema.s.settings     = {initial: false};
-    Schema.d.settings     = {initial: false};
-    Schema.rm.settings    = {initial: false};
-    Schema.ri.settings    = {initial: false};
-    Schema.au[0].settings = {initial: false};
-    Schema.bu[0].settings = {initial: false};
-    Schema.u.settings     = {initial: false};
-    Schema.ca.settings    = {initial: false};
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
 
-    var inspector  = new Inspector(Schema).init();
-    var RoomSchema = app.core.mongo.db.Schema(Schema);
+    /**
+     * ----------------------------------------------------------------
+     * Load Schema
+     * ----------------------------------------------------------------
+     */
+
+    var RoomSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_Rooms',
+        Options: {
+            singular : 'System Room',
+            plural   : 'System Rooms',
+            columns  : ['users'],
+            main     : 'users',
+            perpage  : 25
+        }
+    });
 
     // plugins
-    RoomSchema.plugin(query);
+    RoomSchema.plugin(_query);
 
-    // inspector
-    RoomSchema.inspector = inspector;
-    // RoomSchema.structure = Schema;
-
-    // model options
-    RoomSchema.inspector.Options = {
-        singular : 'Room',
-        plural   : 'Rooms',
-        columns  : ['users'],
-        main     : 'users',
-        perpage  : 25
-    };
+    /**
+     * ----------------------------------------------------------------
+     * Denormalization
+     * ----------------------------------------------------------------
+     */
 
     /**
      * ----------------------------------------------------------------
@@ -60,11 +69,11 @@ module.exports = function(app) {
      */
 
     RoomSchema.pre('save', function (next) {
+
         var self = this;
-
         self._isNew = self.isNew;
-
         next();
+
     });
 
     /**
@@ -75,22 +84,12 @@ module.exports = function(app) {
 
     RoomSchema.post('save', function (doc) {
 
+        var self = this;
+        if(self._isNew) {}
+
     });
 
-    /**
-     * ----------------------------------------------------------------
-     * Superadmin Acl
-     * ----------------------------------------------------------------
-     */
-
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
-            app.acl.allow('superadmin', 'system_rooms', '*');
-            _log.info('[acl:allow] superadmin:system_rooms:*');
-        }
-    });
-
-    return mongoose.model('System_Rooms', RoomSchema);
+    return _mongoose.model('System_Rooms', RoomSchema);
 
 };
 

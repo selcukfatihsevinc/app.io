@@ -3,49 +3,62 @@ var dot = require('dotty');
 module.exports = function(app) {
 
     var _env      = app.get('env');
-    var _log      = app.system.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
-    var workerId  = parseInt(process.env.worker_id);
-    var emitter   = app.lib.schemaEmitter;
-    var syncConf  = app.config[_env].sync;
+    var _log      = app.lib.logger;
+    var _mongoose = app.core.mongo.mongoose;
+    var _query    = app.lib.query;
+    var _emitter  = app.lib.schemaEmitter;
+
+    // types
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
+
+    /**
+     * ----------------------------------------------------------------
+     * Schema
+     * ----------------------------------------------------------------
+     */
 
     var Schema = {
-        u  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Users', alias: 'users'},
-        r  : {type: ObjectId, typeStr: 'ObjectId', required: true, ref: 'System_Rooms', alias: 'rooms'}, // bazı field'ları denormalize et
-        m  : {type: ObjectId, typeStr: 'ObjectId', ref: 'System_Messages', alias: 'last_message'}, // bazı field'ları denormalize et
-        rd : {type: Number, typeStr: 'Number', default: 0, alias: 'unread'},
-        ua : {type: Date, typeStr: 'Date', alias: 'updated_at', default: Date.now},
-        ca : {type: Date, typeStr: 'Date', alias: 'created_at', default: Date.now}
+        u  : {type: ObjectId, required: true, ref: 'System_Users', alias: 'users'},
+        r  : {type: ObjectId, required: true, ref: 'System_Rooms', alias: 'rooms'}, // bazı field'ları denormalize et
+        m  : {type: ObjectId, ref: 'System_Messages', alias: 'last_message'}, // bazı field'ları denormalize et
+        rd : {type: Number, default: 0, alias: 'unread'},
+        ua : {type: Date, alias: 'updated_at', default: Date.now},
+        ca : {type: Date, alias: 'created_at', default: Date.now}
     };
 
-    Schema.u.settings  = {initial: false};
-    Schema.r.settings  = {initial: false};
-    Schema.m.settings  = {initial: false};
-    Schema.rd.settings = {initial: false};
-    Schema.ua.settings = {initial: false};
-    Schema.ca.settings = {initial: false};
+    /**
+     * ----------------------------------------------------------------
+     * Settings
+     * ----------------------------------------------------------------
+     */
 
-    var inspector      = new Inspector(Schema).init();
-    var UserRoomSchema = app.core.mongo.db.Schema(Schema);
+    /**
+     * ----------------------------------------------------------------
+     * Load Schema
+     * ----------------------------------------------------------------
+     */
+
+    var UserRoomSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'System_UserRooms',
+        Options: {
+            singular : 'System User Room',
+            plural   : 'System User Rooms',
+            columns  : ['users'],
+            main     : 'users',
+            perpage  : 25
+        }
+    });
 
     // plugins
-    UserRoomSchema.plugin(query);
+    UserRoomSchema.plugin(_query);
 
-    // inspector
-    UserRoomSchema.inspector = inspector;
-    // UserMessageSchema.structure = Schema;
+    /**
+     * ----------------------------------------------------------------
+     * Denormalization
+     * ----------------------------------------------------------------
+     */
 
-    // model options
-    UserRoomSchema.inspector.Options = {
-        singular : 'User Room',
-        plural   : 'User Rooms',
-        columns  : ['users'],
-        main     : 'users',
-        perpage  : 25
-    };
 
     /**
      * ----------------------------------------------------------------
@@ -54,11 +67,11 @@ module.exports = function(app) {
      */
 
     UserRoomSchema.pre('save', function (next) {
+
         var self = this;
-
         self._isNew = self.isNew;
-
         next();
+
     });
 
     /**
@@ -69,22 +82,12 @@ module.exports = function(app) {
 
     UserRoomSchema.post('save', function (doc) {
 
+        var self = this;
+        if(self._isNew) {}
+
     });
 
-    /**
-     * ----------------------------------------------------------------
-     * Superadmin Acl
-     * ----------------------------------------------------------------
-     */
-
-    mongoose.connection.on('open', function() {
-        if(app.acl && workerId == 0) {
-            app.acl.allow('superadmin', 'system_userrooms', '*');
-            _log.info('[acl:allow] superadmin:system_userrooms:*');
-        }
-    });
-
-    return mongoose.model('System_UserRooms', UserRoomSchema);
+    return _mongoose.model('System_UserRooms', UserRoomSchema);
 
 };
 

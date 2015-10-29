@@ -1,12 +1,16 @@
 var mongoose = require('mongoose');
+var dot      = require('dotty');
 
 module.exports = function(app) {
 
-    var _env   = app.get('env');
-    var _log   = app.lib.logger;
-    var _conf  = app.config[_env].mongo;
-    var _auth  = '';
-    var _group = 'CORE:MONGO';
+    var _env    = app.get('env');
+    var _log    = app.lib.logger;
+    var _conf   = app.config[_env].mongo;
+    var _auth   = '';
+    var _worker = app.get('workerid');
+    var _sConf  = app.config[_env].sync;
+    var _logs   = dot.get(_sConf, 'data.core');
+    var _group  = 'W'+_worker+':CORE:MONGO';
 
     if( ! _conf )
         return false;
@@ -27,11 +31,14 @@ module.exports = function(app) {
     });
 
     mongoose.connection.on('open', function() {
-        _log.info(_group, 'client connected');
+        if(_logs)
+            _log.info(_group, 'client connected', 'black');
     });
 
-    _log.info(_group+':CONFIG', _conf);
-    _log.info(_group+':STRING', str);
+    if(_logs) {
+        _log.info(_group+':CONFIG', _conf, 'black');
+        _log.info(_group+':STRING', str, 'black');
+    }
 
     return {db: db, str: str, mongoose: mongoose};
 

@@ -1,10 +1,9 @@
 module.exports = function(app) {
 
-    var _log      = app.system.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
+    var _env      = app.get('env');
+    var _log      = app.lib.logger;
+    var _mongoose = app.core.mongo.mongoose;
+    var _group    = 'MODEL:oauth.authcodes';
 
     var Schema = {
         authCode : {type: String, required: true, unique: true, alias: 'authCode'},
@@ -17,12 +16,12 @@ module.exports = function(app) {
 
     // statics
     AuthCodesSchema.method('getAuthCode', function(authCode, cb) {
-        var AuthCodes = mongoose.model('Oauth_AuthCodes');
+        var AuthCodes = _mongoose.model('Oauth_AuthCodes');
         AuthCodes.findOne({authCode: authCode}, cb);
     });
 
     AuthCodesSchema.method('saveAuthCode', function(code, clientId, expires, userId, cb) {
-        var AuthCodes = mongoose.model('Oauth_AuthCodes');
+        var AuthCodes = _mongoose.model('Oauth_AuthCodes');
 
         if (userId.id)
             userId = userId.id;
@@ -34,12 +33,14 @@ module.exports = function(app) {
         };
 
         AuthCodes.update({authCode: code}, fields, {upsert: true}, function(err) {
-            if (err) _log.error(err);
+            if (err)
+                _log.error(_group, err);
+
             cb(err);
         });
 
     });
 
-    return mongoose.model('Oauth_AuthCodes', AuthCodesSchema);
+    return _mongoose.model('Oauth_AuthCodes', AuthCodesSchema);
 
 };

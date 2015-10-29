@@ -1,10 +1,9 @@
 module.exports = function(app) {
 
-    var _log      = app.system.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
+    var _env      = app.get('env');
+    var _log      = app.lib.logger;
+    var _mongoose = app.core.mongo.mongoose;
+    var _group    = 'MODEL:oauth.accesstokens';
 
     var Schema = {
         accessToken : {type: String, required: true, unique: true, alias: 'accessToken'},
@@ -17,12 +16,12 @@ module.exports = function(app) {
 
     // statics
     AccessTokensSchema.method('getAccessToken', function(bearerToken, cb) {
-        var AccessTokens = mongoose.model('Oauth_AccessTokens');
+        var AccessTokens = _mongoose.model('Oauth_AccessTokens');
         AccessTokens.findOne({accessToken: bearerToken}, cb);
     });
 
     AccessTokensSchema.method('saveAccessToken', function(token, clientId, expires, userId, cb) {
-        var AccessTokens = mongoose.model('Oauth_AccessTokens');
+        var AccessTokens = _mongoose.model('Oauth_AccessTokens');
 
         if (userId.id)
             userId = userId.id;
@@ -34,11 +33,13 @@ module.exports = function(app) {
         };
 
         AccessTokens.update({accessToken: token}, fields, {upsert: true}, function(err) {
-            if (err) _log.error(err);
+            if (err)
+                _log.error(_group, err);
+
             cb(err);
         });
     });
 
-    return mongoose.model('Oauth_AccessTokens', AccessTokensSchema);
+    return _mongoose.model('Oauth_AccessTokens', AccessTokensSchema);
 
 };

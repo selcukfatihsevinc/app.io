@@ -1,10 +1,6 @@
 module.exports = function(app) {
 
-    var _log      = app.system.logger;
-    var mongoose  = app.core.mongo.mongoose;
-    var ObjectId  = mongoose.Schema.Types.ObjectId;
-    var Inspector = app.lib.inspector;
-    var query     = app.lib.query;
+    var _mongoose = app.core.mongo.mongoose;
 
     var Schema = {
         refreshToken : {type: String, required: true, unique: true},
@@ -17,7 +13,7 @@ module.exports = function(app) {
 
     // statics
     RefreshTokensSchema.method('getRefreshToken', function(refreshToken, cb) {
-        var RefreshTokens = mongoose.model('Oauth_RefreshTokens');
+        var RefreshTokens = _mongoose.model('Oauth_RefreshTokens');
 
         RefreshTokens.findOne({refreshToken: refreshToken}, function(err, token) {
             // node-oauth2-server defaults to .user or { id: userId }, but { id: userId} doesn't work
@@ -30,7 +26,7 @@ module.exports = function(app) {
     });
 
     RefreshTokensSchema.method('saveRefreshToken', function(token, clientId, expires, userId, cb) {
-        var RefreshTokens = mongoose.model('Oauth_RefreshTokens');
+        var RefreshTokens = _mongoose.model('Oauth_RefreshTokens');
 
         if (userId.id)
             userId = userId.id;
@@ -45,6 +41,6 @@ module.exports = function(app) {
         refreshToken.save(cb);
     });
 
-    return mongoose.model('Oauth_RefreshTokens', RefreshTokensSchema);
+    return _mongoose.model('Oauth_RefreshTokens', RefreshTokensSchema);
 
 };
