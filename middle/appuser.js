@@ -53,6 +53,9 @@ function AppUser(req, res, next) {
                 username_lc: _username.toLowerCase(),
                 qt: 'one'
             }, function(err, doc) {
+                if( err || ! doc )
+                    return cb(err, doc);
+
                 var userId = doc.users;
 
                 new _schema('system.users').init(req, res, next).getById(userId, function(err, doc) {
@@ -64,15 +67,21 @@ function AppUser(req, res, next) {
 
     async.parallel(a, function(err, results) {
 
-        if( ! results.email && ! results.username ) {
+        var paths  = ['/api/social', '/api/social/'];
+        var pIndex = paths.indexOf(req.path);
+
+        // yukarıdaki url'ler için http response dönmüyoruz
+        if( pIndex == -1 && ! results.email && ! results.username ) {
             return next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
                 errors: ['user not found']}
             ));
         }
 
-        req.__userData     = results.email || results.username;
-        req.__userData._id = req.__userData._id.toString();
+        req.__userData = results.email || results.username;
+
+        if(req.__userData)
+            req.__userData._id = req.__userData._id.toString();
 
         next();
     });

@@ -73,6 +73,7 @@ AppIo.prototype.run = function () {
     this.load('model', ['acl', 'oauth', 'system']);
     this.external('model', this._opts.external.model || []);
     this.load('middle');
+    this.external('middle', this._opts.external.middle || []);
     this.load('boot', boot.split('|'));
     this.load('boot', (this._opts.boot && this.type(this._opts.boot) == '[object String]')  ? this._opts.boot.split('|') : []);
     this.external('boot', (this._opts.external.boot && this.type(this._opts.external.boot) == '[object String]')  ? this._opts.external.boot.split('|') : []);
@@ -105,6 +106,7 @@ AppIo.prototype.workers = function () {
     this.load('model', ['acl', 'oauth', 'system']);
     this.external('model', this._opts.external.model || []);
     this.load('middle');
+    this.external('middle', this._opts.external.middle || []);
     this.load('boot', boot.split('|'));
     this.load('boot', (this._opts.boot && this.type(this._opts.boot) == '[object String]')  ? this._opts.boot.split('|') : []);
     this.external('boot', this._opts.external.boot || []);

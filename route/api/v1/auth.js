@@ -32,12 +32,12 @@ module.exports = function(app) {
         _mdl.appdata,
         _mdl.appuser,
         _mdl.access, // needs app slug
+        _mdl.user.waiting, // check waiting status first
         _mdl.user.enabled,
         _mdl.check.body.password,
     function(req, res, next) {
         var appData  = req.__appData;
         var userData = req.__userData;
-        var userId   = req.__userData._id;
 
         if( userData.hash !== _helper.hash(req.body.password, userData.salt) ) {
             return next( _resp.Unauthorized({
@@ -46,50 +46,7 @@ module.exports = function(app) {
             }));
         }
 
-        var a = {
-            // get acl resources
-            resources: function(cb) {
-                app.acl.userRoles(userId, function(err, roles) {
-                    app.acl.whatResources(roles, function(err, resources) {
-                        cb(null, {roles: roles, resources: resources});
-                    });
-                });
-            }
-        };
-
-        // generate profile if not exists
-        if(dot.get(req.app.model, appData.slug+'.profiles')) {
-            a.profile = function(cb) {
-                new _schema(appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
-                    cb(null, doc);
-                });
-            }
-        }
-
-        async.parallel(a, function(err, results) {
-            var data  = {_id: userId};
-
-            if(results.profile)
-                data.profile = results.profile._id.toString();
-
-            var token = _helper.genToken(data, _conf.token.secret, _conf.token.expires);
-
-            token.userId    = userId;
-            token.roles     = results.resources.roles || {};
-            token.resources = results.resources.resources || {};
-            token.profile   = false;
-
-            if(results.profile)
-                token.profile = results.profile;
-
-            if(userData.last_login)
-                token.lastLogin = userData.last_login;
-
-            _resp.OK(token, res);
-
-            // update last login
-            new _schema('system.users').init(req, res, next).put(userId, {last_login: Date.now()}, function(err, affected) {});
-        });
+        app.libpost.auth.userData(userData, appData.slug, res);
     });
 
     /**
@@ -106,31 +63,11 @@ module.exports = function(app) {
         _mdl.authtoken,
         _mdl.auth,
     function(req, res, next) {
-        var appData = req.__appData;
-        var userId  = req.__user.id;
-        var resp    = {};
+        var appData  = req.__appData;
+        var userId   = req.__user.id;
+        var resp     = {};
 
-        var a = {
-            // get acl resources
-            resources: function(cb) {
-                app.acl.userRoles(userId, function(err, roles) {
-                    app.acl.whatResources(roles, function(err, resources) {
-                        cb(null, {roles: roles, resources: resources});
-                    });
-                });
-            }
-        };
-
-        // get user profile
-        if(dot.get(req.app.model, appData.slug+'.profiles')) {
-            a.profile = function(cb) {
-                new _schema(appData.slug+'.profiles').init(req, res, next).get({users: userId, qt: 'one'}, function(err, doc) {
-                    cb(null, doc);
-                });
-            }
-        }
-
-        async.parallel(a, function(err, results) {
+        app.libpost.auth.userProfile(userId, appData.slug, function(err, results) {
             resp.userId    = userId;
             resp.roles     = results.resources.roles || {};
             resp.resources = results.resources.resources || {};
@@ -155,46 +92,25 @@ module.exports = function(app) {
         _mdl.appdata,
         _mdl.appuser,
         _mdl.access, // needs app slug
+        _mdl.user.waiting, // check waiting status first
         _mdl.user.enabled,
     function(req, res, next) {
         var _group   = 'AUTH:FORGOT';
         var appData  = req.__appData;
         var userData = req.__userData;
         var userId   = req.__userData._id;
+        var token    = _helper.random(24);
 
         // save token
         var obj = {
-            reset_token: _helper.random(24), // update token on every request
-            reset_expires: Date.now()+3600000
+            reset_token   : token, // update token on every request
+            reset_expires : Date.now()+3600000
         };
 
         // update user reset token
         new _schema('system.users').init(req, res, next).put(userId, obj, function(err, affected) {
-            var mailConf = dot.get(req.app.config[_env], 'app.mail.'+appData.slug);
-
-            if(mailConf) {
-                var mailObj = _.clone(mailConf.reset);
-
-                req.app.render('email/templates/reset', {
-                    baseUrl: mailConf.baseUrl,
-                    endpoint: mailConf.endpoints.reset,
-                    token: obj.reset_token
-                }, function(err, html) {
-                    if(err)
-                        _log.error(_group, err);
-
-                    if(html) {
-                        mailObj.to   = userData.email;
-                        mailObj.html = html;
-
-                        _log.info(_group+':MAIL_OBJ', mailObj);
-
-                        new _mailer(_transport).send(mailObj);
-                    }
-                });
-            }
-            else
-                _log.info(_group+':MAIL_OBJ', 'not found');
+            // send email
+            app.libpost.auth.emailTemplate('reset', appData.slug, token, userData.email, _group, function() {});
 
             _resp.Created({
                 email: userData.email
@@ -212,20 +128,17 @@ module.exports = function(app) {
     app.post('/api/reset/:token',
         _mdl.json,
         _mdl.client,
+        _mdl.appdata,
         _mdl.token.reset,
         _mdl.check.body.password,
     function(req, res, next) {
         var password = req.body.password;
-        var userData = req.__userData;
         var userId   = req.__userData._id;
+        var slug     = req.__appData.slug;
 
-        /**
-         * @TODO
-         * kuralları config'e al
-         */
-
+        // password rules
         var rules = {
-            password: 'required|min:4|max:32',
+            password: dot.get(_authConf, slug+'.register.password') || 'required|min:4|max:20',
         };
 
         var validation = new Validator(req.body, rules);
@@ -245,8 +158,8 @@ module.exports = function(app) {
             },
             updateUser: function(cb) {
                 new _schema('system.users').init(req, res, next).put(userId, {
-                    reset_token: {__op: 'Delete'},
-                    reset_expires: {__op: 'Delete'}
+                    reset_token   : {__op: 'Delete'},
+                    reset_expires : {__op: 'Delete'}
                 },
                 function(err, affected) {
                     cb(err, affected);
@@ -265,35 +178,6 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    var _invite_mail = function(config, appSlug, req, token) {
-        var _group   = 'AUTH:INVITE';
-        var mailConf = dot.get(config, 'app.mail.'+appSlug);
-
-        if(mailConf) {
-            var mailObj = _.clone(mailConf.invite);
-
-            req.app.render('email/templates/invite', {
-                baseUrl: mailConf.baseUrl,
-                endpoint: mailConf.endpoints.invite,
-                token: token
-            }, function(err, html) {
-                if(err)
-                    _log.error(_group, err);
-
-                if(html) {
-                    mailObj.to   = req.body.email;
-                    mailObj.html = html;
-
-                    _log.info(_group+':MAIL_OBJ', mailObj);
-
-                    new _mailer(_transport).send(mailObj);
-                }
-            });
-        }
-        else
-            _log.info(_group+':MAIL_OBJ', 'not found');
-    }
-
     app.post('/api/invite',
         _mdl.json,
         _mdl.client,
@@ -301,32 +185,30 @@ module.exports = function(app) {
         _mdl.access, // needs app slug
         _mdl.authtoken,
         _mdl.auth,
-        _mdl.authtoken,
         _mdl.check.body.email,
         _mdl.user.found,
     function(req, res, next) {
-        /**
-         * @TODO
-         * expire süresini config'e bağla
-         */
+        var _group   = 'AUTH:INVITE';
         var appData  = req.__appData;
-        var conf     = req.app.config[_env];
         var token    = _helper.random(24);
-        var moderate = dot.get(conf, 'app.config.'+appData.slug+'.auth.invite_moderation');
+        var email    = req.body.email;
+        var conf     = req.app.config[_env];
+        var moderate = dot.get(conf.auth, appData.slug+'.auth.invite_moderation');
+        var expires  = dot.get(conf.auth, appData.slug+'.auth.invite_expires') || 7;
 
         // save token
         var obj = {
-            apps: req.__appId,
-            inviter: req.__user.id,
-            email: req.body.email,
-            invite_token: token,
-            invite_expires: Date.now()+(3600000*24*30), // 30 gün expire süresi
-            detail: req.body.detail
+            apps           : req.__appId,
+            inviter        : req.__user.id,
+            email          : email,
+            invite_token   : token,
+            invite_expires : _helper.daysLater(expires),
+            detail         : req.body.detail
         };
 
         if(moderate) {
             obj.email_sent = 'N';
-            obj.status = 'WA';
+            obj.status     = 'WA';
         }
 
         var invites = new _schema('system.invites').init(req, res, next);
@@ -338,25 +220,12 @@ module.exports = function(app) {
             // send invitation mail
             // (eğer moderasyondan geçmeyecekse maili burada atıyoruz, moderasyondan geçecekse model hook'unda atıyoruz)
             if( ! moderate )
-               _invite_mail(conf, appData.slug, req, token);
+                app.libpost.auth.emailTemplate('invite', appData.slug, token, email, _group, function() {});
 
             _resp.Created({
-                email: req.body.email
+                email: email
             }, res);
         });
-    });
-
-    /**
-     * @TODO
-     * invite status işlemlerini burada yap, acl ile system.invites üzerinde put* iznine bak
-     */
-
-    app.post('/api/invite_accept/:id', function(req, res, next) {
-
-    });
-
-    app.post('/api/invite_decline/:id', function(req, res, next) {
-
     });
 
     app.get('/api/invite/:token',
@@ -372,6 +241,7 @@ module.exports = function(app) {
         _mdl.appdata,
         _mdl.access, // needs app slug
         _mdl.token.invite,
+        _mdl.default.role.invite,
     function(req, res, next) {
         var appData    = req.__appData;
         var inviteData = req.__inviteData;
@@ -379,61 +249,52 @@ module.exports = function(app) {
         // set default password
         var password = req.body.password;
         if( ! password || password == '' )
-            password = _helper.random(24);
+            password = _helper.random(20);
 
-        // get initial role for app
-        var slug = dot.get(app.config[_env], 'roles.'+appData.slug+'.initial.invite');
+        // validation rules
+        var rules = {
+            email    : 'required|email',
+            password : dot.get(_authConf, appData.slug+'.register.password') || 'required|min:4|max:20'
+        };
 
-        if( ! slug ) {
-            return next( _resp.Unauthorized({
-                type: 'InvalidCredentials',
-                errors: ['initial role config not found (invite)']
-            }));
+        var obj = {
+            email      : inviteData.email,
+            password   : password,
+            roles      : req.__defaultRole,
+            is_invited : 'Y',
+            inviter    : inviteData.inviter
+        };
+
+        // check waiting list
+        var waiting = dot.get(_authConf, appData.slug+'.auth.waiting_list');
+
+        if(waiting) {
+            obj.is_enabled     = 'N';
+            obj.waiting_status = 'WA';
         }
+        
+        // validate data
+        var validation = new Validator(obj, rules, _helper._slugs);
 
-        // get role by slug
-        new _schema('system.roles').init(req, res, next).get({
-            apps: appData._id,
-            slug: slug,
-            qt: 'one'
-        }, function(err, doc) {
-            if( err || ! doc ) {
-                return next( _resp.Unauthorized({
-                    type: 'InvalidCredentials',
-                    errors: ['initial role not found (invite)']
-                }));
-            }
+        if(validation.fails())
+            return _helper.bodyErrors(validation.errors.all(), next);
 
-            /**
-             * @TODO
-             * password kurallarını uygulama kurallarından almalı
-             */
+        // save user with basic data
+        var users = new _schema('system.users').init(req, res, next);
 
-            var obj = {
-                email: inviteData.email,
-                password: password,
-                roles: doc._id.toString(),
-                is_invited: 'Y',
-                inviter: inviteData.inviter
-            };
+        users.post(obj, function(err, user) {
+            if(err)
+                return users.errResponse(err);
 
-            // save user with basic data
-            var users = new _schema('system.users').init(req, res, next);
-
-            users.post(obj, function(err, user) {
-                if(err)
-                    return users.errResponse(err);
-
-                new _schema('system.invites').init(req, res, next).put(inviteData._id, {
-                    invite_token: {__op: 'Delete'},
-                    invite_expires: {__op: 'Delete'}
-                },
-                function(err, affected) {
-                    // send new user data
-                    _resp.Created({
-                        email: user.email
-                    }, res);
-                });
+            new _schema('system.invites').init(req, res, next).put(inviteData._id, {
+                invite_token   : {__op: 'Delete'},
+                invite_expires : {__op: 'Delete'}
+            },
+            function(err, affected) {
+                // send new user data
+                _resp.Created({
+                    email: user.email
+                }, res);
             });
         });
     });
@@ -459,21 +320,28 @@ module.exports = function(app) {
 
         // validation rules
         var rules = {
-            email: 'required|email',
-            password: dot.get(_authConf, slug+'.register.password') || 'required|min:4|max:20'
+            email    : 'required|email',
+            password : dot.get(_authConf, slug+'.register.password') || 'required|min:4|max:20'
         };
 
         // user data
         var data = {
-            email: req.body.email,
-            password: req.body.password,
-            roles: req.__defaultRole,
-            is_enabled: 'N',
-            register_token: token,
+            email      : req.body.email,
+            password   : req.body.password,
+            roles      : req.__defaultRole,
+            is_enabled : 'N'
         };
 
+        // check waiting list
+        var waiting = dot.get(_authConf, slug+'.auth.waiting_list');
+
+        if(waiting)
+            data.waiting_status = 'WA';
+        else
+            data.register_token = token;
+        
         // profile obj
-        var profiles = req.__appData.slug+'.profiles';
+        var profiles = slug+'.profiles';
         var mProfile = dot.get(req.app.model, profiles);
 
         if(mProfile) {
@@ -516,32 +384,9 @@ module.exports = function(app) {
                 new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {});
             }
 
-            // send activation mail
-            var _mailConf = dot.get(req.app.config[_env], 'app.mail.'+slug);
-
-            if(_mailConf) {
-                var mailObj = _.clone(_mailConf.register);
-
-                req.app.render(slug+'/email/templates/register', {
-                    baseUrl: _mailConf.baseUrl,
-                    endpoint: _mailConf.endpoints.verify,
-                    token: token
-                }, function(err, html) {
-                    if(err)
-                        _log.error(_group, err);
-
-                    if(html) {
-                        mailObj.to   = req.body.email;
-                        mailObj.html = html;
-
-                        _log.info(_group+':MAIL_OBJ', mailObj);
-
-                        new _mailer(_transport).send(mailObj);
-                    }
-                });
-            }
-            else
-                _log.info(_group+':MAIL_OBJ', 'not found');
+            // send email (waiting listesinde ise mail göndermiyoruz)
+            if( ! waiting )
+                app.libpost.auth.emailTemplate('register', slug, token, req.body.email, _group, function() {});
 
             // response
             _resp.Created({
@@ -600,13 +445,16 @@ module.exports = function(app) {
         _mdl.auth,
         _mdl.user.data,
     function(req, res, next) {
-        var userData = req.__userData;
-        var slug     = req.__appData.slug;
+        var userData   = req.__userData;
+        var slug       = req.__appData.slug;
+        var oldPass    = req.body.old_password;
+        var newPass    = req.body.new_password;
+        var passRepeat = req.body.new_password_repeat;
 
         var data = {
-            old_password        : req.body.old_password,
-            new_password        : req.body.new_password,
-            new_password_repeat : req.body.new_password_repeat
+            old_password        : oldPass,
+            new_password        : newPass,
+            new_password_repeat : passRepeat
         }
 
         var rule  = dot.get(_authConf, slug+'.register.password') || 'required|min:4|max:20';
@@ -625,7 +473,7 @@ module.exports = function(app) {
             }));
         }
 
-        if( userData.hash !== _helper.hash(req.body.old_password, userData.salt) ) {
+        if( userData.hash !== _helper.hash(oldPass, userData.salt) ) {
             return next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
                 errors: ['old_password is wrong']}
@@ -633,9 +481,235 @@ module.exports = function(app) {
         }
 
         // update password
-        new _schema('system.users').init(req, res, next).put(userData._id, {password: req.body.new_password}, function(err, affected) {
+        new _schema('system.users').init(req, res, next).put(userData._id, {password: newPass}, function(err, affected) {
             _resp.OK({affected: affected}, res);
         });
     });
 
+    /**
+     * ----------------------------------------------------------------
+     * Social Login or Register
+     * ----------------------------------------------------------------
+     */
+
+    app.post('/api/social',
+        _mdl.json,
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.appuser, // don't throw error if user not found
+        _mdl.access, // needs app slug
+        _mdl.check.social,
+        _mdl.check.username.exists,
+        _mdl.default.role.register,
+        _mdl.user.waiting, // check waiting status first
+        _mdl.user.enabled,
+    function(req, res, next) {
+        var appData    = req.__appData;
+        var appSlug    = req.__appData.slug;
+        var userData   = req.__userData;
+        var socialData = req.__social;
+
+        // return user data if found
+        if(userData)
+            return app.libpost.auth.userData(userData, appSlug, res);            
+
+        // check username after login function
+        if(req.__usernameExists) {
+            return next( _resp.Unauthorized({
+                type: 'InvalidCredentials',
+                errors: ['username exists']}
+            ));
+        }
+
+        // validation rules
+        var rules = {email: 'required|email'};
+
+        // user data
+        var data = {
+            email    : req.body.email,
+            password : _helper.random(20),
+            roles    : req.__defaultRole
+        };
+
+        // check waiting list
+        var waiting = dot.get(_authConf, appSlug+'.auth.waiting_list');
+        
+        if(waiting) {
+            data.is_enabled     = 'N';
+            data.waiting_status = 'WA'; 
+        }
+        
+        // profile obj
+        var profiles = appSlug+'.profiles';
+        var mProfile = dot.get(req.app.model, profiles);
+
+        if(mProfile) {
+            rules.name = dot.get(_authConf, appSlug+'.register.name') || 'required';
+            data.name  = req.body.name || socialData.name;
+        }
+
+        // set username
+        var username = dot.get(_authConf, appSlug+'.register.username');
+
+        if(username) {
+            rules.username = username;
+            data.username  = req.body.username;
+        }
+
+        // validate data
+        var validation = new Validator(data, rules, _helper._slugs);
+
+        if(validation.fails())
+            return _helper.bodyErrors(validation.errors.all(), next);
+
+        // save user
+        var users = new _schema('system.users').init(req, res, next);
+
+        users.post(data, function(err, user) {
+            if(err)
+                return users.errResponse(err);
+
+            // create profile
+            if(mProfile) {
+                var profileObj = {
+                    apps  : req.__appId,
+                    users : user._id.toString(),
+                    name  : data.name
+                };
+
+                if(data.username)
+                    profileObj.username = data.username;
+
+                new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {});
+            }
+
+            // waiting list özelliği varsa token vs dönmüyoruz, sadece created dönüyoruz
+            if(waiting) {
+                return _resp.Created({
+                    email: req.body.email
+                }, res);
+            }
+            
+            // return user data
+            user._id = user._id.toString();
+            app.libpost.auth.userData(user, appSlug, res);
+        });
+    });
+
+    /**
+     * ----------------------------------------------------------------
+     * Waiting User List
+     * ----------------------------------------------------------------
+     */
+
+    app.post('/api/waiting/accept',
+        _mdl.json,
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.access, // needs app slug
+        _mdl.authtoken,
+        _mdl.auth,
+        _mdl.data.body.userid,
+        _mdl.user.acl('system.users', 'put*'),
+    function(req, res, next) {
+        var _group   = 'AUTH:WAITING:ACCEPT';
+        var appSlug  = req.__appData.slug;
+        var bodyUser = req.__bodyUser;
+        
+        // update user data
+        new _schema('system.users').init(req, res, next).put(bodyUser._id, {
+            is_enabled     : 'Y',
+            waiting_status : 'AC'    
+        },
+        function(err, affected) {
+            // send information mail
+            app.libpost.auth.emailTemplate('waiting/accept', appSlug, null, bodyUser.email, _group, function() {});
+            
+            _resp.OK({affected: affected}, res);
+        });
+    });
+
+    app.post('/api/waiting/decline',
+        _mdl.json,
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.access, // needs app slug
+        _mdl.authtoken,
+        _mdl.auth,
+        _mdl.data.body.userid,
+        _mdl.user.acl('system.users', 'put*'),
+    function(req, res, next) {
+        var _group   = 'AUTH:WAITING:DECLINE';
+        var appSlug  = req.__appData.slug;
+        var bodyUser = req.__bodyUser;
+
+        // update user data
+        new _schema('system.users').init(req, res, next).put(bodyUser._id, {
+            is_enabled     : 'N',
+            waiting_status : 'DC'
+        },
+        function(err, affected) {
+            // send information mail
+            app.libpost.auth.emailTemplate('waiting/decline', appSlug, null, bodyUser.email, _group, function() {});
+
+            _resp.OK({affected: affected}, res);
+        });
+    });
+
+    app.get('/api/waiting/line',
+        _mdl.json,
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.access, // needs app slug
+        _mdl.data.query.email,
+    function(req, res, next) {
+        var _group   = 'AUTH:WAITING:LINE';
+        var appSlug  = req.__appData.slug;
+        var userData = req.__queryUser;
+        
+        if(userData.waiting_status == 'Accepted') {
+            return next( _resp.Unauthorized({
+                type: 'InvalidCredentials',
+                errors: ['user is not in the waiting list']}
+            ));
+        }
+        
+        var a = {
+            total: function(cb) {
+                new _schema('system.users').init(req, res, next).get({
+                    is_enabled: 'N',
+                    waiting_status: 'WA',
+                    qt: 'count'
+                }, function(err, doc) {
+                    cb(null, doc);
+                });
+            },
+            before: function(cb) {
+                new _schema('system.users').init(req, res, next).get({
+                    _id: '{lt}'+userData._id,
+                    is_enabled: 'N',
+                    waiting_status: 'WA',
+                    qt: 'count'
+                }, function(err, doc) {
+                    cb(null, doc);
+                });
+            }
+        };
+        
+        async.parallel(a, function(err, results) {
+            var total  = dot.get(results, 'total.count') || 0;
+            var before = dot.get(results, 'before.count') || 0;
+            var diff   = total-before;
+            var after  = diff-1;
+            
+            _resp.OK({
+                total  : total,
+                before : before,
+                after  : after,
+                line   : total-after
+            }, res);
+        });
+        
+    });
+    
 };

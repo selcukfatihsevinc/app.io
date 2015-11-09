@@ -32,7 +32,10 @@
 **`params`** old_password, new_password, new_password_repeat
 
 ### /api/location/search [GET]
-> **`headers`** X-Client-Id, X-Client-Secret
+> **`headers`** X-Client-Id, X-Client-Secret  
 **`query params`** feature_codes "PCLI,ADM1,ADM2"
 
+### /api/social [POST]
+> **`headers`** X-Client-Id, X-Client-Secret  
+**`params`** social_network "github", access_token, email, username
 

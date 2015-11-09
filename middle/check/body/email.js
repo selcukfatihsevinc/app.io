@@ -12,6 +12,8 @@ function CheckBodyEmail(req, res, next) {
         }));
     }
 
+    req.body.email = _email.toLowerCase();
+
     next();
 
 }

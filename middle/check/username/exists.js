@@ -19,12 +19,18 @@ function CheckUsernameExists(req, res, next) {
             username_lc: _username.toLowerCase(),
             qt: 'one'
         }, function(err, doc) {
-            if(doc) {
+            var paths  = ['/api/social', '/api/social/'];
+            var pIndex = paths.indexOf(req.path);
+
+            if(pIndex == -1 && doc) {
                 return next( _resp.Unauthorized({
                     type: 'InvalidCredentials',
                     errors: ['username exists']}
                 ));
             }
+
+            if(doc)
+                req.__usernameExists = true;
 
             next();
         });

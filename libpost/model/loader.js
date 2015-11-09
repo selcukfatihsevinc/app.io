@@ -25,7 +25,8 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
     // create inspector
     var Inspector    = new this._inspector(schema).init();
     Schema.inspector = Inspector;
-
+    // Schema.structure = schema;
+    
     // extend inspector with options
     extend(Schema.inspector, options);
 

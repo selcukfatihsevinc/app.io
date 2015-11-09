@@ -38,7 +38,8 @@ module.exports = function(app) {
         re  : {type: Date, alias: 'reset_expires'},
         ii  : {type: String, default: 'N', enum: ['Y', 'N'], alias: 'is_invited', index: true},
         inv : {type: ObjectId, ref: 'System_Users', alias: 'inviter'},
-        ll  : {type: Date, alias: 'last_login', index: true}
+        ll  : {type: Date, alias: 'last_login', index: true},
+        ws  : {type: String, default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'waiting_status', index: true}
     };
 
     /**
@@ -65,18 +66,25 @@ module.exports = function(app) {
         ]
     };
 
-    Schema.ro[0].settings = {
-        label: 'Roles',
-        display: 'name'
-    };
+    Schema.ro[0].settings = {label: 'Roles', display: 'name'};
 
     Schema.ii.settings = {
+        initial: false,
         options: [
             {label: 'Yes', value: 'Y'},
             {label: 'No', value: 'N'}
         ]
     };
 
+    Schema.ws.settings = {
+        initial: false,
+        options: [
+            {label: 'Waiting', value: 'WA'},
+            {label: 'Accepted', value: 'AC'},
+            {label: 'Declined', value: 'DC'}
+        ]
+    };
+    
     /**
      * ----------------------------------------------------------------
      * Load Schema
