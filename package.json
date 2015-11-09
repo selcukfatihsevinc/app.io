@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -37,7 +37,7 @@
     "agenda": "0.6.26",
     "cron": "1.0.6",
     "dotty": "0.0.2",
-    "cache-stampede": "https://github.com/export/cache-stampede/tarball/95cf172b979581785756e71e5ccd27f0a0ca4459",
+    "cache-stampede": "https://github.com/selcukfatihsevinc/cache-stampede/tarball/95cf172b979581785756e71e5ccd27f0a0ca4459",
     "parseable": "1.0.10",
     "multiparty": "4.0.0",
     "cloudinary": "1.0.13",
@@ -99,10 +99,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/export/app.io.git"
+    "url": "https://github.com/selcukfatihsevinc/app.io.git"
   },
   "bugs": {
-    "url": "https://github.com/export/app.io/issues"
+    "url": "https://github.com/selcukfatihsevinc/app.io/issues"
   },
-  "homepage": "https://github.com/export/app.io"
+  "homepage": "https://github.com/selcukfatihsevinc/app.io"
 }
