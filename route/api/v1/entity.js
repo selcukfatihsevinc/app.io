@@ -47,14 +47,6 @@ module.exports = function(app) {
         var mask  = schema._mask || {};
         var Item  = schema._model;
 
-        // check type
-        if(type != 'array') {
-            next( _resp.UnprocessableEntity({type: _errType,
-                errors: ['field type is not array']
-            }));
-            return cb(true);
-        }
-
         // set value
         var setVal;
 
@@ -92,6 +84,7 @@ module.exports = function(app) {
         }
 
         var returnObj = {
+            type   : type,
             setVal : setVal,
             short  : short,
             pair   : schema._alias[pair]
@@ -130,6 +123,30 @@ module.exports = function(app) {
         });
     };
 
+    var updateItem = function(Item, cond, update, id, original, res, next) {
+        Item.update(cond, update, {multi: false}, function(err, raw) {
+            if( ! raw.nModified )
+                return _resp.OK({affected: 0}, res);
+
+            Item.findOne({_id: id}, function (err, doc) {
+                /**
+                 *
+                 * checkObject içinde doc'u aldıktan sonra Item.update çalıştırdığımız için doc ve _original değişmiyor aynı kalıyor
+                 * post save hook'taki count'ların çalışması için _original'a ihtiyaç var
+                 * bu yüzden bir kere daha çekip _original'i yeni doc'a set ediyoruz ve öyle kaydediyoruz
+                 */
+
+                doc._original = original;
+                doc.save(function(err) {
+                    if(err)
+                        return next( _resp.InternalServerError(err) );
+
+                    _resp.OK({affected: 1}, res);
+                });
+            });
+        });
+    }
+    
     /**
      * ----------------------------------------------------------------
      * Add User to Set (add to field, remove from pair)
@@ -152,38 +169,41 @@ module.exports = function(app) {
                 
                 var id     = req.params.id;
                 var Item   = schema._model;
-                var update = {$addToSet: {}};
+                var cond   = {_id: id};
+                var update = {};
+                var props  = dot.get(schema._save, 'properties.'+result.short);
                 
-                // add to set
-                update.$addToSet[result.short] = result.setVal;
-                
-                // remove from pair
-                if(result.pair) {
-                    update.$pull = {};
-                    update.$pull[result.pair] = result.setVal;
+                if(result.type == 'array') {
+                    update = {$addToSet: {}};
+
+                    // add to set
+                    update.$addToSet[result.short] = result.setVal;
+
+                    // remove from pair
+                    if(result.pair) {
+                        update.$pull = {};
+                        update.$pull[result.pair] = result.setVal;
+                    }
+
+                    updateItem(Item, cond, update, id, result.doc._original, res, next);
                 }
-                
-                Item.update({_id: id}, update, {multi: false}, function(err, raw) {
-                    if( ! raw.nModified )
-                        return _resp.OK({affected: 0}, res);
+                else {
+                    update = {$set: {}};
+                    
+                    // set field value
+                    update.$set[result.short] = result.setVal;
+                    
+                    // check owner
+                    if(props.owner)
+                        cond[ schema._alias[props.owner] ] = req.__user.id;
 
-                    Item.findOne({_id: id}, function (err, doc) {
-                        /**
-                         * 
-                         * checkObject içinde doc'u aldıktan sonra Item.update çalıştırdığımız için doc ve _original değişmiyor aynı kalıyor
-                         * post save hook'taki count'ların çalışması için _original'a ihtiyaç var
-                         * bu yüzden bir kere daha çekip _original'i yeni doc'a set ediyoruz ve öyle kaydediyoruz
-                         */
+                    schema.validate(schema._update, update, function(err, valid) {
+                        if(valid.error.length)
+                            return schema.errors({name: 'ValidationError', errors: valid.error});
 
-                        doc._original = result.doc._original;
-                        doc.save(function(err) {
-                            if(err)
-                                return next( _resp.InternalServerError(err) );
-
-                            _resp.OK({affected: 1}, res);                            
-                        });
+                        updateItem(Item, cond, update, id, result.doc._original, res, next);
                     });
-                });
+                }
             });
         }
     });
@@ -210,29 +230,21 @@ module.exports = function(app) {
 
                     var id     = req.params.id;
                     var Item   = schema._model;
-                    var update = {$pull: {}};
-
-                    // pull from field
-                    update.$pull[result.short] = result.setVal;
+                    var cond   = {_id: id};
+                    var update = {};
                     
-                    // pull from pair
-                    if(result.pair)
-                        update.$pull[result.pair] = result.setVal;
+                    if(result.type == 'array') {
+                        update = {$pull: {}};
 
-                    Item.update({_id: id}, update, {multi: false}, function(err, raw) {
-                        if( ! raw.nModified )
-                            return _resp.OK({affected: 0}, res);
+                        // pull from field
+                        update.$pull[result.short] = result.setVal;
 
-                        Item.findOne({_id: id}, function (err, doc) {
-                            doc._original = result.doc._original;
-                            doc.save(function(err) {
-                                if(err)
-                                    return next( _resp.InternalServerError(err) );
+                        // pull from pair
+                        if(result.pair)
+                            update.$pull[result.pair] = result.setVal;                        
+                    }
 
-                                _resp.NoContent(null, res);
-                            });
-                        });
-                    });
+                    updateItem(Item, cond, update, id, result.doc._original, res, next);
                 });
             }
         });
