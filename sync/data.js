@@ -251,6 +251,12 @@ module.exports = function(app) {
                         _.each(actions, function(act_value, act_key) {
                             var role = results['role_'+key+'.'+act_key]._id.toString();
 
+                            /**
+                             * @TODO
+                             * act_value=[] şeklinde boş array gelirse bu döngüye hiç girmez ve update etmesi gereken izinleri update etmez
+                             * fixle!!!
+                             */
+                            
                             _.each(act_value, function(action, object) {
                                 object = results['object_'+object]._id.toString();
 

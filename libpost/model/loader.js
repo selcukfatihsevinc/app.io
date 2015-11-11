@@ -31,10 +31,12 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
     extend(Schema.inspector, options);
 
     // allow superadmin (mongoose connection bekliyor)
-    if(this._app.acl && this._worker == 0 && dot.get(this._syncConf, 'data.superacl')) {
+    if(this._worker == 0 && dot.get(this._syncConf, 'data.superacl')) {
         this._mongoose.connection.on('open', function() {
-            self._app.acl.allow('superadmin', lower, '*');
-            self._log.info(group+':ACL:ALLOW', 'superadmin:'+lower+':*', 'gray');
+            if(self._app.acl) {
+                self._app.acl.allow('superadmin', lower, '*');
+                self._log.info(group+':ACL:ALLOW', 'superadmin:'+lower+':*', 'gray');                
+            }
         });
     }
 
