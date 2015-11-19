@@ -8,7 +8,7 @@ var io      = require('socket.io');
 function AppIo(options) {
     options      = options || {};
     this._opts   = options;
-    this._master = cluster.isMaster;
+    this._master = cluster.isMaster; 
     this._cores  = options.cores || (process.env.NODE_CORES || require('os').cpus().length);
     this._map    = {};
     this._app    = false;

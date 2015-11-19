@@ -177,6 +177,9 @@ module.exports = function(app) {
 
         // execute parallel
         async.parallel(a, function(err, results) {
+            if(err)
+                _log.error(_group, err);
+            
             // console.log(results);
 
             var series = {};
@@ -194,7 +197,7 @@ module.exports = function(app) {
                     var currApp = apps['app_system'];
 
                     if( ! currApp )
-                        return;
+                        return cb();
 
                     // get app id
                     var currId = currApp._id.toString();
@@ -251,12 +254,6 @@ module.exports = function(app) {
                         _.each(actions, function(act_value, act_key) {
                             var role = results['role_'+key+'.'+act_key]._id.toString();
 
-                            /**
-                             * @TODO
-                             * act_value=[] şeklinde boş array gelirse bu döngüye hiç girmez ve update etmesi gereken izinleri update etmez
-                             * fixle!!!
-                             */
-                            
                             _.each(act_value, function(action, object) {
                                 object = results['object_'+object]._id.toString();
 
@@ -385,6 +382,9 @@ module.exports = function(app) {
              */
 
             async.series(series, function(err, results) {
+                if(err)
+                    _log.error(_group, err);
+                
                 if(Object.keys(results).length)
                     _log.info(_group, 'sync data executed!');
             });

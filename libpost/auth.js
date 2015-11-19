@@ -72,13 +72,18 @@ LibpostAuth.prototype.emailTemplate = function(name, appSlug, token, toEmail, gr
     var self  = this;
     var mConf = dot.get(self._app.config[self._env], 'app.mail.'+appSlug);
 
+    /**
+     * @TODO
+     * callback ile hataları dön
+     */
+        
     // set transport
     var _transport = self._app.boot.mailer;
 
     if(mConf) {
         var mailObj = _.clone(mConf[name]) || {};
 
-        self._app.render('email/templates/'+name, {
+        self._app.render(appSlug+'/email/templates/'+name, {
             baseUrl  : mConf.baseUrl,
             endpoint : mConf.endpoints[name],
             token    : token

@@ -430,6 +430,41 @@ module.exports = function(app) {
         });
     });
 
+    app.post('/api/resend',
+        _mdl.json,
+        _mdl.client,
+        _mdl.appdata,
+        _mdl.access, // needs app slug
+        _mdl.check.body.email,
+    function(req, res, next) {
+        var _group = 'AUTH:RESEND';
+        var slug   = req.__appData.slug;
+
+        // check user by email
+        new _schema('system.users').init(req, res, next).get({
+            email: req.body.email.toLowerCase(), 
+            qt: 'one'
+        }, function(err, doc) {
+            if( err || ! doc ) {
+                return next( _resp.Unauthorized({
+                    type: 'InvalidCredentials',
+                    errors: ['user not found']}
+                ));                
+            }
+            else if( ! doc.register_token ) {
+                return next( _resp.Unauthorized({
+                    type: 'InvalidCredentials',
+                    errors: ['register token not found']}
+                ));
+            }
+            
+            // resend activation mail
+            app.libpost.auth.emailTemplate('register', slug, doc.register_token, doc.email, _group, function() {
+                _resp.OK({}, res);
+            });
+        });
+    });
+    
     /**
      * ----------------------------------------------------------------
      * Change Password
