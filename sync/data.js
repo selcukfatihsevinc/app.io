@@ -58,7 +58,10 @@ module.exports = function(app) {
 
     // execute parallel
     async.parallel(a, function(err, apps) {
-        // console.log(apps);
+        if(err)
+            return _log.error(_group, err);
+        
+        _log.info(_group+':APPS', apps);
 
         // async object
         a = {};
@@ -178,10 +181,10 @@ module.exports = function(app) {
         // execute parallel
         async.parallel(a, function(err, results) {
             if(err)
-                _log.error(_group, err);
-            
-            // console.log(results);
+                return _log.error(_group, err);
 
+            _log.info(_group+':RESULTS', results);
+            
             var series = {};
 
             /**
@@ -383,7 +386,9 @@ module.exports = function(app) {
 
             async.series(series, function(err, results) {
                 if(err)
-                    _log.error(_group, err);
+                    return _log.error(_group, err);
+
+                _log.info(_group+':SERIES:RESULTS', results);
                 
                 if(Object.keys(results).length)
                     _log.info(_group, 'sync data executed!');
