@@ -20,7 +20,8 @@ module.exports = function(app) {
 
     var str = 'mongodb://'+_auth+_conf.host+':'+_conf.port+'/'+_conf.db;
     var db  = mongoose.connect(str, {
-        server: {poolSize: parseInt(_conf.pool) || 10}
+        server: {poolSize: parseInt(_conf.pool) || 10},
+        config: {autoIndex: _conf.autoIndex || false}
     });
 
     // mongoose set event emitter max listeners
