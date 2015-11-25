@@ -117,6 +117,13 @@ function EntityCheck(req, res, next) {
                     }));
                 }
 
+                /**
+                 * @TODO
+                 * 
+                 * reference owner'lığı da set edilebilsin, örneğin comment eklendi ve modele comment array'i basılacak, 
+                 * burada count yerine owner id ile birlikte data alınabilir 
+                 */
+                
                 next();
             });
         }

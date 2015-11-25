@@ -1,3 +1,5 @@
+fs = require('fs');
+
 module.exports = function(app) {
 
     var _log   = app.lib.logger;
@@ -50,7 +52,7 @@ module.exports = function(app) {
         app.get('*', forwards);
         app.get('/*?', function(req, res, next) {
             var image = new Img(req, res);
-
+            
             if( ! req.tmpcache ) {
                 image.getFile()
                     .pipe(new streams.identify())

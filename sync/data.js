@@ -32,14 +32,20 @@ module.exports = function(app) {
                     var schema = new _schema('system.apps').init(app);
 
                     schema.get({slug: value.slug, qt: 'one'}, function(err, apps) {
+                        if(err)
+                            _log.error(_group+':APPS:GET', err);
+                        
                         if( ! err && apps ) {
                             schema = null;
-                            return cb(err, apps);
+                            return cb(null, apps);
                         }
 
                         schema.post(value, function(err, apps) {
+                            if(err)
+                                _log.error(_group+':APPS:POST', err);
+                            
                             schema = null;
-                            cb(err, apps);
+                            cb(null, apps);
                         });
                     });
                 };
@@ -58,9 +64,6 @@ module.exports = function(app) {
 
     // execute parallel
     async.parallel(a, function(err, apps) {
-        if(err)
-            return _log.error(_group, err);
-        
         _log.info(_group+':APPS', apps);
 
         // async object
@@ -89,15 +92,21 @@ module.exports = function(app) {
                             guestRole(role_value, currApp);
 
                             schema.get({apps: currId, slug: role_value.slug, qt: 'one'}, function(err, role) {
+                                if(err)
+                                    _log.error(_group+':ROLES:GET', err);
+                                
                                 if( ! err && role ) {
                                     schema = null;
-                                    return cb(err, role);
+                                    return cb(null, role);
                                 }
 
                                 role_value.apps = currId;
                                 schema.post(role_value, function(err, role) {
+                                    if(err)
+                                        _log.error(_group+':ROLES:POST', err);
+                                    
                                     schema = null;
-                                    cb(err, role);
+                                    cb(null, role);
                                 });
                             });
                         };
@@ -163,14 +172,20 @@ module.exports = function(app) {
                         var plural = dot.get(value.schema, 'inspector.Options.plural');
 
                         schema.get({apps: currId, slug: key, qt: 'one'}, function(err, object) {
+                            if(err)
+                                _log.error(_group+':OBJECTS:GET', err);
+                            
                             if( ! err && object ) {
                                 schema = plural = null;
-                                return cb(err, object);
+                                return cb(null, object);
                             }
 
                             schema.post({apps: currId, name: plural || key, slug: key}, function(err, object) {
+                                if(err)
+                                    _log.error(_group+':OBJECTS:POST', err);
+                                
                                 schema = plural = null;
-                                cb(err, object);
+                                cb(null, object);
                             });
                         });
                     };
@@ -180,10 +195,8 @@ module.exports = function(app) {
 
         // execute parallel
         async.parallel(a, function(err, results) {
-            if(err)
-                return _log.error(_group, err);
-
-            _log.info(_group+':RESULTS', results);
+            _log.info(_group+':RESULTS', 'listing...');
+            console.log(results);
             
             var series = {};
 
@@ -328,7 +341,7 @@ module.exports = function(app) {
                         });
                     });
 
-                    cb();
+                    cb(null, 'processing...');
                 };
             }
 
@@ -388,7 +401,8 @@ module.exports = function(app) {
                 if(err)
                     return _log.error(_group, err);
 
-                _log.info(_group+':SERIES:RESULTS', results);
+                _log.info(_group+':SERIES:RESULTS', 'listing...');
+                console.log(results);
                 
                 if(Object.keys(results).length)
                     _log.info(_group, 'sync data executed!');

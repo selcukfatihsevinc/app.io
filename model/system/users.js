@@ -130,8 +130,9 @@ module.exports = function(app) {
             self.pa = '';
         }
 
-        self._isNew = self.isNew;
-
+        self._isNew     = self.isNew;
+        self._lastLogin = self.isModified('ll');
+        
         next();
     });
 
@@ -144,8 +145,8 @@ module.exports = function(app) {
     UserSchema.post('save', function (doc) {
         var self = this;
 
-        // emit event
-        if( ! self._isNew ) {
+        // emit event (last_login güncellemesi ise işlem yapma)
+        if( ! self._isNew && ! self._lastLogin ) {
             _emitter.emit('user_updated', {
                 source: 'System_Users',
                 doc: doc
