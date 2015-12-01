@@ -36,6 +36,9 @@ module.exports = function(app) {
             _log.info(_group, 'client connected', 'black');
     });
 
+    if(_conf.debug)
+        mongoose.set('debug', true);
+        
     if(_logs) {
         _log.info(_group+':CONFIG', _conf, 'black');
         _log.info(_group+':STRING', str, 'black');

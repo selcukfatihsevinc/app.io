@@ -1,5 +1,6 @@
 var async = require('async');
 var dot   = require('dotty');
+var _     = require('underscore');
 
 module.exports = function(app) {
 
@@ -8,31 +9,22 @@ module.exports = function(app) {
     var _helper   = app.lib.utils.helper;
     var _resp     = app.system.response.app;
     var _mongoose = app.core.mongo.mongoose;
-
-    var updateItem = function(Item, cond, update, id, original, res, next) {
-        
-        Item.update(cond, update, {multi: false}, function(err, raw) {
-            if( ! raw.nModified )
-                return _resp.OK({affected: 0}, res);
-
-            Item.findOne({_id: id}, function (err, doc) {
-                /**
-                 *
-                 * checkObject içinde doc'u aldıktan sonra Item.update çalıştırdığımız için doc ve _original değişmiyor aynı kalıyor
-                 * post save hook'taki count'ların çalışması için _original'a ihtiyaç var
-                 * bu yüzden bir kere daha çekip _original'i yeni doc'a set ediyoruz ve öyle kaydediyoruz
-                 */
-
-                doc._original = original;
-                doc.save(function(err) {
-                    if(err)
-                        return next( _resp.InternalServerError(err) );
-
-                    _resp.OK({affected: 1}, res);
+    var _emitter  = app.lib.schemaEmitter;
+    
+    var updateItem = function(Item, cond, update, id, name, type, value, field) {
+        return function(cb) {
+            Item.update(cond, update, {multi: false}, function(err, raw) {
+                if(raw && raw.nModified)
+                    _emitter.emit(name+type, {id: id, value: value});    
+                
+                cb(null, {
+                    field    : field,
+                    type     : type,
+                    value    : value,
+                    affected : raw.nModified
                 });
-            });
-        });
-        
+            });    
+        }
     }
     
     /**
@@ -55,29 +47,37 @@ module.exports = function(app) {
         if(schema) {
             var entity = req.__entityAcl;
             var id     = req.params.id;
+            var field  = req.params.field;
+            var object = req.params.object.toLowerCase().replace('.', '_');
+            var name   = object+'_'+field+'_';
             var Item   = schema._model;
             var cond   = {_id: id};
             var update = {};
             var props  = dot.get(schema._save, 'properties.'+entity.short);
+            var a      = [];
             
             if(entity.type == 'array') {
-                update = {$addToSet: {}};
+                _.each(entity.setValArr, function(value, key) {
+                    // add to set
+                    update = {$addToSet: {}};
+                    update.$addToSet[entity.short] = value;             
+                    a.push(updateItem(Item, cond, _.clone(update), id, name, 'addtoset', value, field));
 
-                // add to set
-                update.$addToSet[entity.short] = entity.setVal;
-
-                // remove from pair
-                if(entity.pair) {
-                    update.$pull = {};
-                    update.$pull[entity.pair] = entity.setVal;
-                }
-
-                updateItem(Item, cond, update, id, entity.doc._original, res, next);
+                    // remove from pair
+                    if(entity.pair) {
+                        update = {$pull: {}};
+                        update.$pull[entity.pair] = value;
+                        a.push(updateItem(Item, cond, _.clone(update), id, object+'_'+props.pair+'_', 'pull', value, props.pair));
+                    }
+                });
+                
+                async.parallel(a, function(err, results) {
+                    _resp.OK(results, res);
+                });
             }
             else {
-                update = {$set: {}};
-                
                 // set field value
+                update = {$set: {}};
                 update.$set[entity.short] = entity.setVal;
                 
                 // check owner
@@ -88,7 +88,11 @@ module.exports = function(app) {
                     if(valid.error.length)
                         return schema.errors({name: 'ValidationError', errors: valid.error});
 
-                    updateItem(Item, cond, update, id, entity.doc._original, res, next);
+                    a.push(updateItem(Item, cond, update, id, name, 'set', entity.setVal, field));
+                    
+                    async.parallel(a, function(err, results) {
+                        _resp.OK(results, res);
+                    });
                 });
             }
         }
@@ -114,22 +118,36 @@ module.exports = function(app) {
         if(schema) {
             var entity = req.__entityAcl;
             var id     = req.params.id;
+            var field  = req.params.field;
+            var object = req.params.object.toLowerCase().replace('.', '_');
+            var name   = object+'_'+field+'_';
             var Item   = schema._model;
             var cond   = {_id: id};
             var update = {};
+            var props  = dot.get(schema._save, 'properties.'+entity.short);
+            var a      = [];
             
             if(entity.type == 'array') {
-                update = {$pull: {}};
+                _.each(entity.setValArr, function(value, key) {
+                    // pull from field
+                    update = {$pull: {}};
+                    update.$pull[entity.short] = value;
+                    a.push(updateItem(Item, cond, update, id, name, 'pull', value, field));
+                    
+                    // pull from pair
+                    if(entity.pair) {
+                        update = {$pull: {}};
+                        update.$pull[entity.pair] = value;
+                        a.push(updateItem(Item, cond, update, id, object+'_'+props.pair+'_', 'pull', value, props.pair));
+                    }
+                });
 
-                // pull from field
-                update.$pull[entity.short] = entity.setVal;
-
-                // pull from pair
-                if(entity.pair)
-                    update.$pull[entity.pair] = entity.setVal;                        
+                async.parallel(a, function(err, results) {
+                    _resp.OK(results, res);
+                });
             }
-
-            updateItem(Item, cond, update, id, entity.doc._original, res, next);
+            else
+                _resp.OK({}, res);
         }
     });
     

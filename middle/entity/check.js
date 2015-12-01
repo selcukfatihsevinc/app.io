@@ -1,4 +1,5 @@
 var dot = require('dotty');
+var _   = require('underscore');
 
 function EntityCheck(req, res, next) {
 
@@ -32,9 +33,6 @@ function EntityCheck(req, res, next) {
         }));
     }
 
-    if(fieldVal && fieldVal.indexOf('|') != -1)
-        fieldVal = fieldVal.split('|');
-
     // get schema properties
     var short = schema._alias[field];
     var ref   = schema._refs[short];
@@ -47,6 +45,10 @@ function EntityCheck(req, res, next) {
     var mask  = schema._mask || {};
     var Item  = schema._model;
 
+    // pair'i varsa tekli item üzerinde işlem yapıyoruz
+    if(fieldVal && fieldVal.indexOf('|') != -1 && type == 'array' && ! pair)
+        fieldVal = fieldVal.split('|');
+    
     // set value
     var setVal;
 
@@ -82,55 +84,43 @@ function EntityCheck(req, res, next) {
             }));
         }
     }
+
+    var setValArr = _.uniq( (_helper.type(setVal) == '[object Array]') ? setVal : [setVal] );
     
     // set entity object
     req.__entityAcl = {
-        type   : type,
-        setVal : setVal,
-        short  : short,
-        acl    : acl,
-        pair   : schema._alias[pair]
+        id        : id,
+        type      : type,
+        setVal    : setVal,
+        setValArr : setValArr,
+        short     : short,
+        acl       : acl,
+        pair      : schema._alias[pair],
+        actor     : _user
     };
 
-    // get object
-    Item.findOne({_id: id}, function (err, doc) {
-        if( err || ! doc ) {
-            return next( _resp.NotFound({
-                type: _errType,
-                errors: ['object not found']
-            }));
-        }
+    // check valid
+    if(ref && fieldVal) {
+        _mongoose.model(props.ref).count({_id: {$in: setValArr}}, function(err, count) {
+            if( err || count != setValArr.length ) {
+                return next( _resp.NotFound({
+                    type: _errType,
+                    errors: ['non existing field reference']
+                }));
+            }
 
-        // set doc original
-        doc._original = doc.toJSON();
-        req.__entityAcl.doc = doc;
+            /**
+             * @TODO
+             *
+             * reference owner'lığı da set edilebilsin, örneğin comment eklendi ve modele comment array'i basılacak,
+             * burada count yerine owner id ile birlikte data alınabilir
+             */
 
-        // check valid 
-        if(ref && fieldVal) {
-            var i = (_helper.type(fieldVal) == '[object Array]') ? fieldVal : [fieldVal];
-
-            _mongoose.model(props.ref).count({_id: {$in: i}}, function(err, count) {
-                if( err || count != i.length ) {
-                    return next( _resp.NotFound({
-                        type: _errType,
-                        errors: ['non existing field reference']
-                    }));
-                }
-
-                /**
-                 * @TODO
-                 * 
-                 * reference owner'lığı da set edilebilsin, örneğin comment eklendi ve modele comment array'i basılacak, 
-                 * burada count yerine owner id ile birlikte data alınabilir 
-                 */
-                
-                next();
-            });
-        }
-        else
             next();
-    });
-    
+        });
+    }
+    else
+        next();
 }
 
 module.exports = function(app) {

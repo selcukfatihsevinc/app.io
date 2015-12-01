@@ -58,7 +58,8 @@ AppIo.prototype.run = function () {
         this._app.io = io(this._server);
 
     // base boot files
-    var boot = 'view|compress|static|body|cookie|session|flash|favicon|locals|config|admin/redirect|x-powered-by|cron|cors|kue|kue-ui|passport';
+    var api = 'body|config|x-powered-by|cors';
+    var web = 'view|compress|static|cookie|session|flash|favicon|locals|admin/redirect|cron|kue|kue-ui|passport';
 
     // load basic system
     this.external('config/'+this._app.get('env'));
@@ -74,12 +75,18 @@ AppIo.prototype.run = function () {
     this.external('model', this._opts.external.model || []);
     this.load('middle');
     this.external('middle', this._opts.external.middle || []);
-    this.load('boot', boot.split('|'));
+    /* order matters */
+    this.load('system/response/app'); // before routes
+    // api routes
+    this.load('boot', api.split('|'));
+    this.load('route/api');
+    this.external('api', this._opts.external.api || []);
+    // web routes
+    this.load('boot', web.split('|'));
     this.load('boot', (this._opts.boot && this.type(this._opts.boot) == '[object String]')  ? this._opts.boot.split('|') : []);
     this.external('boot', (this._opts.external.boot && this.type(this._opts.external.boot) == '[object String]')  ? this._opts.external.boot.split('|') : []);
-    this.load('system/response/app'); // before routes
     this.external('route', this._opts.external.route || []);
-    this.load('route');
+    this.load('route/admin');
     if( this._opts.resize) this.load('boot/resize'); // image resize middlware routes
     this.load('system/handler/app'); // after routes
     this.load('sync/data');

@@ -107,12 +107,6 @@ module.exports = function(app) {
 
     /**
      * ----------------------------------------------------------------
-     * Denormalization
-     * ----------------------------------------------------------------
-     */
-
-    /**
-     * ----------------------------------------------------------------
      * Pre Save Hook
      * ----------------------------------------------------------------
      */
@@ -147,7 +141,7 @@ module.exports = function(app) {
 
         // emit event (last_login güncellemesi ise işlem yapma)
         if( ! self._isNew && ! self._lastLogin ) {
-            _emitter.emit('user_updated', {
+            _emitter.emit('system_users_updated', {
                 source: 'System_Users',
                 doc: doc
             });
