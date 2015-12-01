@@ -80,7 +80,7 @@ LibpostModelLoader.prototype.listener = function(options) {
     
     if(Denorm) {
         _.each(Denorm, function (value, key) {
-            self.denorm(key.toLowerCase()+'_updated');
+            self.denorm(key.toLowerCase()+'_updated', self._schemaInspector);
         });
     }
     
@@ -97,11 +97,12 @@ LibpostModelLoader.prototype.listener = function(options) {
     }
 };
 
-LibpostModelLoader.prototype.denorm = function(listener) {
+LibpostModelLoader.prototype.denorm = function(listener, inspector) {
     var self = this;
     
     this._emitter.on(listener, function(data) {
-        self._app.lib.denormalize.touch(data, self._schemaInspector);
+        self._log.info('MODEL:LOADER:DENORM:'+listener, data);
+        self._app.lib.denormalize.touch(data, inspector);
     });
 };
 
