@@ -105,6 +105,8 @@ module.exports = function(app) {
     // plugins
     UserSchema.plugin(_query);
 
+    // console.log(UserSchema.inspector.Save.properties);
+    
     /**
      * ----------------------------------------------------------------
      * Pre Save Hook
