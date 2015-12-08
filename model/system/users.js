@@ -27,6 +27,7 @@ module.exports = function(app) {
     var Schema = {
         em  : {type: String, required: true, alias: 'email', pattern: 'email', unique: true},
         pa  : {type: String, optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
+        na  : {type: String, alias: 'name', index: true}, // for backward compatibility
         sa  : {type: String, alias: 'salt'},
         ha  : {type: String, alias: 'hash'},
         ie  : {type: String, default: 'Y', enum: ['Y', 'N'], alias: 'is_enabled', index: true},
@@ -50,6 +51,7 @@ module.exports = function(app) {
 
     Schema.em.settings = {label: 'Email'};
     Schema.pa.settings = {label: 'Password'};
+    Schema.pa.settings = {label: 'Name'};
     Schema.ie.settings = {
         label: 'Is Enabled ?',
         options: [
