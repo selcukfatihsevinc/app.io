@@ -1,9 +1,10 @@
 var mailer = require('nodemailer');
+var pool   = require('nodemailer-smtp-pool');
 
 module.exports = function(app) {
 
     var _log   = app.lib.logger;
-    var _group = 'BOOT:MAILER';
+    var _group = 'BOOT:MAILERPOOL';
 
     try {
         var _conf = app.lib.bootConf(app, 'mailer');
@@ -11,7 +12,7 @@ module.exports = function(app) {
         if( ! _conf )
             return false;
 
-        return mailer.createTransport(_conf);
+        return mailer.createTransport(pool(_conf));
     }
     catch(e) {
         _log.error(_group, e.stack);
