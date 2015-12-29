@@ -10,12 +10,16 @@ module.exports = function(app) {
     var _resp     = app.system.response.app;
     var _mongoose = app.core.mongo.mongoose;
     var _emitter  = app.lib.schemaEmitter;
+    var _log      = app.lib.logger;
+    var _group    = 'ROUTE:API:V1:ENTITY';
     
     var updateItem = function(Item, cond, update, id, name, type, value, field) {
         return function(cb) {
             Item.update(cond, update, {multi: false}, function(err, raw) {
-                if(raw && raw.nModified)
-                    _emitter.emit(name+type, {id: id, value: value});    
+                if(raw && raw.nModified) {
+                    _log.info(_group+':EMITTED', name+type);
+                    _emitter.emit(name+type, {id: id, value: value});
+                }
                 
                 cb(null, {
                     field    : field,
