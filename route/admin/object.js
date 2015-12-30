@@ -327,8 +327,8 @@ module.exports = function(app) {
 
         try {
             // set app id
-            if(_system.indexOf(o) != -1)
-                req.body.apps = req.session.app._id;
+            // if(_system.indexOf(o) != -1)
+            req.body.apps = req.session.app._id;
 
             // set user id
             if(o == 'system.filters')
@@ -819,7 +819,7 @@ module.exports = function(app) {
             return res.json({err: true});
 
         try {
-            req.body.apps = req.session.app._id; // set app id
+            req.body.apps  = req.session.app._id; // set app id
             req.body.users = req.session.user._id; // set user id
 
             new _schema('system.filters').init(req, res, next).post(req.body, function(err, doc) {
