@@ -20,6 +20,11 @@ module.exports = function(app) {
         var Model  = _mongoose.model(params.model);
 
         Model.findOne({_id: params.id}, function(err, doc) {
+            if(err) {
+                _log.error(_group+':'+params.model, err);
+                return done();
+            }
+            
             _log.info(_group+':'+params.model, doc._id.toString());
 
             doc.save(function(err) {
