@@ -51,7 +51,7 @@ module.exports = function(app) {
 
     Schema.em.settings = {label: 'Email'};
     Schema.pa.settings = {label: 'Password'};
-    Schema.pa.settings = {label: 'Name'};
+    Schema.na.settings = {label: 'Name'};
     Schema.ie.settings = {
         label: 'Is Enabled ?',
         options: [
