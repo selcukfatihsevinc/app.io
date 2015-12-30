@@ -51,7 +51,7 @@ LibpostAuth.prototype.userData = function(userData, appSlug, res) {
         var token = self._helper.genToken(data, tConf.secret, tConf.expires);
 
         token.userId    = userId;
-        token.name      = userData.name || dot.get(results, 'profile.name');
+        token.name      = dot.get(results, 'profile.name') || userData.name;
         token.roles     = results.resources.roles || {};
         token.resources = results.resources.resources || {};
         token.profile   = false;
