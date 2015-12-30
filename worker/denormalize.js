@@ -28,8 +28,10 @@ module.exports = function(app) {
             _log.info(_group+':'+params.model, doc._id.toString());
 
             doc.save(function(err) {
-                if(err)
+                if(err) {
                     _log.error(_group, err);
+                    return done();
+                }
 
                 done();
             });
