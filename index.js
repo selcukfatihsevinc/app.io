@@ -66,6 +66,7 @@ AppIo.prototype.run = function () {
     this.external('apidocs');
     this.load('system/logger');
     this.load('lib/logger');
+    this.load('boot', ['uncaught']);
     this.load('core', this._opts.core);
     this.load('lib');
     this.external('lib', this._opts.external.lib || []);
@@ -105,6 +106,7 @@ AppIo.prototype.workers = function () {
     this.external('config/'+this._app.get('env'));
     this.load('system/logger');
     this.load('lib/logger');
+    this.load('boot', ['uncaught']);
     this.load('core', this._opts.core);
     this.load('lib');
     this.external('lib', this._opts.external.lib || []);
