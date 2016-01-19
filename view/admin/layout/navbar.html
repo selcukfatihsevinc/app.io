@@ -54,7 +54,7 @@
                 {% endif %}
 
                 {% for key, val in session.resources %}
-                    {% if key == "system" || key == 'oauth' || key == session.app.slug %}
+                    {% if key == "feed" || key == "system" || key == 'oauth' || key == session.app.slug %}
                         <li class="{% if key == appName and objName != "apps" %}active{% endif %}">
                             <a href="javascript:void(0);">
                                 <i class="fa fa-gears"></i> <span class="nav-label">{{ key|title }}</span><span class="fa arrow"></span>

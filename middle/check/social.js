@@ -44,7 +44,7 @@ function CheckSocial(req, res, next) {
     var endpoint  = endpoints[network];
     endpoint      = endpoint.replace(/:access_token/g, token);
 
-    new _r().get(network, endpoint, {}, {'User-Agent': 'app.io',}).exec(function(err, results) {
+    new _r().get(network, endpoint, {}, {'User-Agent': 'app.io'}).exec(function(err, results) {
 
         if(network == 'github' && dot.get(results, network+'.code') == 200) {
             var body     = dot.get(results, network+'.body');

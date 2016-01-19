@@ -13,12 +13,25 @@ function AppIo(options) {
     this._map    = {};
     this._app    = false;
 
+    if(process.env.worker_id)
+        process.env['worker_id'] = parseInt(process.env.worker_id);
+
+    // set worker id for pm2
+    if(process.env.pm_id)
+        process.env['worker_id'] = parseInt(process.env.pm_id);
+    
     if (cluster.isMaster) {
         console.log('app.io is loading...');
         this.fork();
         return this;
     }
 
+    // set options
+    this._opts.basedir = options.basedir || __dirname;
+    this._opts.verbose = options.verbose || false;
+    
+    // application
+    this._load   = load;
     this._app    = express();
     this._server = http.createServer(this._app);
     var env      = process.env.NODE_ENV || 'development';
@@ -45,7 +58,7 @@ function AppIo(options) {
      * config'e çek
      * https ayarlarını da ekle
      */
-    http.globalAgent.maxSockets = 9999;
+    http.globalAgent.maxSockets = 99999;
 
     return this;
 }
@@ -61,8 +74,12 @@ AppIo.prototype.run = function () {
     var api = 'body|config|x-powered-by|cors';
     var web = 'view|compress|static|cookie|session|flash|favicon|locals|admin/redirect|cron|kue|kue-ui|passport';
 
-    // load basic system
-    this.external('config/'+this._app.get('env'));
+    // load config
+    this._load = this._load('config/'+this._app.get('env'), {
+        cwd: this._opts.basedir, 
+        verbose: this._opts.verbose
+    });
+    
     this.external('apidocs');
     this.load('system/logger');
     this.load('lib/logger');
@@ -72,10 +89,10 @@ AppIo.prototype.run = function () {
     this.external('lib', this._opts.external.lib || []);
     this.load('libpost');
     this.external('libpost', this._opts.external.libpost || []);
-    this.load('model', ['acl', 'oauth', 'system']);
-    this.external('model', this._opts.external.model || []);
     this.load('middle');
     this.external('middle', this._opts.external.middle || []);
+    this.load('model', ['acl', 'feed', 'oauth', 'system']);
+    this.external('model', this._opts.external.model || []);
     /* order matters */
     this.load('system/response/app'); // before routes
     // api routes
@@ -97,13 +114,19 @@ AppIo.prototype.run = function () {
 AppIo.prototype.workers = function () {
     if (this._master)
         return;
-
+    
     // base boot files
     var boot = 'cron|kue';
 
+    // set worker
     this._app.set('isworker', true);
 
-    this.external('config/'+this._app.get('env'));
+    // load config
+    this._load = this._load('config/'+this._app.get('env'), {
+        cwd: this._opts.basedir,
+        verbose: this._opts.verbose
+    });
+    
     this.load('system/logger');
     this.load('lib/logger');
     this.load('boot', ['uncaught']);
@@ -112,10 +135,10 @@ AppIo.prototype.workers = function () {
     this.external('lib', this._opts.external.lib || []);
     this.load('libpost');
     this.external('libpost', this._opts.external.libpost || []);
-    this.load('model', ['acl', 'oauth', 'system']);
-    this.external('model', this._opts.external.model || []);
     this.load('middle');
     this.external('middle', this._opts.external.middle || []);
+    this.load('model', ['acl', 'feed', 'oauth', 'system']);
+    this.external('model', this._opts.external.model || []);
     this.load('boot', boot.split('|'));
     this.load('boot', (this._opts.boot && this.type(this._opts.boot) == '[object String]')  ? this._opts.boot.split('|') : []);
     this.external('boot', this._opts.external.boot || []);
@@ -124,7 +147,7 @@ AppIo.prototype.workers = function () {
 
     var self = this;
 
-    load().into(this._app, function(err, instance) {
+    this._load.into(this._app, function(err, instance) {
         if(err)
             throw err;
 
@@ -166,33 +189,37 @@ AppIo.prototype.fork = function () {
 };
 
 AppIo.prototype.external = function (source, options) {
-    if ( this._master || ! this._app.get('basedir') )
+    if ( this._master || ! this._opts.basedir )
         return false;
 
+    this._load.options.cwd = this._opts.basedir;
+    
     if(Object.prototype.toString.call(options) == '[object Array]') {
         for(o in options) {
-            load(source+'/'+options[o], {cwd: this._app.get('basedir'), verbose: false}).into(this._app);
+            this._load.then(source+'/'+options[o]);
         }
 
         return;
     }
 
-    load(source, {cwd: this._app.get('basedir'), verbose: false}).into(this._app, options || {});
+    this._load.then(source);
 };
 
 AppIo.prototype.load = function (source, options) {
     if ( this._master || ! this._app )
         return false;
 
+    this._load.options.cwd = __dirname;
+    
     if(Object.prototype.toString.call(options) == '[object Array]') {
         for(o in options) {
-            load(source+'/'+options[o], {cwd: __dirname, verbose: false}).into(this._app);
+            this._load.then(source+'/'+options[o]);
         }
 
         return;
     }
 
-    load(source, {cwd: __dirname, verbose: false}).into(this._app, options || {});
+    this._load.then(source);
 };
 
 AppIo.prototype.listen = function () {
@@ -201,7 +228,7 @@ AppIo.prototype.listen = function () {
 
     var self = this;
 
-    load().into(this._app, function(err, instance) {
+    this._load.into(this._app, function(err, instance) {
         if(err)
             throw err;
 

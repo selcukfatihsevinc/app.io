@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.2.33",
+  "version": "0.2.34",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -94,7 +94,12 @@
     "gm": "1.18.1",
     "json-mask": "0.3.5",
     "mime": "1.3.4",
-    "mkdirp": "0.5.1"
+    "mkdirp": "0.5.1",
+    "feedparser": "1.1.4",
+    "node-read": "0.1.7",
+    "short": "2.6.0",
+    "natural": "0.2.1",
+    "lodash": "3.10.1"
   },
   "main": "index.js",
   "devDependencies": {},

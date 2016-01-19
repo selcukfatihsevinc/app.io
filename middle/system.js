@@ -20,7 +20,7 @@ function System(req, res, next) {
     if( ! _clientId || _clientId == '' || ! _clientSecret || _clientSecret == '' ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
-            errors: ['check your client id and client secret']}
+            errors: ['check your client id and client secret params']}
         ));
     }
 
@@ -33,7 +33,7 @@ function System(req, res, next) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
                 type: 'InvalidCredentials',
-                errors: ['check your client id and client secret']}
+                errors: ['check your client id and client secret data']}
             ));
         }
 

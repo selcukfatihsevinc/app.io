@@ -76,8 +76,8 @@ module.exports = function(app) {
         };
 
         async.parallel(a, function(err, results) {
-            if(results)
-                _log.info(results);
+            // if(results)
+            //    console.log(results);
 
             var render = true;
 
@@ -130,7 +130,7 @@ module.exports = function(app) {
                 });
 
                 req.session.resources = obj;
-                _log.info(obj);
+                console.log(obj);
             }
 
             res.render('admin/page/index');
