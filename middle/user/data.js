@@ -4,9 +4,11 @@ function UserData(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.user.data';
+    
     if( ! req.__user || ! req.__user.id ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['user not found']}
         ));
@@ -15,6 +17,7 @@ function UserData(req, res, next) {
     new _schema('system.users').init(req, res, next).getById(req.__user.id, function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['user not found']}
             ));

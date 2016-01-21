@@ -4,9 +4,11 @@ function UserProfile(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.user.profile';
+    
     if( ! req.__user || ! req.__user.id ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['user not found']}
         ));
@@ -17,6 +19,7 @@ function UserProfile(req, res, next) {
 
     if( ! _model ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['profile model not found']}
         ));
@@ -25,6 +28,7 @@ function UserProfile(req, res, next) {
     _model.get({users: req.__user.id, qt: 'one'}, function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['profile not found']}
             ));

@@ -11,6 +11,7 @@ function EntityCheck(req, res, next) {
     var _mongoose = _app.core.mongo.mongoose;
     var _user     = req.__user;
     var _errType  = 'EntityApiError';
+    var _middle   = 'middle.entity.check';
     
     // check user id
     if( ! _user || ! _user.id || _user.id == 'guest')
@@ -28,6 +29,7 @@ function EntityCheck(req, res, next) {
     // check field of schema
     if(alias.indexOf(field) == -1) {
         return next( _resp.NotFound({
+            middleware: _middle,
             type: _errType,
             errors: ['field not found']
         }));
@@ -65,6 +67,7 @@ function EntityCheck(req, res, next) {
     // eğer setVal yoksa hata dönüyoruz
     if( ! setVal ) {
         return next( _resp.NotFound({
+            middleware: _middle,
             type: _errType,
             errors: ['field reference value not found']
         }));
@@ -79,6 +82,7 @@ function EntityCheck(req, res, next) {
 
         if( ! mObj ) {
             return next( _resp.UnprocessableEntity({
+                middleware: _middle,
                 type: _errType,
                 errors: ['field mask is activated']
             }));
@@ -104,6 +108,7 @@ function EntityCheck(req, res, next) {
         _mongoose.model(props.ref).count({_id: {$in: setValArr}}, function(err, count) {
             if( err || count != setValArr.length ) {
                 return next( _resp.NotFound({
+                    middleware: _middle,
                     type: _errType,
                     errors: ['non existing field reference']
                 }));

@@ -9,9 +9,11 @@ function AppUser(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.appuser';
+    
     if( ! req.__appId ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['app id not found']}
         ));
@@ -24,6 +26,7 @@ function AppUser(req, res, next) {
 
     if( ! _login || _login == '' ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,    
             type: 'InvalidCredentials',
             errors: ['user credentials not found']}
         ));
@@ -73,6 +76,7 @@ function AppUser(req, res, next) {
         // yukarıdaki url'ler için http response dönmüyoruz
         if( pIndex == -1 && ! results.email && ! results.username ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['user not found']}
             ));

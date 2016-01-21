@@ -4,9 +4,11 @@ function AppData(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.appdata';
+    
     if( ! req.__appId ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['app id not found']}
         ));
@@ -15,6 +17,7 @@ function AppData(req, res, next) {
     new _schema('system.apps').init(req, res, next).getById(req.__appId, function(err, doc) {
         if( ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['app not found']}
             ));

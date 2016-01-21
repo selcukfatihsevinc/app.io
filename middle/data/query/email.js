@@ -7,9 +7,11 @@ function DataQueryEmail(req, res, next) {
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
     var _email  = req.query.email;
-
+    var _middle = 'middle.data.query.email';
+    
     if( ! _email || _email == '' ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['user email not found']
         }));
@@ -18,6 +20,7 @@ function DataQueryEmail(req, res, next) {
     new _schema('system.users').init(req, res, next).get({email: _email, qt: 'one'}, function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['user data not found']}
             ));

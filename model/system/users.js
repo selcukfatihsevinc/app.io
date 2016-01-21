@@ -40,7 +40,9 @@ module.exports = function(app) {
         ii  : {type: String, default: 'N', enum: ['Y', 'N'], alias: 'is_invited', index: true},
         inv : {type: ObjectId, ref: 'System_Users', alias: 'inviter'},
         ll  : {type: Date, alias: 'last_login', index: true},
-        ws  : {type: String, default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'waiting_status', index: true}
+        ws  : {type: String, default: 'AC', enum: ['WA', 'AC', 'DC'], alias: 'waiting_status', index: true},
+        pc  : {type: String, default: 'N', enum: ['Y', 'N'], alias: 'password_changed'},
+        pca : {type: Date, alias: 'password_changed_at'}
     };
 
     /**

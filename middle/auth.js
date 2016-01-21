@@ -9,16 +9,18 @@ function _guest(req, res, next) {
 
 function _access_token(req, res, next) {
 
-    var _app  = req.app;
-    var _env  = _app.get('env');
-    var _resp = _app.system.response.app;
-    var _conf = _app.config[_env].api; // api config
-
+    var _app    = req.app;
+    var _env    = _app.get('env');
+    var _resp   = _app.system.response.app;
+    var _conf   = _app.config[_env].api; // api config
+    var _middle = 'middle.auth';
+    
     try {
         var decoded = jwt.decode(req.headers['x-access-token'], _conf.token.secret);
 
         if ( decoded.exp <= Date.now() )
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'TokenExpired'
             }) );
 
@@ -33,8 +35,9 @@ function _access_token(req, res, next) {
     }
     catch(e) {
         return next( _resp.Unauthorized({
-            type   : 'TokenVerification',
-            errors : ['token verification failed']
+            middleware: _middle,
+            type: 'TokenVerification',
+            errors: ['token verification failed']
         }) );
     }
 

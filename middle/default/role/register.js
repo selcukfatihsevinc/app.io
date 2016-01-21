@@ -7,11 +7,13 @@ function DefaultRoleRegister(req, res, next) {
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
     var _slug   = req.__appData.slug;
-
+    var _middle = 'middle.default.role.register';
+    
     var role = dot.get(_app.config[_env], 'roles.'+_slug+'.initial.register');
 
     if ( ! role ) {
         return next(_resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['initial role config not found (register)']
         }));
@@ -25,6 +27,7 @@ function DefaultRoleRegister(req, res, next) {
     }, function(err, role) {
         if ( err || ! role ) {
             return next(_resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['initial role not found (register)']
             }));

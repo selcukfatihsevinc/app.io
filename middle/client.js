@@ -4,13 +4,15 @@ function Client(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.client';
+    
     // headers
     var _clientId     = req.headers['x-client-id'];
     var _clientSecret = req.headers['x-client-secret'];
         
     if( ! _clientId || _clientId == '' || ! _clientSecret || _clientSecret == '' ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['check your client id and client secret headers']}
         ));
@@ -24,8 +26,9 @@ function Client(req, res, next) {
     function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
-                errors: ['check your client id and client secret']}
+                errors: ['check your client id and client secret data']}
             ));
         }
 

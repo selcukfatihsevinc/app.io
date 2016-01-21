@@ -516,7 +516,11 @@ module.exports = function(app) {
         }
 
         // update password
-        new _schema('system.users').init(req, res, next).put(userData._id, {password: newPass}, function(err, affected) {
+        new _schema('system.users').init(req, res, next).put(userData._id, {
+            password: newPass,
+            password_changed: 'Y',
+            password_changed_at: Date.now()
+        }, function(err, affected) {
             _resp.OK({affected: affected}, res);
         });
     });
@@ -536,17 +540,21 @@ module.exports = function(app) {
         _mdl.check.social,
         _mdl.check.username.exists,
         _mdl.default.role.register,
-        _mdl.user.waiting, // check waiting status first
-        _mdl.user.enabled,
+        // _mdl.user.waiting, profile data'sını token olmadan döneceğiz
+        // _mdl.user.enabled, profile data'sını token olmadan döneceğiz
     function(req, res, next) {
         var appData    = req.__appData;
         var appSlug    = req.__appData.slug;
         var userData   = req.__userData;
         var socialData = req.__social;
 
+        var tokenDisabled = false;
+        if(userData && (userData.is_enabled == 'No' || userData.waiting_status != 'Accepted'))
+            tokenDisabled = true;
+        
         // return user data if found
         if(userData)
-            return app.libpost.auth.userData(userData, appSlug, res);            
+            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled);            
 
         // check username after login function
         if(req.__usernameExists) {
@@ -604,30 +612,37 @@ module.exports = function(app) {
             if(err)
                 return users.errResponse(err);
 
+            // user id
+            user._id = user._id.toString();
+            
             // create profile
             if(mProfile) {
                 var profileObj = {
                     apps  : req.__appId,
-                    users : user._id.toString(),
+                    users : user._id,
                     name  : data.name
                 };
 
                 if(data.username)
                     profileObj.username = data.username;
 
-                new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {});
-            }
+                new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {
+                    // waiting list özelliği varsa token vs dönmüyoruz
+                    if(waiting)
+                        return app.libpost.auth.userData(user, appSlug, res, true); // tokenDisabled = true
 
-            // waiting list özelliği varsa token vs dönmüyoruz, sadece created dönüyoruz
-            if(waiting) {
-                return _resp.Created({
-                    email: req.body.email
-                }, res);
+                    // return user data
+                    app.libpost.auth.userData(user, appSlug, res);
+                });
             }
-            
-            // return user data
-            user._id = user._id.toString();
-            app.libpost.auth.userData(user, appSlug, res);
+            else {
+                // waiting list özelliği varsa token vs dönmüyoruz
+                if(waiting)
+                    return app.libpost.auth.userData(user, appSlug, res, true); // tokenDisabled = true
+
+                // return user data
+                app.libpost.auth.userData(user, appSlug, res);                
+            }
         });
     });
 

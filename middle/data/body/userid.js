@@ -7,7 +7,8 @@ function DataBodyUserid(req, res, next) {
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
     var _userId = req.body.user_id;
-
+    var _middle = 'middle.data.body.userid';
+    
     if( ! _userId || _userId == '' ) {
         return next( _resp.Unauthorized({
             type: 'InvalidCredentials',
@@ -18,6 +19,7 @@ function DataBodyUserid(req, res, next) {
     new _schema('system.users').init(req, res, next).getById(_userId, function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['user data not found']}
             ));

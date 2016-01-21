@@ -8,6 +8,7 @@ function EntityMiddleware(req, res, next) {
     var _field   = req.params.field;
     var _entity  = req.__entityAcl;
     var _errType = 'EntityApiError';
+    var _middle  = 'middle.entity.middleware';
     
     if( ! _entity.acl )
         return next();
@@ -18,6 +19,7 @@ function EntityMiddleware(req, res, next) {
    
     if( ! _func ) {
         return next( _resp.NotFound({
+            middleware: _middle,
             type: _errType,
             errors: ['entity middleware not found']
         }));    

@@ -7,7 +7,8 @@ function CheckUsernameExists(req, res, next) {
     var _resp     = _app.system.response.app;
     var _schema   = _app.lib.schema;
     var _username = req.body.username;
-
+    var _middle   = 'middle.check.username.exists';
+    
     // eğer username gelmediyse herhangi bir kontrol yapma
     if( ! _username || _username == '' )
         return next();
@@ -24,6 +25,7 @@ function CheckUsernameExists(req, res, next) {
 
             if(pIndex == -1 && doc) {
                 return next( _resp.Unauthorized({
+                    middleware: _middle,
                     type: 'InvalidCredentials',
                     errors: ['username exists']}
                 ));

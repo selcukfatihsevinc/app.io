@@ -1,5 +1,6 @@
 var Validator = require('validatorjs');
 var dot       = require('dotty');
+var _         = require('underscore');
 
 function CheckSocial(req, res, next) {
 
@@ -8,7 +9,8 @@ function CheckSocial(req, res, next) {
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
     var _r      = _app.lib.request;
-
+    var _middle = 'middle.check.social';
+    
     // params
     var network = req.body.social_network;
     var token   = req.body.access_token
@@ -30,6 +32,7 @@ function CheckSocial(req, res, next) {
 
     if(validation.fails()) {
         return next( _resp.UnprocessableEntity({
+            middleware: _middle,
             type: 'ValidationError',
             errors: validation.errors.all()
         }));
@@ -39,39 +42,66 @@ function CheckSocial(req, res, next) {
         github: 'https://api.github.com/user?access_token=:access_token'
     };
 
+    var emails = {
+        github: 'https://api.github.com/user/emails?access_token=:access_token'
+    };
+    
     var _email    = req.body.email;
     var _username = req.body.username;
+    var _headers  = {'User-Agent': 'app.io'};
     var endpoint  = endpoints[network];
     endpoint      = endpoint.replace(/:access_token/g, token);
-
-    new _r().get(network, endpoint, {}, {'User-Agent': 'app.io'}).exec(function(err, results) {
+    
+    new _r().get(network, endpoint, {}, _headers).exec(function(err, results) {
 
         if(network == 'github' && dot.get(results, network+'.code') == 200) {
             var body     = dot.get(results, network+'.body');
             var email    = body.email;
             var username = body.login;
 
-            // eğer verdiği parametrelerle sosyal ağ bilgileri uyuşmuyorsa hata dön
+            // eğer verdiği parametrelerle sosyal ağ bilgileri uyuşmuyorsa kontrol et
             if( _email != email && _username != username ) {
-                return next( _resp.Unauthorized({
-                    type: 'InvalidCredentials',
-                    errors: ['check user credentials']}
-                ));
+                // check from user/emails
+                var userMails = emails.github.replace(/:access_token/g, token);
+                new _r().get(network, userMails, {}, _headers).exec(function(err, results) {
+                    userMails = dot.get(results, network+'.body');
+                    var error = false;
+
+                    if( ! userMails || Object.prototype.toString.call(userMails) != '[object Array]' || ! userMails.length )
+                        error = 'not found user/emails';
+                    
+                    var mails = _.map(userMails, function(obj) {return obj.email});
+                    
+                    if(mails.indexOf(_email) == -1)
+                        error = 'check your email';
+                    
+                    if(error) {
+                        return next( _resp.Unauthorized({
+                            middleware: _middle,
+                            type: 'InvalidCredentials',
+                            errors: [error]}
+                        ));                        
+                    }
+                    else {
+                        req.__social = {email: email, user: username, name: body.name};
+                        return next();
+                    }
+                });
             }
-
-            req.__social = {
-                email : email,
-                user  : username,
-                name  : body.name
-            };
-
-            return next();
+            // email ve username eşleşiyorsa datayı set et
+            else {
+                req.__social = {email: email, user: username, name: body.name};
+                return next();                
+            }
         }
-
-        next( _resp.Unauthorized({
-            type: 'InvalidCredentials',
-            errors: ['check social network credentials']}
-        ));
+        // eğer code 200 dönmediyse hata at
+        else {
+            next( _resp.Unauthorized({
+                middleware: _middle,
+                type: 'InvalidCredentials',
+                errors: ['check social network credentials']}
+            ));            
+        }
     });
 
 }

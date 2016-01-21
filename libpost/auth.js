@@ -36,7 +36,7 @@ LibpostAuth.prototype.userProfile = function(userId, appSlug, cb) {
     });
 };
 
-LibpostAuth.prototype.userData = function(userData, appSlug, res) {
+LibpostAuth.prototype.userData = function(userData, appSlug, res, tokenDisabled) {
     var self   = this;
     var userId = userData._id;
     var tConf  = self._conf.token;
@@ -48,20 +48,21 @@ LibpostAuth.prototype.userData = function(userData, appSlug, res) {
         if(results.profile)
             data.profile = results.profile._id.toString();
 
-        var token = self._helper.genToken(data, tConf.secret, tConf.expires);
+        var token = tokenDisabled ? {} : self._helper.genToken(data, tConf.secret, tConf.expires);
 
         token.userId    = userId;
         token.name      = dot.get(results, 'profile.name') || userData.name;
         token.roles     = results.resources.roles || {};
         token.resources = results.resources.resources || {};
         token.profile   = false;
-
-        if(results.profile)
-            token.profile = results.profile;
-
-        if(userData.last_login)
-            token.lastLogin = userData.last_login;
-
+        
+        if(results.profile) token.profile = results.profile;
+        if(userData.last_login) token.lastLogin = userData.last_login;
+        if(userData.is_enabled) token.isEnabled = userData.is_enabled;
+        if(userData.waiting_status) token.waitingStatus = userData.waiting_status;
+        if(userData.password_changed) token.passwordChanged = userData.password_changed;
+        if(userData.password_changed_at) token.passwordChangedAt = userData.password_changed_at;
+        
         _resp.OK(token, res);
 
         // update last login

@@ -4,7 +4,8 @@ function System(req, res, next) {
     var _env    = _app .get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.system';
+    
     var method = req.method.toLowerCase();
     var object = req.params.object;
 
@@ -19,6 +20,7 @@ function System(req, res, next) {
 
     if( ! _clientId || _clientId == '' || ! _clientSecret || _clientSecret == '' ) {
         return next( _resp.Unauthorized({
+            middleware: _middle,
             type: 'InvalidCredentials',
             errors: ['check your client id and client secret params']}
         ));
@@ -32,6 +34,7 @@ function System(req, res, next) {
     function(err, doc) {
         if( err || ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['check your client id and client secret data']}
             ));

@@ -4,19 +4,22 @@ function TokenReset(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _schema = _app.lib.schema;
-
+    var _middle = 'middle.token.reset';
+    
     new _schema('system.users').init(req, res, next).get({
         reset_token: req.params.token,
         qt: 'one'
     }, function(err, doc) {
         if( ! doc ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['not found token']
             }));
         }
         else if(doc.is_enabled == 'No') {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['not enabled user']
             }));
@@ -27,6 +30,7 @@ function TokenReset(req, res, next) {
 
         if(now > expires) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['expired token']
             }));

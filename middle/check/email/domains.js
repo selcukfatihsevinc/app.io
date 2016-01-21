@@ -7,7 +7,8 @@ function CheckEmailDomains(req, res, next) {
     var _env    = _app.get('env');
     var _resp   = _app.system.response.app;
     var _helper = _app.lib.utils.helper;
-
+    var _middle = 'middle.check.email.domains';
+    
     // mail conf
     var _appSlug  = req.__appData.slug;
     var _mailConf = dot.get(req.app.config[_env], 'app.mail.'+_appSlug);
@@ -19,6 +20,7 @@ function CheckEmailDomains(req, res, next) {
     ) {
         if( ! _email || _email == '' ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['not found email']
             }));
@@ -29,6 +31,7 @@ function CheckEmailDomains(req, res, next) {
 
         if( ! _email ) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['not found email address']
             }));
@@ -36,6 +39,7 @@ function CheckEmailDomains(req, res, next) {
 
         if(_mailConf.domains.indexOf(_email.domain) == -1) {
             return next( _resp.Unauthorized({
+                middleware: _middle,
                 type: 'InvalidCredentials',
                 errors: ['not allowed domain']
             }));
