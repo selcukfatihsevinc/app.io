@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.2.36",
+  "version": "0.2.37",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -91,6 +91,7 @@
     "passport-facebook": "2.0.0",
     "passport-twitter": "1.0.3",
     "passport-instagram": "0.1.2",
+    "passport-foursquare": "1.0.0",
     "gm": "1.18.1",
     "json-mask": "0.3.5",
     "mime": "1.3.4",
@@ -99,7 +100,9 @@
     "node-read": "0.1.7",
     "short": "2.6.0",
     "natural": "0.2.1",
-    "lodash": "3.10.1"
+    "lodash": "4.0.1",
+    "image-size": "0.4.0",
+    "git-rev-sync": "1.0.0"
   },
   "main": "index.js",
   "devDependencies": {},

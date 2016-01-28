@@ -1,0 +1,30 @@
+{% import '../../macro/depends.html' as m_depends %}
+
+{% if ! opts.filter %}
+<div id="field-{{ field.alias }}" class="f-text form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="f-arrayOfObjects-wrap">
+        <div class="f-arrayOfObjects-forms">
+            <div class="row"></div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" data-index="0" onclick="addObject(this, '{{ name }}', '{{ field.alias }}');">
+            + add {{ field.settings.label|lowerCase }}
+        </button>
+    </div>
+</div>
+
+<script>
+$(function() {
+    {% if objId %}
+        loadObject('{{ name }}', '{{ field.alias }}', '{{ objId }}');
+    {% endif %}
+
+    {% if opts.filter %}
+        setFilter(Filter, '{{ key }}', '{{ field.alias }}', 'arrayOfObjects');
+    {% else %}
+        {{ m_depends.depends(field.depends || field.settings.depends, field.alias) }}    
+    {% endif %}
+});
+</script>
+{% endif %}
+

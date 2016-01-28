@@ -5,12 +5,13 @@ var _        = require('underscore');
 
 module.exports = function(app) {
 
-    var _env    = app.get('env');
-    var _mdl    = app.middle;
-    var _schema = app.lib.schema;
-    var _conf   = app.config[_env].social;
-    var emitter = app.lib.schemaEmitter;
-
+    var _env     = app.get('env');
+    var _mdl     = app.middle;
+    var _schema  = app.lib.schema;
+    var _conf    = app.config[_env].social;
+    var _emitter = app.lib.schemaEmitter;
+    var _group   = 'AUTH:SOCIAL:FACEBOOK';
+    
     /**
      * init passport facebook
      */
@@ -36,8 +37,10 @@ module.exports = function(app) {
                 slug: project,
                 qt: 'one'
             }, function(err, apps) {
-                if(err)
-                    done(err);
+                if(err) {
+                    _log.info(_group, 'app not found');
+                    return done(null);
+                }
 
                 new _schema('system.accounts').init(app).get({
                     apps: apps._id.toString(),
@@ -45,8 +48,10 @@ module.exports = function(app) {
                     qt: 'one'
                 }, function(err, account) {
 
-                    if(err)
-                        return done(err);
+                    if(err) {
+                        if(err.name != 'NotFound')
+                            return done(null);
+                    }
 
                     if( ! req.session.social )
                         req.session.social = {};
@@ -75,7 +80,7 @@ module.exports = function(app) {
                             }
 
                             req.session.social.facebook = obj;
-                            emitter.emit('facebook_connected', obj);
+                            _emitter.emit('facebook_connected', obj);
 
                             done(null, {facebook: {}});
                         });
@@ -94,9 +99,9 @@ module.exports = function(app) {
                             }
 
                             req.session.social.facebook = obj;
-                            emitter.emit('facebook_connected', obj);
+                            _emitter.emit('facebook_connected', obj);
 
-                            done(err, {facebook: {}});
+                            done(null, {facebook: {}});
                         });
                     }
                 });

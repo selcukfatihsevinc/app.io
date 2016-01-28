@@ -1,4 +1,4 @@
-<div class="f-nested form-group">
+<div id="field-{{ field.alias }}" class="f-nested form-group">
     <label for="f-{{ key }}">{{ field.settings.label }}</label>
     <div class="f-nested-wrap">
         <input type="hidden" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control {% if opts.filter %}input-sm{% endif %}" value="{% if data %}{{ data }}{% endif %}" />
@@ -27,8 +27,7 @@ if(typeof select2nested !== 'function') {
     }
 }
 
-$(document).ready(function() {
-
+$(function() {
     $.getJSON('{{ field.prefix }}{{ field.ref|lower|replace('_', '.') }}?qt=tree').done(function( data ) {
         $('.f-{{ key }}').select2({
             data: select2nested(data, '{{ field.settings.display }}'),
@@ -38,6 +37,13 @@ $(document).ready(function() {
             minimumInputLength: 0
         });
     });
+
+    {% if opts.filter %}
+        setFilter(Filter, '{{ key }}', '{{ field.alias }}', 'nested');
+    {% endif %}
+});
+
+$(document).ready(function() {
 
     /*
     $('.f-{{ key }}').select2({
@@ -84,16 +90,6 @@ $(document).ready(function() {
         }
     });
     */
-
-    {% if opts.filter %}
-    Filter['{{ key }}'] = {
-        key   : '{{ key }}',
-        name  : '{{ field.alias }}',
-        type  : 'nested',
-        opts  : $('.f-{{ key }}-opts'),
-        field : $('#f-{{ key }}')
-    };
-    {% endif %}
 
 });
 </script>

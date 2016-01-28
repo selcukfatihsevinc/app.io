@@ -52,17 +52,19 @@ module.exports = function(app) {
 
     // admin main page
     app.get('/admin', function(req, res, next) {
+        // console.log(req.session);
+        
         if(req.session.user)
             return res.render('admin/page/index');
 
         var a = {
             u: function(cb) {
-                new _schema('system.users').init(req, res, next).get({_id: req.session.userId, qt: 'one'}, function(err, doc) {
+                new _schema('system.users').init(req, res, next).get({_id: req.session.adminUserId, qt: 'one'}, function(err, doc) {
                     cb(err, doc);
                 });
             },
             r: function(cb) {
-                req.app.acl.userRoles(req.session.userId, function(err, roles) {
+                req.app.acl.userRoles(req.session.adminUserId, function(err, roles) {
                     req.app.acl.whatResources(roles, function(err, resources) {
                         cb(err, resources);
                     });
@@ -239,6 +241,67 @@ module.exports = function(app) {
         }
     });
 
+    // form for sub object (array of objects) 
+    app.post('/admin/form/:object/:alias/:index?', function(req, res, next) {
+        var o    = req.params.object;
+        var insp = _inspector(req);
+
+        if( ! insp )
+            return res.redirect('/admin');
+
+        var alias = req.params.alias;
+        var index = parseInt(req.params.index);
+        var id    = req.query.id;
+        
+        try {
+            if(id) {
+                var field = insp.Alias[alias];
+                var addForm = function(_form, a, o, alias, index, data) {
+                    a.push(function(cb) {
+                        new _form(o, {object: alias, index: index, data: data}).init(req, res, next).prefix('/admin/p/').render(false, function(err, form) {
+                            if(form)
+                                form = '<div class="col-md-4"><div class="well"><a href="javascript:void(0)" type="button" class="close" aria-label="Close" onclick="closeObjectItem(this);"><span aria-hidden="true">&times;</span></a>'+form+'</div></div>';
+                            
+                            cb(null, form);
+                        });
+                    });  
+                };   
+                
+                new _schema(o, {format: false}).init(req, res, next).getById(id, function(err, doc) {
+                    // concat forms by index and data
+                    if(doc[field] && doc[field].length) {
+                        var a = [];
+                        var i = 0;
+                        _.each(doc[field], function(val) {
+                            addForm(_form, a, o, alias, i, val);
+                            i++;
+                        });
+                     
+                        async.series(a, function(err, results) {
+                            var response = '';
+                            
+                            if(results && results.length)
+                                response = results.join(' ');
+                            
+                            res.json({index: i, html: response});
+                        });
+                    }
+                    else
+                        res.json({html: ''});
+                });
+            }
+            else {
+                new _form(o, {object: alias, index: index}).init(req, res, next).prefix('/admin/p/').render(false, function(err, form) {
+                    res.send(form);
+                });                
+            }
+        }
+        catch(e) {
+            _log.error(e.stack);
+            res.redirect('/admin');
+        }
+    });
+    
     // get nested view
     app.get('/admin/o/:object/nested', function(req, res, next) {
         var o        = req.params.object;
@@ -628,9 +691,12 @@ module.exports = function(app) {
 
         try {
             var o = req.params.object;
-            var q = req.query;
+            var q = req.query || {};
             var p = {};
 
+            // remove ajax params
+            if(q['_']) dot.remove(q, '_');
+            
             // set app id
             if(req.session.app && _system.indexOf(o) != -1)
                 p.apps = req.session.app._id;
@@ -642,21 +708,37 @@ module.exports = function(app) {
             // query type
             p.qt = 'findcount';
 
-            if(q.limit)  p.l  = q.limit;
-            if(q.offset) p.sk = q.offset;
+            if(q.limit) {
+                p.l = q.limit;
+                dot.remove(q, 'limit');
+            }
+            
+            if(q.offset) {
+                p.sk = q.offset;
+                dot.remove(q, 'offset');
+            }
 
-            if(q.search)
+            if(q.search) {
                 p[insp.Options.main] = '{:like:}'+q.search;
+                dot.remove(q, 'search');
+            }
 
             if(q.sort) {
                 p.s = q.sort;
-
-                if(q.order == 'desc')
+                dot.remove(q, 'sort');
+                
+                if(q.order == 'desc') {
                     p.s = '-'+p.s;
+                    dot.remove(q, 'order');
+                }
             }
             else if(insp.Options.sort)
                 p.s = insp.Options.sort;
 
+            // remove order param
+            if(q.order) 
+                dot.remove(q, 'order');
+            
             if(insp.Options.columns) {
                 var extra;
                 if(insp.Options.extra)
@@ -698,8 +780,14 @@ module.exports = function(app) {
                 filter = app.lib.base64.decode(q.filter);
                 filter = qs.parse(filter);
                 p      = extend(p, filter);
+                dot.remove(q, 'filter');
             }
 
+            // apply other query parameters
+            if(Object.keys(q).length)
+                p = extend(p, q);
+
+            // execute query
             new _schema(o).init(req, res, next).get(p, function(err, doc) {
                 if(err)
                     _log.error(err);

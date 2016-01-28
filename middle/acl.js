@@ -24,6 +24,12 @@ function Acl(req, res, next) {
             if( err || ! results[object] )
                 return next( _resp.Forbidden() );
 
+            // master access
+            if(results[object][0] == '*') {
+                req.__master = true;
+                return next();                
+            }
+            
             if(results[object].indexOf(method) == -1)
                 return next( _resp.Forbidden() );
 

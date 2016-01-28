@@ -22,7 +22,7 @@ module.exports = function(app) {
     var Schema = {
         ap  : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
         u   : {type: ObjectId, ref: 'System_Users', alias: 'users', index: true},
-        t   : {type: String, required: true, enum: ['F', 'T', 'I', 'G', 'L', 'D'], alias: 'type'},
+        t   : {type: String, required: true, enum: ['F', 'T', 'I', 'G', 'L', 'D', 'FS'], alias: 'type'},
         sc  : {type: Number, default: 0, alias: 'score'},
 
         uid : {type: Number, alias: 'user_id'},
@@ -52,7 +52,8 @@ module.exports = function(app) {
             {label: 'Instagram', value: 'I'},
             {label: 'Github', value: 'G'},
             {label: 'Linkedin', value: 'L'},
-            {label: 'Dribbble', value: 'D'}
+            {label: 'Dribbble', value: 'D'},
+            {label: 'Foursquare', value: 'FS'}
         ]
     };
 

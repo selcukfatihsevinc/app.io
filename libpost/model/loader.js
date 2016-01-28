@@ -30,12 +30,16 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
     
     try {
         var lower = options.Name.toLowerCase();
-
+        
         // create schema
         var Schema = this._mongo.db.Schema(schema);
 
+        var alias = {};
+        if(options.ArrayOfObjects)
+            alias = options.ArrayOfObjects;
+        
         // create inspector
-        var Inspector    = new this._inspector(schema).init();
+        var Inspector    = new this._inspector(schema, alias).init();
         Schema.inspector = Inspector;
         // Schema.structure = schema;
 

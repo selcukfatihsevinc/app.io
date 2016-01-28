@@ -1,4 +1,4 @@
-<div class="f-array form-group">
+<div id="field-{{ field.alias }}" class="f-array form-group">
     <label for="f-{{ key }}">{{ field.settings.label }}</label>
     <div class="f-array-wrap">
         <input type="hidden" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control {% if opts.filter %}input-sm{% endif %}" value="{% if data %}{{ data }}{% endif %}" />
@@ -7,19 +7,13 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        if ($.fn.select2) {
-            $('.f-{{ key }}').select2({ tags: {% if data %}{% autoescape false %}{{ data|json }}{% endautoescape %}{% else %}[]{% endif %} });
-        }
+$(function() {
+    if ($.fn.select2) {
+        $('.f-{{ key }}').select2({ tags: {% if data %}{% autoescape false %}{{ data|json }}{% endautoescape %}{% else %}[]{% endif %} });
+    }
 
-        {% if opts.filter %}
-        Filter['{{ key }}'] = {
-            key   : '{{ key }}',
-            name  : '{{ field.alias }}',
-            type  : 'array',
-            opts  : $('.f-{{ key }}-opts'),
-            field : $('#f-{{ key }}')
-        };
-        {% endif %}
-    });
+    {% if opts.filter %}
+        setFilter(Filter, '{{ key }}', '{{ field.alias }}', 'array');
+    {% endif %}
+});
 </script>

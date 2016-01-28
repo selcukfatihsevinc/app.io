@@ -28,6 +28,9 @@ module.exports = function(app) {
         b  : {type: Number, default: 0, alias: 'bytes'},
         u  : {type: String, alias: 'url'},
         p  : {type: String, alias: 'path'},
+        w  : {type: Number, default: 0, alias: 'width'},
+        h  : {type: Number, default: 0, alias: 'height'},
+        e  : {type: String, alias: 'ext'},
         ca : {type: Date, alias: 'created_at', default: Date.now}
     };
 

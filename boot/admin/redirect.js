@@ -16,7 +16,7 @@ module.exports = function(app) {
             var segment = res.locals.segments[2];
             var routes  = ['login', 'logout'];
 
-            if( ! req.session.userId && routes.indexOf(segment) == -1)
+            if( ! req.session.adminUserId && routes.indexOf(segment) == -1)
                 return res.redirect('/admin/login');
 
             next();

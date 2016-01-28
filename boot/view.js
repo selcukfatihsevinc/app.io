@@ -1,9 +1,37 @@
 var path   = require('path');
 var swig   = require('swig');
 var extras = require('swig-extras');
+var _      = require('lodash');
 
 // swig extra filters
 extras.useFilter(swig, 'split');
+
+// use lodash
+function useLodash(swig, filter) {
+    if (filter === undefined) {
+        return Object.keys(_).forEach(function(action) {
+            if (lodashHas(action))
+                useLodash(swig, action)
+        })
+    }
+
+    if (Array.isArray(filter)) {
+        return filter.forEach(function(f) {
+            useLodash(swig, f)
+        })
+    }
+
+    if (lodashHas(filter))
+        swig.setFilter(filter, _[filter])
+    else
+        throw new Error(filter+' is not a lodash function');
+}
+
+function lodashHas(functionName) {
+    return (_[functionName] && typeof _[functionName] === 'function')
+}
+
+useLodash(swig);
 
 module.exports = function(app) {
 

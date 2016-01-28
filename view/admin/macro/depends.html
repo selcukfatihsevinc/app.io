@@ -1,0 +1,7 @@
+{% macro depends(data, alias) %}
+
+    {% if data %}
+        depends({% autoescape false %}{{ data|json }}{% endautoescape %}, '{{ alias }}');
+    {% endif %}
+    
+{% endmacro %}

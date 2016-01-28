@@ -1,4 +1,6 @@
-<div class="f-relation form-group">
+{% import '../../macro/depends.html' as m_depends %}
+
+<div id="field-{{ field.alias }}" class="f-relation form-group">
     <label for="f-{{ key }}">{{ field.settings.label }}</label>
     <div class="f-relation-wrap">
         <input type="hidden" name="{{ key }}" id="f-{{ key }}" class="f-{{ key }} form-control {% if opts.filter %}input-sm{% endif %}" value="{% if data %}{{ data }}{% endif %}" />
@@ -20,8 +22,7 @@ if(typeof select2collect !== 'function') {
     }
 }
 
-$(document).ready(function() {
-
+$(function() {
     $('.f-{{ key }}').select2({
         allowClear: true,
         placeholder: 'Select',
@@ -53,8 +54,8 @@ $(document).ready(function() {
                     var results = select2collect(data, '{{ field.settings.display }}');
 
                     {% if field.type != 'array' %}
-                        if(results.length)
-                            results = results[0];
+                    if(results.length)
+                        results = results[0];
                     {% endif %}
 
                     cb(results);
@@ -64,15 +65,10 @@ $(document).ready(function() {
     });
 
     {% if opts.filter %}
-    Filter['{{ key }}'] = {
-        key   : '{{ key }}',
-        name  : '{{ field.alias }}',
-        type  : 'relation',
-        opts  : $('.f-{{ key }}-opts'),
-        field : $('#f-{{ key }}')
-    };
+        setFilter(Filter, '{{ key }}', '{{ field.alias }}', 'relation');
+    {% else %}
+        {{ m_depends.depends(field.depends, field.alias) }}
     {% endif %}
-
 });
 </script>
 

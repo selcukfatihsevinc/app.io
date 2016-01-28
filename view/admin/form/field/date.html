@@ -1,4 +1,4 @@
-<div id="" class="f-date form-group">
+<div id="field-{{ field.alias }}" class="f-date form-group">
     <label for="f-{{ key }}">{{ field.settings.label }}</label>
     <div class="input-group date f-date-wrap">
         <span class="input-group-addon">
@@ -16,15 +16,15 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('.input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-        });
+$(function() {
+    $('.input-group.date').datepicker({
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        calendarWeeks: true,
+        autoclose: true
     });
+});
 </script>
 
 

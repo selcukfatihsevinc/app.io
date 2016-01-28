@@ -1,0 +1,78 @@
+{% import '../../macro/depends.html' as m_depends %}
+
+{% set inputName = key %}
+{% set fAlias = field.alias %}
+
+{% if parent.field %}
+    {% set inputName = parent.field+'['+parent.index+']['+key+']' %}
+    {% set fAlias = field.alias+parent.index %}
+{% endif %}
+
+
+<div id="field-{{ field.alias }}{{ parent.index }}" class="f-text form-group">
+    <label for="f-{{ key }}{{ parent.index }}">{{ field.settings.label }}</label>
+    <input type="hidden" name="{{ inputName }}" value="{% if data %}{{ data.toString() }}{% endif %}">
+    <div class="f-image-wrap">
+        <div id="f-{{ key }}{{ parent.index }}-dropzone" class="dropzone">
+            <div class="clearfix"></div>
+            <div class="dropzone-previews"></div>
+            <div class="dz-message">
+                <h2>upload photo</h2>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<script>
+$(function() {
+    {% if opts.filter %}
+        setFilter(Filter, '{{ key }}', '{{ field.alias }}', 'image');
+    {% else %}
+        {{ m_depends.depends(field.depends, field.alias) }}
+    {% endif %}
+
+    new Dropzone('div#f-{{ key }}{{ parent.index }}-dropzone', {        
+        url: '/admin/upload?type={{ field.settings.uploadTo || 'local' }}',
+        maxFilesize: {{ field.settings.uploadMaxSize|parseInt || 10 }},
+        uploadMultiple: false,
+        addRemoveLinks: true,
+        maxFiles: 1,
+        init: function() {
+            this.on('addedfile', function() {
+                $('#field-{{ fAlias }} .dz-message').remove();
+            });
+            this.on('processing', function() {
+                uploading = true;
+            });
+            this.on('success', function(file, response) {
+                if(response && response._id) {
+                    file.serverId = response._id;
+                    $('#field-{{ fAlias }} input').val(response._id);     
+                }
+            });
+            this.on('complete', function (file) {
+                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0)
+                    uploading = false;
+            });
+            this.on('removedfile', function(file) {
+                var inputVal = $('#field-{{ fAlias }} input').val();
+                if(file.serverId && file.serverId == inputVal)
+                    $('#field-{{ fAlias }} input').val('');
+            });
+            this.on('maxfilesreached', function() {
+                if (this.files.length > 1) {
+                    this.removeFile(this.files[1]);
+                    toastr.info('En fazla 1 fotoğraf yükleyebilirsin');
+                }
+            });
+            
+            {% if data %}
+                loadImage(this, '{{ data.toString() }}', '{{ field.prefix }}');
+            {% endif %}
+        }
+    });
+});
+</script>
+
+

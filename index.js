@@ -97,13 +97,14 @@ AppIo.prototype.run = function () {
     this.load('system/response/app'); // before routes
     // api routes
     this.load('boot', api.split('|'));
-    this.load('route/api');
+    this.load('route/api/v1', ['acl', 'auth', 'entity', 'location', 'object']);
     this.external('api', this._opts.external.api || []);
     // web routes
     this.load('boot', web.split('|'));
     this.load('boot', (this._opts.boot && this.type(this._opts.boot) == '[object String]')  ? this._opts.boot.split('|') : []);
     this.external('boot', (this._opts.external.boot && this.type(this._opts.external.boot) == '[object String]')  ? this._opts.external.boot.split('|') : []);
     this.external('route', this._opts.external.route || []);
+    this.load('route/api/v1', ['social']); // requires session
     this.load('route/admin');
     if( this._opts.resize) this.load('boot/resize'); // image resize middlware routes
     this.load('system/handler/app'); // after routes

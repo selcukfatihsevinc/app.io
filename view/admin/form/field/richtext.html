@@ -1,4 +1,4 @@
-<div class="f-richtext form-group">
+<div id="field-{{ field.alias }}" class="f-richtext form-group">
     <label for="f-{{ key }}">{{ field.settings.label }}</label>
     <div class="f-richtext-wrap">
         <textarea name="{{ key }}" id="f-{{ key }}" class="form-control tinymce" rows="{{ field.settings.rows|default(10) }}">{% if data %}{{data}}{% endif %}</textarea>
@@ -6,8 +6,7 @@
 </div>
 
 <script>
-$(document).ready(function() {
-
+$(function() {
     tinymce.init({
         selector: "textarea#f-{{ key }}",
         plugins: [
@@ -17,6 +16,5 @@ $(document).ready(function() {
         ],
         toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons"
     });
-
 });
 </script>
