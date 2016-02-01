@@ -1,0 +1,28 @@
+<div id="field-{{ field.alias }}" class="f-date form-group">
+    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+    <div class="input-group date f-date-wrap">
+        <span class="input-group-addon" onclick="$('#f-{{ key }}').data('DateTimePicker').show()">
+            <i class="fa fa-calendar"></i>
+        </span>
+
+        <input
+                type="text"
+                {% if ! (opts.edit && field.settings.noedit) %}name="{{ key }}"{% endif %}
+                id="f-{{ key }}"
+                class="f-{{ key }} form-control"
+                {% if opts.edit && field.settings.noedit %}disabled=""{% endif %}
+                value="{% if data %}{{ data|dateFormat('DD/MM/YYYY HH:mm:ss', time.name) }}{% endif %}">
+    </div>
+</div>
+
+<script>
+$(function() {
+    $('#f-{{ key }}').datetimepicker({
+        format: 'DD/MM/YYYY HH:mm:00',
+        showTodayButton: true
+    });
+});
+</script>
+
+
+

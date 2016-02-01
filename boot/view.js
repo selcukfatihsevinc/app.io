@@ -1,3 +1,4 @@
+var moment = require('moment-timezone');
 var path   = require('path');
 var swig   = require('swig');
 var extras = require('swig-extras');
@@ -32,6 +33,19 @@ function lodashHas(functionName) {
 }
 
 useLodash(swig);
+
+swig.setFilter('dateFormat', function(element, format, timezone) {
+    var parsed;
+    if(timezone && timezone != '')
+        parsed = moment.tz(new Date(element), timezone).format(format);
+    else
+        parsed = moment(new Date(element)).format(format);
+    
+    if(parsed == 'Invalid date')
+        return element;
+    
+    return parsed;
+});
 
 module.exports = function(app) {
 

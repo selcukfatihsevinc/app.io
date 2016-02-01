@@ -11,7 +11,7 @@
             id="f-{{ key }}"
             class="f-{{ key }} form-control"
             {% if opts.edit && field.settings.noedit %}disabled=""{% endif %}
-            value="{% if data %}{{ data|date('m-d-Y') }}{% endif %}">
+            value="{% if data %}{{ data|dateFormat('DD/MM/YYYY') }}{% endif %}">
     </div>
 </div>
 
@@ -19,6 +19,7 @@
 $(function() {
     $('.input-group.date').datepicker({
         todayBtn: "linked",
+        format: 'dd/mm/yyyy',
         keyboardNavigation: false,
         forceParse: false,
         calendarWeeks: true,

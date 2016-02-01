@@ -133,7 +133,11 @@
                                                         {% if props[alias[l]].settings.image %}data-formatter="imageFormatter"{% elseif props[alias[l]].pattern == 'url' %}data-formatter="urlFormatter"{% endif %}
 
                                                         {% if props[alias[l]].settings.square_video %}data-formatter="videoFormatter"{% endif %}
-                                                        {% if props[alias[l]].settings.dateFormat %}data-formatter="dateFormatter"{% endif %}
+                                                        {% if props[alias[l]].settings.field == 'datetime' %}
+                                                            data-formatter="dateTimeFormatter"
+                                                        {% elseif props[alias[l]].settings.dateFormat %}
+                                                            data-formatter="dateFormatter"    
+                                                        {% endif %}
                                                     {% endif %}
 
                                                     data-field="{% if props[alias[l]].settings.display %}{{ l }}.{{ props[alias[l]].settings.display }}{% else %}{{ l }}{% endif %}"
@@ -141,6 +145,9 @@
                                                     {% if l == opts.main and opts.noedit == false %}data-formatter="editFormatter"{% endif %}
                                                     >
                                                     {% if props[alias[l]].settings.label %}{{ props[alias[l]].settings.label }}{% else %}{{ l }}{% endif %}
+                                                    {% if props[alias[l]].settings.field == 'datetime' && session.time %}
+                                                        ({{ session.time.name }})
+                                                    {% endif %}
                                                 </th>
                                             {% endfor %}
                                         </tr>
@@ -310,14 +317,19 @@
         function dateFormatter(value, row) {
             if( ! value )
                 return '-';
-
-            /**
-             * @TODO
-             * date format'ı nerden alacağına karar ver
-             */
-            return moment(value).utc().format("DD-MM-YYYY, HH:mm:ss");
+            
+            return moment(value).utc().format("DD/MM/YYYY");
         }
 
+        function dateTimeFormatter(value, row) {
+            if( ! value )
+                return '-';
+
+            var mParsed = moment(value);
+            {% if session.time %}mParsed = mParsed.tz('{{ session.time.name }}');{% endif %}
+            return mParsed.format("DD/MM/YYYY HH:mm:ss");
+        }
+        
         function openFilter() {
             sList.removeClass('col-lg-12').addClass('col-lg-9');
             sFilter.removeClass('hide').addClass('animated').addClass('fadeInLeft');

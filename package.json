@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "app.io",
-  "version": "0.2.37",
+  "version": "0.2.38",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -55,6 +55,7 @@
     "email-verification": "0.1.6",
     "qs": "2.3.3",
     "moment": "2.8.4",
+    "moment-timezone": "0.5.0",
     "method-override": "2.3.0",
     "extend": "3.0.0",
     "kue": "0.9.3",

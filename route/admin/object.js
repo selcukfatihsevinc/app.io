@@ -397,7 +397,7 @@ module.exports = function(app) {
             if(o == 'system.filters')
                 req.body.users = req.session.user._id;
 
-            new _schema(o).init(req, res, next).post(req.body, function(err, doc) {
+            new _schema(o).init(req, res, next).dateFormat().post(req.body, function(err, doc) {
                 if(err)
                     _log.error(err);
 
@@ -508,7 +508,7 @@ module.exports = function(app) {
             if(o == 'system.filters')
                 req.body.users = req.session.user._id;
 
-            new _schema(o).init(req, res, next).put(id, req.body, function(err, doc) {
+            new _schema(o).init(req, res, next).dateFormat().put(id, req.body, function(err, doc) {
                 if(err)
                     _log.error(err);
 

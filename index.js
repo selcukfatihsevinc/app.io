@@ -72,7 +72,7 @@ AppIo.prototype.run = function () {
 
     // base boot files
     var api = 'body|config|x-powered-by|cors';
-    var web = 'view|compress|static|cookie|session|flash|favicon|locals|admin/redirect|cron|kue|kue-ui|passport';
+    var web = 'view|compress|static|cookie|session|timezone|flash|favicon|locals|admin/redirect|cron|kue|kue-ui|passport';
 
     // load config
     this._load = this._load('config/'+this._app.get('env'), {

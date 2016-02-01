@@ -44,6 +44,8 @@ module.exports = function(app) {
                     return done(null);
                 }
 
+                profile = dot.get(profile, '_json.response.user');
+                    
                 new _schema('system.accounts').init(app).get({
                     apps: apps._id.toString(),
                     user_id: parseInt(profile.id),
@@ -55,80 +57,35 @@ module.exports = function(app) {
                             return done(null);
                     }
 
-                    /*
-                    console.log(profile._json.response);
-
-                    {
-                        user: {
-                            id: '80450341',
-                                firstName: 'Selçuk',
-                                lastName: 'Sevinç',
-                                gender: 'male',
-                                relationship: 'self',
-                                canonicalUrl: 'https://foursquare.com/user/80450341',
-                                photo: {
-                                prefix: 'https://irs0.4sqi.net/img/user/',
-                                    suffix: '/80450341-SVJ2VUOWXEHQWH4T.jpg'
-                            },
-                            friends: {
-                                count: 66,
-                                    groups: [Object]
-                            },
-                            birthday: 277689600,
-                                tips: {
-                                count: 0
-                            },
-                            homeCity: 'Istanbul, Istanbul',
-                                bio: '',
-                                contact: {
-                                verifiedPhone: 'false',
-                                    email: 'airsfs@hotmail.com',
-                                    facebook: '585453281'
-                            },
-                            photos: {
-                                count: 0,
-                                    items: []
-                            },
-                            checkinPings: 'off',
-                                pings: false,
-                                type: 'user',
-                                mayorships: {
-                                count: 0,
-                                    items: []
-                            },
-                            checkins: {
-                                count: 141,
-                                    items: [Object]
-                            },
-                            requests: {
-                                count: 0
-                            },
-                            lists: {
-                                count: 2,
-                                    groups: [Object]
-                            },
-                            blockedStatus: 'none',
-                                createdAt: 1393837394,
-                                referralId: 'u-80450341'
-                        }
-                    }                  
-                    return;
-                    */
-                    
                     if( ! req.session.social )
                         req.session.social = {};
+                    
+                    // set display name
+                    var displayName = '';
+                    
+                    if(profile.firstName) {
+                        displayName += profile.firstName;
+                        
+                        if(profile.lastName)
+                            displayName += ' '+profile.lastName;
+                    }
+                    
+                    // set profile photo
+                    var profilePhoto = '';
+                    
+                    if(profile.photo && profile.photo.prefix && profile.photo.suffix)
+                        profilePhoto = profile.photo.prefix+'original'+profile.photo.suffix
 
                     if( ! account ) {
                         new _schema('system.accounts').init(app).post({
                             apps: apps._id.toString(),
-                            type: 'T',
+                            type: 'FS',
                             user_id: parseInt(profile.id),
                             user_id_str: profile.id,
-                            user_name: profile.username || '',
-                            display_name: profile.displayName || '',
-                            profile_photo: dot.get(profile, '_json.profile_image_url') || '',
-                            token: token,
-                            token_secret: tokenSecret,
+                            user_name: profile.id || '',
+                            display_name: displayName,
+                            profile_photo: profilePhoto,
+                            token: token
                         }, function(err, doc) {
                             if(err) {
                                 console.log(err);
@@ -138,32 +95,29 @@ module.exports = function(app) {
                             var obj = {
                                 account_id: doc._id.toString(),
                                 token: token,
-                                token_secret: tokenSecret,
                                 network_id: profile.id
                             }
 
-                            req.session.social.twitter = obj;
-                            _emitter.emit('twitter_connected', obj);
+                            req.session.social.foursquare = obj;
+                            _emitter.emit('foursquare_connected', obj);
 
                             done(null, {foursquare: {}});
                         });
                     }
                     else {
                         new _schema('system.accounts').init(app).put(account._id.toString(), {
-                            user_name: profile.username,
-                            display_name: profile.displayName,
-                            profile_photo: dot.get(profile, '_json.profile_image_url') || '',
-                            token: token,
-                            token_secret: tokenSecret
+                            user_name: profile.id || '',
+                            display_name: displayName,
+                            profile_photo: profilePhoto,
+                            token: token
                         }, function(err, affected) {
                             var obj = {
                                 account_id: account._id.toString(),
                                 token: token,
-                                token_secret: tokenSecret,
                                 network_id: profile.id
                             }
 
-                            req.session.social.twitter = obj;
+                            req.session.social.foursquare = obj;
                             _emitter.emit('foursquare_connected', obj);
 
                             done(null, {foursquare: {}});
