@@ -76,6 +76,15 @@ module.exports = function(app) {
                     if(profile.photo && profile.photo.prefix && profile.photo.suffix)
                         profilePhoto = profile.photo.prefix+'original'+profile.photo.suffix
 
+                    var sessionObj   = {
+                        network_id: parseInt(profile.id),
+                        network_id_str: profile.id,
+                        user_name: profile.id,
+                        display_name: displayName,
+                        profile_photo: profilePhoto,
+                        token: token
+                    };
+                    
                     if( ! account ) {
                         new _schema('system.accounts').init(app).post({
                             apps: apps._id.toString(),
@@ -92,14 +101,9 @@ module.exports = function(app) {
                                 return done(err);
                             }
 
-                            var obj = {
-                                account_id: doc._id.toString(),
-                                token: token,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.foursquare = obj;
-                            _emitter.emit('foursquare_connected', obj);
+                            sessionObj.account_id = doc._id.toString();
+                            req.session.social.foursquare = sessionObj;
+                            _emitter.emit('foursquare_connected', sessionObj);
 
                             done(null, {foursquare: {}});
                         });
@@ -111,14 +115,9 @@ module.exports = function(app) {
                             profile_photo: profilePhoto,
                             token: token
                         }, function(err, affected) {
-                            var obj = {
-                                account_id: account._id.toString(),
-                                token: token,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.foursquare = obj;
-                            _emitter.emit('foursquare_connected', obj);
+                            sessionObj.account_id = account._id.toString();
+                            req.session.social.foursquare = sessionObj;
+                            _emitter.emit('foursquare_connected', sessionObj);
 
                             done(null, {foursquare: {}});
                         });

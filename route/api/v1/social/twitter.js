@@ -58,6 +58,17 @@ module.exports = function(app) {
                     if( ! req.session.social )
                         req.session.social = {};
 
+                    var profilePhoto = dot.get(profile, '_json.profile_image_url') || '';
+                    var sessionObj   = {
+                        network_id: parseInt(profile.id),
+                        network_id_str: profile.id,
+                        user_name: profile.username || '',
+                        display_name: profile.displayName || '',
+                        profile_photo: profilePhoto,
+                        token: token,
+                        token_secret: tokenSecret
+                    };
+                            
                     if( ! account ) {
                         new _schema('system.accounts').init(app).post({
                             apps: apps._id.toString(),
@@ -66,7 +77,7 @@ module.exports = function(app) {
                             user_id_str: profile.id,
                             user_name: profile.username || '',
                             display_name: profile.displayName || '',
-                            profile_photo: dot.get(profile, '_json.profile_image_url') || '',
+                            profile_photo: profilePhoto,
                             token: token,
                             token_secret: tokenSecret,
                         }, function(err, doc) {
@@ -75,15 +86,9 @@ module.exports = function(app) {
                                 return done(err);
                             }
 
-                            var obj = {
-                                account_id: doc._id.toString(),
-                                token: token,
-                                token_secret: tokenSecret,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.twitter = obj;
-                            _emitter.emit('twitter_connected', obj);
+                            sessionObj.account_id = doc._id.toString();
+                            req.session.social.twitter = sessionObj;
+                            _emitter.emit('twitter_connected', sessionObj);
 
                             done(null, {twitter: {}});
                         });
@@ -92,19 +97,13 @@ module.exports = function(app) {
                         new _schema('system.accounts').init(app).put(account._id.toString(), {
                             user_name: profile.username,
                             display_name: profile.displayName,
-                            profile_photo: dot.get(profile, '_json.profile_image_url') || '',
+                            profile_photo: profilePhoto,
                             token: token,
                             token_secret: tokenSecret
                         }, function(err, affected) {
-                            var obj = {
-                                account_id: account._id.toString(),
-                                token: token,
-                                token_secret: tokenSecret,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.twitter = obj;
-                            _emitter.emit('twitter_connected', obj);
+                            sessionObj.account_id = account._id.toString();
+                            req.session.social.twitter = sessionObj;
+                            _emitter.emit('twitter_connected', sessionObj);
 
                             done(null, {twitter: {}});
                         });

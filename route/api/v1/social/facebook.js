@@ -56,6 +56,17 @@ module.exports = function(app) {
                     if( ! req.session.social )
                         req.session.social = {};
 
+                    var profilePhoto = 'http://graph.facebook.com/'+profile.id+'/picture?type=square';
+                    var sessionObj   = {
+                        network_id: parseInt(profile.id),
+                        network_id_str: profile.id,
+                        user_name: profile.username || '',
+                        display_name: profile.displayName || '',
+                        profile_photo: profilePhoto,
+                        token: accessToken,
+                        refresh_token: refreshToken || ''
+                    };
+                    
                     if( ! account ) {
                         new _schema('system.accounts').init(app).post({
                             apps: apps._id.toString(),
@@ -73,14 +84,9 @@ module.exports = function(app) {
                                 return done(err);
                             }
 
-                            var obj = {
-                                account_id: doc._id.toString(),
-                                token: accessToken,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.facebook = obj;
-                            _emitter.emit('facebook_connected', obj);
+                            sessionObj.account_id = doc._id.toString();
+                            req.session.social.facebook = sessionObj;
+                            _emitter.emit('facebook_connected', sessionObj);
 
                             done(null, {facebook: {}});
                         });
@@ -92,14 +98,9 @@ module.exports = function(app) {
                             profile_photo: 'http://graph.facebook.com/'+profile.id+'/picture?type=square',
                             token: accessToken
                         }, function(err, affected) {
-                            var obj = {
-                                account_id: account._id.toString(),
-                                token: accessToken,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.facebook = obj;
-                            _emitter.emit('facebook_connected', obj);
+                            sessionObj.account_id = account._id.toString();
+                            req.session.social.facebook = sessionObj;
+                            _emitter.emit('facebook_connected', sessionObj);
 
                             done(null, {facebook: {}});
                         });

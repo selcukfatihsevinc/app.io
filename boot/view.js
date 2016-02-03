@@ -47,6 +47,10 @@ swig.setFilter('dateFormat', function(element, format, timezone) {
     return parsed;
 });
 
+swig.setFilter('trToUpper', function(string) {
+    return string.trToUpper();
+});
+
 module.exports = function(app) {
 
     var _log   = app.lib.logger;

@@ -58,6 +58,17 @@ module.exports = function(app) {
                     if( ! req.session.social )
                         req.session.social = {};
 
+                    var profilePhoto = dot.get(profile, '_json.data.profile_picture') || '';
+                    var sessionObj   = {
+                        network_id: parseInt(profile.id),
+                        network_id_str: profile.id,
+                        user_name: profile.username || '',
+                        display_name: profile.displayName || '',
+                        profile_photo: profilePhoto,
+                        token: accessToken,
+                        refresh_token: refreshToken
+                    };
+                    
                     if( ! account ) {
                         new _schema('system.accounts').init(app).post({
                             apps: apps._id.toString(),
@@ -66,7 +77,7 @@ module.exports = function(app) {
                             user_id_str: profile.id,
                             user_name: profile.username,
                             display_name: profile.displayName,
-                            profile_photo: dot.get(profile, '_json.data.profile_picture'),
+                            profile_photo: profilePhoto,
                             token: accessToken,
                             refresh_token: refreshToken,
                         }, function(err, doc) {
@@ -75,14 +86,9 @@ module.exports = function(app) {
                                 return done(err);
                             }
 
-                            var obj = {
-                                account_id: doc._id.toString(),
-                                token: accessToken,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.instagram = obj;
-                            _emitter.emit('instagram_connected', obj);
+                            sessionObj.account_id = doc._id.toString();
+                            req.session.social.instagram = sessionObj;
+                            _emitter.emit('instagram_connected', sessionObj);
 
                             done(null, {instagram: {}});
                         });
@@ -94,14 +100,9 @@ module.exports = function(app) {
                             profile_photo: dot.get(profile, '_json.data.profile_picture'),
                             token: accessToken
                         }, function(err, affected) {
-                            var obj = {
-                                account_id: account._id.toString(),
-                                token: accessToken,
-                                network_id: profile.id
-                            }
-
-                            req.session.social.instagram = obj;
-                            _emitter.emit('instagram_connected', obj);
+                            sessionObj.account_id = account._id.toString();
+                            req.session.social.instagram = sessionObj;
+                            _emitter.emit('instagram_connected', sessionObj);
 
                             done(null, {instagram: {}});
                         });
