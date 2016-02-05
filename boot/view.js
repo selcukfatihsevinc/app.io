@@ -1,8 +1,9 @@
-var moment = require('moment-timezone');
-var path   = require('path');
-var swig   = require('swig');
-var extras = require('swig-extras');
-var _      = require('lodash');
+var moment   = require('moment');
+var momentTz = require('moment-timezone');
+var path     = require('path');
+var swig     = require('swig');
+var extras   = require('swig-extras');
+var _        = require('lodash');
 
 // swig extra filters
 extras.useFilter(swig, 'split');
@@ -34,10 +35,13 @@ function lodashHas(functionName) {
 
 useLodash(swig);
 
-swig.setFilter('dateFormat', function(element, format, timezone) {
+swig.setFilter('dateFormat', function(element, format, timezone, locale) {
+    if(locale)
+        moment.locale(locale);
+    
     var parsed;
     if(timezone && timezone != '')
-        parsed = moment.tz(new Date(element), timezone).format(format);
+        parsed = momentTz.tz(new Date(element), timezone).format(format);
     else
         parsed = moment(new Date(element)).format(format);
     

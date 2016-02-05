@@ -6,7 +6,7 @@ module.exports = function(app) {
     var _env  = app.get('env');
     var _conf = app.config[_env].logger; // logger config
 
-    winston.emitErrs = true;
+    winston.emitErrs = false; // don't supress errors
     var logger = new winston.Logger({exitOnError: false});
 
     // add transport

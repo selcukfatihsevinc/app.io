@@ -22,12 +22,12 @@
 <script>
     $(document).ready(function(){
 
-        Dropzone.options.myAwesomeDropzone = {
+        new Dropzone('#my-awesome-dropzone', {
 
             url: '/admin/upload',
             autoProcessQueue: false,
             uploadMultiple: false,
-            parallelUploads: 10,
+            parallelUploads: 2,
             maxFiles: 100,
 
             // Dropzone settings
@@ -39,18 +39,13 @@
                     e.stopPropagation();
                     myDropzone.processQueue();
                 });
-                this.on("sendingmultiple", function() {
-
-                });
-                this.on("successmultiple", function(files, response) {
+                
+                this.on('complete', function (file) {
                     $table.bootstrapTable('refresh');
-                });
-                this.on("errormultiple", function(files, response) {
-
                 });
             }
 
-        }
+        });
 
     });
 </script>

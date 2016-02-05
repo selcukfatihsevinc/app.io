@@ -23,6 +23,7 @@ module.exports = function(app) {
         ap : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps', index: true},
         ir : {type: ObjectId, required: true, ref: 'System_Users', alias: 'users', index: true},
         n  : {type: String, required: true, alias: 'name'},
+        t  : {type: String, alias: 'title'},
         ut : {type: String, default: 'U', required: true, enum: ['A', 'U'], alias: 'upload_type'}, // A: Admin, U: User
         ty : {type: String, required: true, enum: ['L', 'S', 'C'], alias: 'type'}, // L: Local, S: Aws S3, C: Cloudinary
         b  : {type: Number, default: 0, alias: 'bytes'},
@@ -41,6 +42,8 @@ module.exports = function(app) {
      */
 
     Schema.n.settings = {label: 'Name'};
+    Schema.t.settings = {label: 'Title'};
+    Schema.p.settings = {label: 'Path'};
 
     /**
      * ----------------------------------------------------------------
@@ -48,16 +51,22 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
+    var formsObj = {
+        filter: ['name', 'title', 'path']
+    }
+    formsObj['new'] = ['name', 'title'];
+    
     var ImageSchema = app.libpost.model.loader.mongoose(Schema, {
         Name: 'System_Images',
         Options: {
             singular : 'System Image',
             plural   : 'System Images',
-            columns  : ['name', 'path'],
+            columns  : ['name', 'title', 'path', 'bytes', 'width', 'height'],
             extra    : ['type'], // extra fields
             main     : 'name',
             perpage  : 10
-        }
+        },
+        Forms: formsObj
     });
 
 
