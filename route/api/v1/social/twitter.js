@@ -21,7 +21,7 @@ module.exports = function(app) {
     _.each(_conf, function(value, key) {
         var project = key;
 
-        if( ! value.twitter)
+        if( ! value.twitter || ! value.twitter.enable )
             return;
 
         var twitter = value.twitter;
@@ -89,7 +89,7 @@ module.exports = function(app) {
                         }, function(err, doc) {
                             if(err) {
                                 console.log(err);
-                                return done(err);
+                                return done(null);
                             }
 
                             sessionObj.account_id = doc._id.toString();

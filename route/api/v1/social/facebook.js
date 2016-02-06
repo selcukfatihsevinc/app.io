@@ -19,7 +19,7 @@ module.exports = function(app) {
     _.each(_conf, function(value, key) {
         var project = key;
 
-        if( ! value.facebook)
+        if( ! value.facebook || ! value.facebook.enable )
             return;
 
         var facebook = value.facebook;
@@ -81,7 +81,7 @@ module.exports = function(app) {
                         }, function(err, doc) {
                             if(err) {
                                 console.log(err);
-                                return done(err);
+                                return done(null);
                             }
 
                             sessionObj.account_id = doc._id.toString();

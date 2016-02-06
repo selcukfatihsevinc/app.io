@@ -98,7 +98,7 @@ module.exports = function(app) {
                         }, function(err, doc) {
                             if(err) {
                                 console.log(err);
-                                return done(err);
+                                return done(null);
                             }
 
                             sessionObj.account_id = doc._id.toString();
