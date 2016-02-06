@@ -34,12 +34,15 @@ module.exports = function(app) {
         },
         function(req, token, tokenSecret, profile, done) {
             var project = req.params.project;
-
+            _log.info(_group+':PROJECT', project);
+            _log.info(_group+':QS', req.query);
+            
             new _schema('system.apps').init(app).get({
                 slug: project,
                 qt: 'one'
             }, function(err, apps) {
                 if(err) {
+                    console.log(err);
                     _log.info(_group, 'app not found');
                     return done(null);                    
                 }
@@ -51,6 +54,7 @@ module.exports = function(app) {
                 }, function(err, account) {
 
                     if(err) {
+                        console.log(err);
                         if(err.name != 'NotFound')
                             return done(null);                        
                     }
@@ -69,6 +73,8 @@ module.exports = function(app) {
                         token_secret: tokenSecret
                     };
                             
+                    _log.info(_group+'SESSION_OBJ', sessionObj);
+                    
                     if( ! account ) {
                         new _schema('system.accounts').init(app).post({
                             apps: apps._id.toString(),
@@ -101,6 +107,9 @@ module.exports = function(app) {
                             token: token,
                             token_secret: tokenSecret
                         }, function(err, affected) {
+                            if(err)
+                                console.log(err);
+                            
                             sessionObj.account_id = account._id.toString();
                             req.session.social.twitter = sessionObj;
                             _emitter.emit('twitter_connected', sessionObj);
