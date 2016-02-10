@@ -3,6 +3,7 @@ var momentTz = require('moment-timezone');
 var path     = require('path');
 var swig     = require('swig');
 var extras   = require('swig-extras');
+var _s       = require('underscore.string');
 var _        = require('lodash');
 
 // swig extra filters
@@ -53,6 +54,15 @@ swig.setFilter('dateFormat', function(element, format, timezone, locale) {
 
 swig.setFilter('trToUpper', function(string) {
     return string.trToUpper();
+});
+
+swig.setFilter('numberFormat', function(number, decimals, decimalSeparator, orderSeparator) {
+    number = parseInt(number);
+    decimals = decimals || 0;
+    decimalSeparator = decimalSeparator || '.';
+    orderSeparator = orderSeparator || ',';
+    
+    return _s.numberFormat(number, decimals, decimalSeparator, orderSeparator);
 });
 
 module.exports = function(app) {
