@@ -30,6 +30,7 @@ module.exports = function(app) {
         un  : {type: String, alias: 'user_name'},
         dn  : {type: String, alias: 'display_name'},
         pp  : {type: String, alias: 'profile_photo'},
+        l   : {type: String, alias: 'location'},
         tk  : {type: String, required: true, alias: 'token'},
         rtk : {type: String, alias: 'refresh_token'},
         tks : {type: String, alias: 'token_secret'},
@@ -61,6 +62,7 @@ module.exports = function(app) {
     Schema.un.settings  = {label: 'Username'};
     Schema.dn.settings  = {label: 'Display Name'};
     Schema.pp.settings  = {label: 'Profile Photo'};
+    Schema.pp.settings  = {label: 'Location'};
     Schema.tk.settings  = {label: 'Token'};
     Schema.rtk.settings = {label: 'Refresh Token'};
     Schema.tks.settings = {label: 'Token Secret'};
@@ -76,7 +78,7 @@ module.exports = function(app) {
         Options: {
             singular   : 'System Account',
             plural     : 'System Accounts',
-            columns    : ['users', 'type', 'user_id', 'user_name', 'display_name', 'profile_photo', 'token', 'token_secret'],
+            columns    : ['users', 'type', 'user_id', 'user_name', 'display_name', 'profile_photo', 'location', 'token', 'token_secret'],
             main       : 'users',
             perpage    : 25
         },

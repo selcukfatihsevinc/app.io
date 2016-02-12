@@ -6,7 +6,13 @@ module.exports = function(app) {
     var _group = 'BOOT:FAVICON';
 
     try {
-        app.use(favicon(app.get('basedir')+'/public/favicon.ico'));
+        var fileName = 'favicon.ico';
+        var _conf    = app.lib.bootConf(app, 'favicon');
+        
+        if(_conf && _conf.fileName)
+            fileName = _conf.fileName;
+        
+        app.use(favicon(app.get('basedir')+'/public/'+fileName));
         return true;
     }
     catch(e) {

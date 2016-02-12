@@ -1,9 +1,15 @@
 {% import '../../macro/depends.html' as m_depends %}
 
-<div id="field-{{ field.alias }}" class="f-textarea form-group">
-    <label for="f-{{ key }}">{{ field.settings.label }}</label>
+{% set inputName = key %}
+
+{% if parent.field %}
+    {% set inputName = parent.field+'['+parent.index+']['+key+']' %}
+{% endif %}
+
+<div id="field-{{ field.alias }}{{ parent.index }}" class="f-textarea form-group">
+    <label for="f-{{ key }}{{ parent.index }}">{{ field.settings.label }}</label>
     <div class="f-textarea-wrap">
-        <textarea name="{{ key }}" id="f-{{ key }}" class="form-control {% if opts.filter %}input-sm{% endif %}" rows="{{ field.settings.rows|default(8) }}">{% if data %}{{data}}{% endif %}</textarea>
+        <textarea name="{{ inputName }}" id="f-{{ key }}{{ parent.index }}" class="form-control {% if opts.filter %}input-sm{% endif %}" rows="{{ field.settings.rows|default(8) }}">{% if data %}{{data}}{% endif %}</textarea>
         {% include "../filter/text.html" %}
     </div>
 </div>

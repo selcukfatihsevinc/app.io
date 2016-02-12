@@ -63,12 +63,15 @@ module.exports = function(app) {
                         req.session.social = {};
 
                     var profilePhoto = dot.get(profile, '_json.profile_image_url') || '';
+                    var location     = dot.get(profile, '_json.location') || '';
+                    
                     var sessionObj   = {
                         network_id: parseInt(profile.id),
                         network_id_str: profile.id,
                         user_name: profile.username || '',
                         display_name: profile.displayName || '',
                         profile_photo: profilePhoto,
+                        location: location,
                         token: token,
                         token_secret: tokenSecret
                     };
@@ -84,6 +87,7 @@ module.exports = function(app) {
                             user_name: profile.username || '',
                             display_name: profile.displayName || '',
                             profile_photo: profilePhoto,
+                            location: location,
                             token: token,
                             token_secret: tokenSecret,
                         }, function(err, doc) {
@@ -104,6 +108,7 @@ module.exports = function(app) {
                             user_name: profile.username,
                             display_name: profile.displayName,
                             profile_photo: profilePhoto,
+                            location: location,
                             token: token,
                             token_secret: tokenSecret
                         }, function(err, affected) {

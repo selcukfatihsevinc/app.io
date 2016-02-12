@@ -76,12 +76,16 @@ module.exports = function(app) {
                     if(profile.photo && profile.photo.prefix && profile.photo.suffix)
                         profilePhoto = profile.photo.prefix+'original'+profile.photo.suffix
 
+                    // set location
+                    var location = profile.homeCity || '';
+                    
                     var sessionObj   = {
                         network_id: parseInt(profile.id),
                         network_id_str: profile.id,
                         user_name: profile.id,
                         display_name: displayName,
                         profile_photo: profilePhoto,
+                        location: location,
                         token: token
                     };
                     
@@ -94,6 +98,7 @@ module.exports = function(app) {
                             user_name: profile.id || '',
                             display_name: displayName,
                             profile_photo: profilePhoto,
+                            location: location,
                             token: token
                         }, function(err, doc) {
                             if(err) {
@@ -113,6 +118,7 @@ module.exports = function(app) {
                             user_name: profile.id || '',
                             display_name: displayName,
                             profile_photo: profilePhoto,
+                            location: location,
                             token: token
                         }, function(err, affected) {
                             sessionObj.account_id = account._id.toString();
