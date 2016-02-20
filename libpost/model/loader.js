@@ -67,7 +67,7 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
         
         // init listeners
         this.listener(options);
-        // this.hooks(Schema, lower);
+        this.hooks(Schema, lower);
         
         return Schema;        
     }
