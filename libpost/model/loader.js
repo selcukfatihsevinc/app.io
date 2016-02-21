@@ -16,6 +16,7 @@ function LibpostModelLoader(app) {
         this._worker = parseInt(process.env.worker_id);
         this._syncConf = app.config[this._env].sync;
         this._emitter = app.lib.schemaEmitter;
+        this._denormalize = app.lib.denormalize;
     }
     catch(e) {
         self._log.error(group, e.stack);
@@ -82,6 +83,8 @@ LibpostModelLoader.prototype.hooks = function(schema, lower) {
     schema.post('save', function (doc) {
         if(this._isNew)
             self._emitter.emit(lower+'_saved', doc);
+        else
+            self._emitter.emit(lower+'_model_updated', doc);
     });
 
     schema.post('remove', function (doc) {
@@ -123,23 +126,15 @@ LibpostModelLoader.prototype.listener = function(options) {
     }
 
     if(Hook) {
-        _.each(Hook, function (hookData, hookName) {
-            _.each(hookData, function(data, action) {
-                _.each(data, function(target, source) {
-                    self['hook_'+action](Name, source, target); 
-                });
+        _.each(Hook, function (hookData, action) {
+            _.each(hookData, function(target, source) {
+                self['hook_'+action](Name, source, target); 
             });
         });
     }
 };
 
 LibpostModelLoader.prototype.hook_push = function(name, source, target) {
-    /**
-     * @TODO
-     * implement hook
-     */
-    return true;
-    
     var self  = this;
     var lower = name.toLowerCase();
     var Save  = self._schemaInspector.Save.properties;
@@ -151,16 +146,42 @@ LibpostModelLoader.prototype.hook_push = function(name, source, target) {
         return this._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', 'reference not found');
     
     var Model = this._mongoose.model(ref);
+    var ModelAlias = dot.get(Model.schema, 'inspector.Alias');
     
-    // push each ile target modele push et
+    // addToSet ile target modele push et
     this._emitter.on(lower+'_saved', function(data) {
-        // set update
-        var update = {$push: {}};
-        update.$push[target[1]] = data;
+        var update = {$addToSet: {}};
+        update.$addToSet[ModelAlias[target[1]]] = data[Alias[source]];
 
-        Model.update(cond, update, opts, function(err, raw) {
+        Model.update({_id: data[Alias[target[0]]]}, update, {}, function(err, raw) {
             if(err)
-                self._log.error('LIBPOST:MODEL:LOADER:INCR', err);
+                self._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', err);
+            
+            // find and save target model
+            Model.findOne({_id: data[Alias[target[0]]]}, function(err, doc) {
+                if( err || ! doc )
+                    return;
+                
+                doc.save(function(err) {});
+            });
+        });
+    });
+
+    this._emitter.on(lower+'_removed', function(data) {
+        var update = {$pull: {}};
+        update.$pull[ModelAlias[target[1]]] = data[Alias[source]];
+
+        Model.update({_id: data[Alias[target[0]]]}, update, {}, function(err, raw) {
+            if(err)
+                self._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', err);
+
+            // find and save target model
+            Model.findOne({_id: data[Alias[target[0]]]}, function(err, doc) {
+                if( err || ! doc )
+                    return;
+
+                doc.save(function(err) {});
+            });
         });
     });
 };
@@ -176,8 +197,26 @@ LibpostModelLoader.prototype.denorm = function(listener, inspector) {
 
 
 LibpostModelLoader.prototype.size = function(name, source, target) {
-    var self  = this;
-    var lower = name.toLowerCase();
+    var self    = this;
+    var lower   = name.toLowerCase();
+
+    /**
+     * @TODO
+     * size vs ile diğer hook'ları da katarsak, beklenen field'ların modifiye edilip edilmediğinin kontrol edilmesi lazım
+     * eğer kontrol edilmezse toplamda 4-5 tane _saved event çalışırsa 4-5 kere aggregation vs çalıştırmış olur
+     */
+    
+    this._emitter.on(lower+'_saved', function(data) {
+        var Model   = self._mongoose.model(name);
+        var Inspect = dot.get(Model.schema, 'inspector');
+        self._denormalize.size(data, Inspect);
+    });
+    
+    this._emitter.on(lower+'_model_updated', function(data) {
+        var Model   = self._mongoose.model(name);
+        var Inspect = dot.get(Model.schema, 'inspector');
+        self._denormalize.size(data, Inspect);
+    });
     
     this._emitter.on(lower+'_'+source+'_addtoset', function(data) {
         self._incr(name, target, data.id);
