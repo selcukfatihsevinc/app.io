@@ -27,11 +27,11 @@ function LibpostModelLoader(app) {
 
 LibpostModelLoader.prototype.mongoose = function(schema, options) {
     var self  = this;
-    var group = 'MODEL:'+options.Name;
+    var name  = options.Name;
+    var lower = name.toLowerCase();
+    var group = 'MODEL:'+name;
     
     try {
-        var lower = options.Name.toLowerCase();
-        
         // create schema
         var Schema = this._mongo.db.Schema(schema);
 
@@ -57,18 +57,16 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
             });
         }
 
+        // model denormalize sync 
         if(this._worker == 0 && dot.get(this._syncConf, 'denormalize.'+lower)) {
             setTimeout(function() {
-                self._app.lib.denormalize.sync(options.Name, self._app.boot.kue);
+                self._app.lib.denormalize.sync(name, self._app.boot.kue);
             }, 10000);
         }
 
-        // set schema inspector
-        this._schemaInspector = Schema.inspector;
-        
-        // init listeners
-        this.listener(options);
-        this.hooks(Schema, lower);
+        // init post hooks and listeners
+        this.postHooks(Schema, name);
+        this.listener(options, Schema.inspector);
         
         return Schema;        
     }
@@ -77,22 +75,56 @@ LibpostModelLoader.prototype.mongoose = function(schema, options) {
     }
 };
 
-LibpostModelLoader.prototype.hooks = function(schema, lower) {
-    var self = this;
+/**
+ * ----------------------------------------------------------------
+ * Model Post Hooks
+ * ----------------------------------------------------------------
+ */
+
+LibpostModelLoader.prototype.postHooks = function(schema, name) {
+    var self  = this;
+    var lower = name.toLowerCase();
     
+    // System_Users için işlem yapma 
+    // (app.io modellerinden sadece users modeli event çalıştırıyor, kontrolünü kendi üzerinde sağlıyor)
+    if(name == 'System_Users')
+        return false;
+
+    // pre save hook
+    schema.pre('save', function (next) {
+        var self    = this;
+        self._isNew = self.isNew;
+        self._isModified = {};
+        
+        // set _isModified object values
+        _.each(self._doc, function(val, key) {
+            self._isModified[key] = self.isModified(key);
+        });
+
+        next();
+    });
+    
+    // post save hook
     schema.post('save', function (doc) {
         if(this._isNew)
-            self._emitter.emit(lower+'_saved', doc);
+            self._emitter.emit(lower+'_model_saved', {source: name, doc: doc});
         else
-            self._emitter.emit(lower+'_model_updated', doc);
+            self._emitter.emit(lower+'_model_updated', {source: name, doc: doc});
     });
 
+    // post remove hook
     schema.post('remove', function (doc) {
-        self._emitter.emit(lower+'_removed', doc);
+        self._emitter.emit(lower+'_model_removed', {source: name, doc: doc});
     });    
 }
 
-LibpostModelLoader.prototype.listener = function(options) {
+/**
+ * ----------------------------------------------------------------
+ * Model Event Listeners
+ * ----------------------------------------------------------------
+ */
+
+LibpostModelLoader.prototype.listener = function(options, inspector) {
     var self     = this;
     var Name     = options.Name;
     var Denorm   = options.Denorm;
@@ -103,121 +135,86 @@ LibpostModelLoader.prototype.listener = function(options) {
     
     if(Denorm) {
         _.each(Denorm, function (value, key) {
-            self.denorm(key.toLowerCase()+'_updated', self._schemaInspector);
+            self.denorm(key.toLowerCase()+'_model_updated', inspector);
         });
     }
     
     if(Size) {
+        // post hook'ta çalışacak size'ların bir kere çalışması yeterli
+        self.sizePostHook(Name, inspector);
+        
+        // entity api endpoint'leri için çalışacak event'ler
         _.each(Size, function (target, source) {
-            self.size(Name, source, target);
+            self.size(Name, source, target, inspector);
         });        
     }
 
     if(Count) {
         _.each(Count, function (target, source) {
-            self.count(Name, target, source);
+            self.count(Name, target, source, inspector);
         });
     }
 
     if(CountRef) {
         _.each(CountRef, function (target, source) {
-            self.countRef(Name, target, source);
+            self.countRef(Name, target, source, inspector);
         });
     }
 
     if(Hook) {
         _.each(Hook, function (hookData, action) {
             _.each(hookData, function(target, source) {
-                self['hook_'+action](Name, source, target); 
+                self['hook_'+action](Name, source, target, inspector); 
             });
         });
     }
 };
 
-LibpostModelLoader.prototype.hook_push = function(name, source, target) {
-    var self  = this;
-    var lower = name.toLowerCase();
-    var Save  = self._schemaInspector.Save.properties;
-    var Alias = self._schemaInspector.Alias;
-    target    = target.split(':');
-    var ref   = dot.get(Save, Alias[target[0]]+'.ref');
-
-    if( ! ref )
-        return this._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', 'reference not found');
-    
-    var Model = this._mongoose.model(ref);
-    var ModelAlias = dot.get(Model.schema, 'inspector.Alias');
-    
-    // addToSet ile target modele push et
-    this._emitter.on(lower+'_saved', function(data) {
-        var update = {$addToSet: {}};
-        update.$addToSet[ModelAlias[target[1]]] = data[Alias[source]];
-
-        Model.update({_id: data[Alias[target[0]]]}, update, {}, function(err, raw) {
-            if(err)
-                self._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', err);
-            
-            // find and save target model
-            Model.findOne({_id: data[Alias[target[0]]]}, function(err, doc) {
-                if( err || ! doc )
-                    return;
-                
-                doc.save(function(err) {});
-            });
-        });
-    });
-
-    this._emitter.on(lower+'_removed', function(data) {
-        var update = {$pull: {}};
-        update.$pull[ModelAlias[target[1]]] = data[Alias[source]];
-
-        Model.update({_id: data[Alias[target[0]]]}, update, {}, function(err, raw) {
-            if(err)
-                self._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', err);
-
-            // find and save target model
-            Model.findOne({_id: data[Alias[target[0]]]}, function(err, doc) {
-                if( err || ! doc )
-                    return;
-
-                doc.save(function(err) {});
-            });
-        });
-    });
-};
+/**
+ * ----------------------------------------------------------------
+ * Model.Denorm
+ * ----------------------------------------------------------------
+ */
 
 LibpostModelLoader.prototype.denorm = function(listener, inspector) {
     var self = this;
-    
+
     this._emitter.on(listener, function(data) {
+        // _dismissHook değişkeni geldiğinde denormalization güncellemesi çalıştırılmayacak
+        if(data.doc.__dismissHook)
+            return false;
+        
         self._log.info('MODEL:LOADER:DENORM:'+listener, data);
         self._app.lib.denormalize.touch(data, inspector);
     });
 };
 
+/**
+ * ----------------------------------------------------------------
+ * Model.Size
+ * ----------------------------------------------------------------
+ */
 
-LibpostModelLoader.prototype.size = function(name, source, target) {
-    var self    = this;
-    var lower   = name.toLowerCase();
+// post hook'ta çalışacak size'ların bir kere çalışması yeterli
+LibpostModelLoader.prototype.sizePostHook = function(name, inspector) {
+    var self  = this;
+    var lower = name.toLowerCase();
 
-    /**
-     * @TODO
-     * size vs ile diğer hook'ları da katarsak, beklenen field'ların modifiye edilip edilmediğinin kontrol edilmesi lazım
-     * eğer kontrol edilmezse toplamda 4-5 tane _saved event çalışırsa 4-5 kere aggregation vs çalıştırmış olur
-     */
-    
-    this._emitter.on(lower+'_saved', function(data) {
-        var Model   = self._mongoose.model(name);
-        var Inspect = dot.get(Model.schema, 'inspector');
-        self._denormalize.size(data, Inspect);
+    // Model post hook events
+    this._emitter.on(lower+'_model_saved', function(data) {
+        self._denormalize.size(data, inspector);
     });
-    
+
     this._emitter.on(lower+'_model_updated', function(data) {
-        var Model   = self._mongoose.model(name);
-        var Inspect = dot.get(Model.schema, 'inspector');
-        self._denormalize.size(data, Inspect);
+        self._denormalize.size(data, inspector);
     });
-    
+};
+
+LibpostModelLoader.prototype.size = function(name, source, target, inspector) {
+    var self  = this;
+    var lower = name.toLowerCase();
+
+    // Entity api events
     this._emitter.on(lower+'_'+source+'_addtoset', function(data) {
         self._incr(name, target, data.id);
     });
@@ -227,16 +224,36 @@ LibpostModelLoader.prototype.size = function(name, source, target) {
     });
 };
 
-LibpostModelLoader.prototype.count = function(name, target, source) {
+/**
+ * ----------------------------------------------------------------
+ * Model.Count
+ * ----------------------------------------------------------------
+ */
+
+LibpostModelLoader.prototype.count = function(name, target, source, inspector) {
     var self  = this;
     var lower = name.toLowerCase();
-    var Save  = self._schemaInspector.Save.properties;
-    var Alias = self._schemaInspector.Alias;
+    var Save  = inspector.Save.properties;
+    var Alias = inspector.Alias;
     var ref   = dot.get(Save, Alias[source]+'.ref');
 
     if( ! ref )
         return this._log.error('LIBPOST:MODEL:LOADER:COUNT', 'reference not found');
+
+    // Model post hook events 
+    // (eğer post mask'e izin verilip kaydedilen field varsa ilk kaydedişte target'i güncelliyoruz)
+    // (_model_updated için çalışmayacak)
+    this._emitter.on(lower+'_model_saved', function(data) {
+        var doc = data.doc;
+        self._incr(ref, target, doc[Alias[source]]);
+    });
+
+    this._emitter.on(lower+'_model_removed', function(data) {
+        var doc = data.doc;
+        self._decr(ref, target, doc[Alias[source]]);
+    });
     
+    // Entity api events
     this._emitter.on(lower+'_'+source+'_addtoset', function(data) {
         self._incr(ref, target, data.value);
     });
@@ -246,24 +263,138 @@ LibpostModelLoader.prototype.count = function(name, target, source) {
     });
 };
 
-LibpostModelLoader.prototype.countRef = function(name, target, source) {
+/**
+ * ----------------------------------------------------------------
+ * Model.CountRef
+ * ----------------------------------------------------------------
+ */
+
+LibpostModelLoader.prototype.countRef = function(name, target, source, inspector) {
     var self  = this;
     var lower = name.toLowerCase();
-    var Save  = self._schemaInspector.Save.properties;
-    var Alias = self._schemaInspector.Alias;
+    var Save  = inspector.Save.properties;
+    var Alias = inspector.Alias;
     var ref   = dot.get(Save, Alias[source]+'.ref');
 
     if( ! ref )
         return this._log.error('LIBPOST:MODEL:LOADER:COUNT_REF', 'reference not found');
 
-    this._emitter.on(lower+'_saved', function(data) {
-        self._incr(ref, target, data[Alias[source]]);
+    /**
+     * reference count şimdilik daha sonra update edilebilecek (_model_updated) durumlar için çalışmıyor
+     */
+    
+    // Model post hook events
+    this._emitter.on(lower+'_model_saved', function(data) {
+        var doc = data.doc;
+        self._incr(ref, target, doc[Alias[source]]);
     });
 
-    this._emitter.on(lower+'_removed', function(data) {
-        self._decr(ref, target, data[Alias[source]]);
+    this._emitter.on(lower+'_model_removed', function(data) {
+        var doc = data.doc;
+        self._decr(ref, target, doc[Alias[source]]);
     });
 };
+
+/**
+ * ----------------------------------------------------------------
+ * Model.Hook (push)
+ * ----------------------------------------------------------------
+ */
+
+LibpostModelLoader.prototype.hook_push = function(name, source, target, inspector) {
+    var self  = this;
+    var lower = name.toLowerCase();
+    var Save  = inspector.Save.properties;
+    var Alias = inspector.Alias;
+    target    = target.split(':');
+    var ref   = dot.get(Save, Alias[target[0]]+'.ref');
+
+    if( ! ref )
+        return this._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', 'reference not found');
+
+    // reference model
+    var Model      = this._mongoose.model(ref);
+    var ModelAlias = dot.get(Model.schema, 'inspector.Alias');
+
+    // addToSet ile target modele push et
+    this._emitter.on(lower+'_model_saved', function(data) {
+        var doc       = data.doc;
+        var SourceVal = doc[Alias[source]];
+        
+        if( ! SourceVal )
+            return false;
+
+        var update      = {$addToSet: {}};
+        var type        = Object.prototype.toString.call(SourceVal);
+        var TargetField = ModelAlias[target[1]];
+        
+        if(type == '[object Array]') 
+            update.$addToSet[TargetField] = {$each: SourceVal};
+        else
+            update.$addToSet[TargetField] = SourceVal;
+
+        // update reference
+        self.update_hook(doc[Alias[target[0]]], update, Model, TargetField);
+    });
+
+    this._emitter.on(lower+'_model_removed', function(data) {
+        var doc       = data.doc;
+        var SourceVal = doc[Alias[source]];
+
+        if( ! SourceVal )
+            return false;
+        
+        var pull        = {$pull: {}};
+        var pullAll     = {$pullAll: {}};
+        var type        = Object.prototype.toString.call(SourceVal);
+        var TargetField = ModelAlias[target[1]];
+        var update;
+        
+        if(type == '[object Array]') {
+            pullAll.$pullAll[TargetField] = SourceVal;
+            update = pullAll;
+        }
+        else {
+            pull.$pull[TargetField] = SourceVal;
+            update = pull;
+        }
+
+        // update reference
+        self.update_hook(doc[Alias[target[0]]], update, Model, TargetField);
+    });
+};
+
+
+LibpostModelLoader.prototype.update_hook = function(id, update, Model, TargetField) {
+    var self = this;
+    
+    Model.update({_id: id}, update, {}, function(err, raw) {
+        if(err)
+            self._log.error('LIBPOST:MODEL:LOADER:HOOK_PUSH', err);
+
+        // find and save target model
+        Model.findOne({_id: id}, function(err, doc) {
+            if( err || ! doc )
+                return;
+
+            // denormalize içinde vs bu değişkene bakılacak,
+            // bu tarz işlemden sonra denormalize çalışmasına gerek yok
+            doc.__dismissHook = true;
+            
+            // set target field as modified
+            doc.markModified(TargetField);
+            
+            // save document
+            doc.save(function(err) {});                
+        });
+    });
+};
+
+/**
+ * ----------------------------------------------------------------
+ * Increment
+ * ----------------------------------------------------------------
+ */
 
 LibpostModelLoader.prototype._incr = function(model, field, id, num, decr) {
     num        = Math.abs(parseInt(num || 1));
@@ -277,7 +408,14 @@ LibpostModelLoader.prototype._incr = function(model, field, id, num, decr) {
     if(Alias && Alias[field])
         field = Alias[field];
 
-    if(id) {
+    // get id type
+    var type = Object.prototype.toString.call(id);
+    
+    if(type == '[object Array]') {
+        if( ! id.length ) return false;
+        cond = {_id: {$in: id}};
+    }
+    else {
         cond = {_id: id};
         opts = {multi: false};
     }
@@ -293,6 +431,12 @@ LibpostModelLoader.prototype._incr = function(model, field, id, num, decr) {
             self._log.error('LIBPOST:MODEL:LOADER:INCR', err);
     });
 };
+
+/**
+ * ----------------------------------------------------------------
+ * Decrement
+ * ----------------------------------------------------------------
+ */
 
 LibpostModelLoader.prototype._decr = function(model, field, id, num) {
     this._incr(model, field, id, num, true);

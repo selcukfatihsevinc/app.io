@@ -59,6 +59,11 @@ module.exports = function(app) {
             var update = {};
             var props  = dot.get(schema._save, 'properties.'+entity.short);
             var a      = [];
+
+            /**
+             * @TODO
+             * each operator kullan
+             */
             
             if(entity.type == 'array') {
                 _.each(entity.setValArr, function(value, key) {
