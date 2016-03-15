@@ -50,9 +50,12 @@ $(function() {
             allowClear: true,
             placeholder: 'Select'
         }).on('change', function(e) {
+            /*
             $('#f-{{ key }} option').removeAttr('selected');
-            if(e.val && e.val != '')
-                $('#f-{{ key }} option[value='+ e.val+']').attr('selected', 'selected');
+            if(e.val && e.val != '') {
+                $('#f-{{ key }} option[value='+e.val+']').attr('selected', 'selected');
+            }
+            */
         });
     }
     
