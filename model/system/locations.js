@@ -102,6 +102,9 @@ module.exports = function(app) {
     LocationSchema.index({aen: 1});
     LocationSchema.index({atr: 1});
 
+    // set auto index
+    LocationSchema.set('autoIndex', dot.get(_syncConf, 'locations.autoindex') || false);
+    
     /**
      * ----------------------------------------------------------------
      * Pre Save Hook
