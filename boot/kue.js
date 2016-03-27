@@ -16,12 +16,16 @@ module.exports = function(app) {
         if(_conf.pass)
             redisObj.auth = _conf.pass;
 
-        return kue.createQueue({
+        var queue = kue.createQueue({
             prefix: 'q',
             redis: redisObj,
             disableSearch: true,
             jobEvents: false
         });
+
+        queue.watchStuckJobs();
+        
+        return queue;
     }
     catch(e) {
         _log.error(_group, e.stack);

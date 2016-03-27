@@ -68,6 +68,11 @@ module.exports = function(app) {
                 }
             }
 
+            /**
+             * @TODO
+             * burası hep en sonda olacağından eğer /_i/ mevcut değilse hata dön
+             */
+            
             next('route');
         }
 
@@ -85,6 +90,13 @@ module.exports = function(app) {
         app.get('/*?', function(req, res, next) {
             var image = new Img(req, res);
             var file  = '/tmp'+req.path;
+
+            /**
+             * @TODO
+             * bütün bu işlemleri redis-lock ile kilitle,
+             * aynı imajı almaya çalışan beklesin, eğer ikinci requestte imaj varsa bulur ve gönderir
+             * daha sonraki request'ler zaten nginx üzerinden alır
+             */
             
             // check file
             fs.stat(file, function(err, stat) {

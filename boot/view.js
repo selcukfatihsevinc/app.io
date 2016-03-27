@@ -41,10 +41,15 @@ swig.setFilter('dateFormat', function(element, format, timezone, locale) {
         moment.locale(locale);
     
     var parsed;
-    if(timezone && timezone != '')
-        parsed = momentTz.tz(new Date(element), timezone).format(format);
-    else
-        parsed = moment(new Date(element)).format(format);
+    if(format == 'fromNow') {
+        parsed = moment(element).fromNow();
+    }
+    else {
+        if(timezone && timezone != '')
+            parsed = momentTz.tz(new Date(element), timezone).format(format);
+        else
+            parsed = moment(new Date(element)).format(format);        
+    }
     
     if(parsed == 'Invalid date')
         return element;
