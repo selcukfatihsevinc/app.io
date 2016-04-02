@@ -32,7 +32,8 @@ module.exports = function(app) {
         ct : [{type: ObjectId, ref: 'Feed_Categories', alias: 'categories'}],
         ie : {type: String, default: 'Y',  enum: ['Y', 'N'], alias: 'is_enabled'},
         sh : {type: String, unique: true, default: shortId.generate, short: true, alias: 'shortid'},
-
+        st : {type: String, index: true, alias: 'shortener'},
+        
         // RSS content
         u  : {type: String, unique: true, alias: 'url', pattern: 'url'},
         p  : {type: String, alias: 'permalink', pattern: 'url'},
