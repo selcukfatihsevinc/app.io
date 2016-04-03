@@ -32,7 +32,8 @@ module.exports = function(app) {
      */
 
     Schema.n.settings = {label: 'Name'};
-
+    Schema.u.settings = {label: 'Url'};
+    
     /**
      * ----------------------------------------------------------------
      * Load Schema
