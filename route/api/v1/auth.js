@@ -551,10 +551,16 @@ module.exports = function(app) {
         var tokenDisabled = false;
         if(userData && (userData.is_enabled == 'No' || userData.waiting_status != 'Accepted'))
             tokenDisabled = true;
-        
+
         // return user data if found
-        if(userData)
-            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled);            
+        if(userData) {
+            /**
+             * @TODO
+             * profili de kontrol et, eğer yoksa profil oluştur
+             */
+            
+            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled);
+        }
 
         // check username after login function
         if(req.__usernameExists) {
