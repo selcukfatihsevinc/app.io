@@ -92,14 +92,14 @@ function CheckSocial(req, res, next) {
                             ));
                         }
                         else {
-                            req.__social = {email: email, user: username, name: body.name};
+                            req.__social = {email: email, user: username, name: body.name || username};
                             return next();
                         }
                     });
                 }
                 // email ve username eşleşiyorsa datayı set et
                 else {
-                    req.__social = {email: email, user: username, name: body.name};
+                    req.__social = {email: email, user: username, name: body.name || username};
                     return next();
                 }
             }
@@ -142,7 +142,7 @@ function CheckSocial(req, res, next) {
                 ));
             }
 
-            req.__social = {email: _email, user: _username, name: dot.get(user, 'name')};
+            req.__social = {email: _email, user: _username, name: dot.get(user, 'name') || _username};
             return next();
         });
     }
