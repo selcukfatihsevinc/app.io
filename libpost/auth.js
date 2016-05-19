@@ -80,7 +80,7 @@ LibpostAuth.prototype.emailTemplate = function(name, appSlug, token, toEmail, gr
      */
         
     // set transport
-    var _transport = self._app.boot.mailer;
+    var _transport = self._app.boot.mailer[appSlug] || self._app.boot.mailer;
 
     if(mConf) {
         var mailObj = _.clone(mConf[name]) || {};

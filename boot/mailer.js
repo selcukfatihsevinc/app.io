@@ -1,4 +1,5 @@
 var mailer = require('nodemailer');
+var _      = require('underscore');
 
 module.exports = function(app) {
 
@@ -11,6 +12,16 @@ module.exports = function(app) {
         if( ! _conf )
             return false;
 
+        // birden fazla config varsa hepsi için client oluşturuyoruz
+        if( ! _conf.service ) {
+            var obj = {};
+            _.each(_conf, function(val, key) {
+                obj[key] = mailer.createTransport(val);
+            });
+
+            return obj;
+        }
+        
         return mailer.createTransport(_conf);
     }
     catch(e) {

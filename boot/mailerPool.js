@@ -12,6 +12,11 @@ module.exports = function(app) {
         if( ! _conf )
             return false;
 
+        /**
+         * @TODO
+         * pool için de multiple domain ayarları yapılacak
+         */
+        
         return mailer.createTransport(pool(_conf));
     }
     catch(e) {

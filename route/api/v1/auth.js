@@ -324,14 +324,19 @@ module.exports = function(app) {
             password : dot.get(_authConf, slug+'.register.password') || 'required|min:4|max:20'
         };
 
+        // check email verify option
+        var no_email = dot.get(_authConf, slug+'.register.no_email_verify');
+
         // user data
         var data = {
             email      : req.body.email,
             password   : req.body.password,
-            roles      : req.__defaultRole,
-            is_enabled : 'N'
+            roles      : req.__defaultRole
         };
 
+        // set user enable mode
+        data.is_enabled = no_email ? 'Y' : 'N';
+        
         // check waiting list
         var waiting = dot.get(_authConf, slug+'.auth.waiting_list');
 
@@ -384,8 +389,8 @@ module.exports = function(app) {
                 new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {});
             }
 
-            // send email (waiting listesinde ise mail göndermiyoruz)
-            if( ! waiting )
+            // send email (waiting listesinde ise veya email verify yapmıyorsak mail göndermiyoruz)
+            if( ! waiting || no_email )
                 app.libpost.auth.emailTemplate('register', slug, token, req.body.email, _group, function() {});
 
             // response
