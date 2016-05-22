@@ -325,20 +325,20 @@ module.exports = function(app) {
         };
 
         // check email verify option
-        var no_email = dot.get(_authConf, slug+'.register.no_email_verify');
+        var no_email = dot.get(_authConf, slug+'.register.no_email_verify') || false;
 
         // user data
         var data = {
-            email      : req.body.email,
-            password   : req.body.password,
-            roles      : req.__defaultRole
+            email    : req.body.email,
+            password : req.body.password,
+            roles    : req.__defaultRole
         };
 
         // set user enable mode
         data.is_enabled = no_email ? 'Y' : 'N';
         
         // check waiting list
-        var waiting = dot.get(_authConf, slug+'.auth.waiting_list');
+        var waiting = dot.get(_authConf, slug+'.auth.waiting_list') || false;
 
         if(waiting)
             data.waiting_status = 'WA';
@@ -390,7 +390,7 @@ module.exports = function(app) {
             }
 
             // send email (waiting listesinde ise veya email verify yapmıyorsak mail göndermiyoruz)
-            if( ! waiting || no_email )
+            if( ! waiting && ! no_email )
                 app.libpost.auth.emailTemplate('register', slug, token, req.body.email, _group, function() {});
 
             // response
