@@ -10,31 +10,35 @@ var _        = require('lodash');
 extras.useFilter(swig, 'split');
 
 // use lodash
-function useLodash(swig, filter) {
+function useLodash(swig, filter, string) {
+    var obj = string ? _s : _;
+    
     if (filter === undefined) {
-        return Object.keys(_).forEach(function(action) {
-            if (lodashHas(action))
-                useLodash(swig, action)
+        return Object.keys(obj).forEach(function(action) {
+            if (lodashHas(action, string))
+                useLodash(swig, action, string)
         })
     }
 
     if (Array.isArray(filter)) {
         return filter.forEach(function(f) {
-            useLodash(swig, f)
+            useLodash(swig, f, string)
         })
     }
 
-    if (lodashHas(filter))
-        swig.setFilter(filter, _[filter])
+    if (lodashHas(filter, string))
+        swig.setFilter((string?'s_':'')+filter, obj[filter])
     else
         throw new Error(filter+' is not a lodash function');
 }
 
-function lodashHas(functionName) {
-    return (_[functionName] && typeof _[functionName] === 'function')
+function lodashHas(functionName, string) {
+    var obj = string ? _s : _;
+    return (obj[functionName] && typeof obj[functionName] === 'function')
 }
 
 useLodash(swig);
+useLodash(swig, undefined, true);
 
 swig.setFilter('dateFormat', function(element, format, timezone, locale) {
     if(locale)

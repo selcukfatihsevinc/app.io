@@ -1,5 +1,6 @@
 var mailer = require('nodemailer');
 var pool   = require('nodemailer-smtp-pool');
+var _      = require('underscore');
 
 module.exports = function(app) {
 
@@ -12,10 +13,15 @@ module.exports = function(app) {
         if( ! _conf )
             return false;
 
-        /**
-         * @TODO
-         * pool için de multiple domain ayarları yapılacak
-         */
+        // birden fazla config varsa hepsi için client oluşturuyoruz
+        if( ! _conf.service ) {
+            var obj = {};
+            _.each(_conf, function(val, key) {
+                obj[key] = mailer.createTransport(pool(val));
+            });
+
+            return obj;
+        }
         
         return mailer.createTransport(pool(_conf));
     }

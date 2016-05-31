@@ -117,7 +117,7 @@ AppIo.prototype.workers = function () {
         return;
     
     // base boot files
-    var boot = 'cron|kue|shortener';
+    var boot = 'view|cron|kue|shortener';
 
     // set worker
     this._app.set('isworker', true);

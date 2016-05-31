@@ -52,6 +52,10 @@ module.exports = function(app) {
                 var size = url[1].split('/');
                 
                 if(size && size.length) {
+                    // development için izin ver
+                    if(_env == 'development')
+                        return next('route');
+                    
                     size = size[0];
                     
                     if(_resize) {

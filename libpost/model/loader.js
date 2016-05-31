@@ -125,17 +125,24 @@ LibpostModelLoader.prototype.postHooks = function(schema, name) {
  */
 
 LibpostModelLoader.prototype.listener = function(options, inspector) {
-    var self     = this;
-    var Name     = options.Name;
-    var Denorm   = options.Denorm;
-    var Size     = options.Size; 
-    var Count    = options.Count;
-    var CountRef = options.CountRef;
-    var Hook     = options.Hook;
+    var self         = this;
+    var Name         = options.Name;
+    var Denorm       = options.Denorm;
+    var EntityDenorm = options.EntityDenorm;
+    var Size         = options.Size; 
+    var Count        = options.Count;
+    var CountRef     = options.CountRef;
+    var Hook         = options.Hook;
     
     if(Denorm) {
         _.each(Denorm, function (value, key) {
             self.denorm(key.toLowerCase()+'_model_updated', inspector);
+        });
+    }
+
+    if(Denorm && EntityDenorm) { // denormalize edilmesi gereken modelin entity addtoset durumunda çalıştırılması gerekiyor
+        _.each(EntityDenorm, function (value) {
+            self.entityDenorm(Name, Name.toLowerCase()+'_'+value+'_addtoset');
         });
     }
     
@@ -186,6 +193,33 @@ LibpostModelLoader.prototype.denorm = function(listener, inspector) {
         
         self._log.info('MODEL:LOADER:DENORM:'+listener, data);
         self._app.lib.denormalize.touch(data, inspector);
+    });
+};
+
+/**
+ * ----------------------------------------------------------------
+ * Model.EntityDenorm
+ * ----------------------------------------------------------------
+ */
+
+LibpostModelLoader.prototype.entityDenorm = function(name, listener) {
+    var self = this;
+
+    this._emitter.on(listener, function(data) {
+        var id = data.id;
+        
+        if( ! id )
+            return false;
+        
+        var Model = self._mongoose.model(name);
+     
+        Model.findById(id, function(err, doc) {
+            if( err || ! doc )
+                return false;
+
+            // denormalize document
+            doc.save(function(err) {});
+        });
     });
 };
 

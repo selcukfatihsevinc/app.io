@@ -23,7 +23,7 @@ module.exports = function(app) {
             jobEvents: false
         });
 
-        queue.watchStuckJobs();
+        queue.watchStuckJobs(_conf.stuckInterval || 5000);
         
         return queue;
     }
