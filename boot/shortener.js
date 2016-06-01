@@ -7,15 +7,7 @@ module.exports = function(app) {
     var _group = 'BOOT:SHORTENER';
 
     try {
-        var _str = app.core.mongo.str;
-
-        // connect to mongodb
-        short.connect(_str);
-
-        short.connection.on('error', function(error) {
-            throw new Error(error);
-        });
-
+        short.run(app.core.mongo.mongoose);
         return short;
     }
     catch(e) {
