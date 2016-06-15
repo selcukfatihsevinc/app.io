@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "REST API and web application framework, built on Nodejs, Express, and Mongoose",
-  "version": "0.2.73",
+  "version": "0.2.74",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -99,6 +99,15 @@
     "image-size": "0.4.0"
   },
   "main": "index.js",
+  "readmeFilename": "README.md",
+  "keywords": [
+    "express",
+    "mongoose",
+    "rest",
+    "rest api",
+    "framework",
+    "admin"
+  ],
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
