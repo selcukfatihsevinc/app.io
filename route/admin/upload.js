@@ -22,7 +22,7 @@ module.exports = function(app) {
             if( ! req.session.app )
                 return res.json({});
 
-            var conf = _.clone(app.config[_env].app.config.upload);
+            var conf = _.clone(dot.get(app.config[_env], 'app.config.upload') || app.config[_env].upload);
 
             if( ! conf ) {
                 _log.info('upload conf not found');

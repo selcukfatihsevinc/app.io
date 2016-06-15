@@ -1,6 +1,7 @@
 var mkdirp = require('mkdirp');
 var path   = require('path');
 var mime   = require('mime');
+var dot    = require('dotty');
 var fs     = require('fs');
 
 module.exports = function(app) {
@@ -12,7 +13,7 @@ module.exports = function(app) {
     
     try {
         var target = ['local', 's3', 'cloudinary'];
-        var conf   = app.config[_env].app.config.upload;
+        var conf   = dot.get(app.config[_env], 'app.config.upload') || app.config[_env].upload;
 
         if( ! conf ) {
             _log.info(_group, 'upload conf not found');

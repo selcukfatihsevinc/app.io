@@ -5,7 +5,7 @@ module.exports = function(app) {
 
     var _env    = app.get('env');
     var _log    = app.lib.logger;
-    var _conf   = app.config[_env].mongo;
+    var _conf   = app.config[_env].mongo || dot.get(app.config[_env], 'data.mongo');
     var _auth   = '';
     var _worker = app.get('workerid');
     var _sConf  = app.config[_env].sync;

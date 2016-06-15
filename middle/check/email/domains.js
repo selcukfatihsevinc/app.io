@@ -11,7 +11,7 @@ function CheckEmailDomains(req, res, next) {
     
     // mail conf
     var _appSlug  = req.__appData.slug;
-    var _mailConf = dot.get(req.app.config[_env], 'app.mail.'+_appSlug);
+    var _mailConf = dot.get(req.app.config[_env], 'app.mail.'+_appSlug) || dot.get(req.app.config[_env], 'mail.'+_appSlug);
     var _email    = req.body.email;
 
     if(_mailConf &&

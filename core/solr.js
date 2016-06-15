@@ -5,7 +5,7 @@ module.exports = function(app) {
 
     var _env    = app.get('env');
     var _log    = app.lib.logger;
-    var _conf   = app.config[_env].solr;
+    var _conf   = app.config[_env].solr || dot.get(app.config[_env], 'data.solr');
     var _worker = app.get('workerid');
     var _sConf  = app.config[_env].sync;
     var _logs   = dot.get(_sConf, 'data.core');

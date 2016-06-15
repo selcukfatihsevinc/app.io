@@ -4,7 +4,7 @@ var dot   = require('dotty');
 module.exports = function(app) {
 
     var _env    = app.get('env');
-    var _conf   = app.config[_env].redis;
+    var _conf   = app.config[_env].redis || dot.get(app.config[_env], 'data.redis');
     var _log    = app.lib.logger;
     var _worker = app.get('workerid');
     var _sConf  = app.config[_env].sync;

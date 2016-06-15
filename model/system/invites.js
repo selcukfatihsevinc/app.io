@@ -117,10 +117,12 @@ module.exports = function(app) {
                     return _log.info(_group, 'not found app data for system.invites');
 
                 var slug     = apps.s;
-                var moderate = dot.get(_conf, 'app.config.'+slug+'.auth.invite_moderation');
+                var moderate = dot.get(_conf, 'app.config.'+slug+'.auth.invite_moderation') ||
+                               dot.get(_conf, 'auth.'+slug+'.auth.invite_moderation');
 
                 if(moderate && doc.es == 'N' && doc.st == 'AC' && doc.it && doc.em) {
-                    var mailConf = dot.get(_conf, 'app.mail.'+slug);
+                    var mailConf = dot.get(_conf, 'app.mail.'+slug) ||
+                                   dot.get(_conf, 'mail.'+slug);
 
                     if(mailConf) {
                         var mailObj = _.clone(mailConf.invite);

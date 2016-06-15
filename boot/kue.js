@@ -1,10 +1,11 @@
 var kue = require('kue');
+var dot = require('dotty');
 
 module.exports = function(app) {
 
     var _env   = app.get('env');
     var _log   = app.lib.logger;
-    var _conf  = app.config[_env].redis;
+    var _conf  = app.config[_env].redis || dot.get(app.config[_env], 'data.redis');
     var _group = 'BOOT:KUE';
 
     try {
