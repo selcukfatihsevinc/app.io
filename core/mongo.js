@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var dot      = require('dotty');
 
-module.exports = function(app) {
+module.exports = function(app, cb) {
 
     var _env    = app.get('env');
     var _log    = app.lib.logger;
@@ -12,9 +12,11 @@ module.exports = function(app) {
     var _logs   = dot.get(_sConf, 'data.core');
     var _group  = 'W'+_worker+':CORE:MONGO';
 
-    if( ! _conf )
+    if( ! _conf ) {
+        _log.info(_group, 'mongo conf not found!', 'red');
         return false;
-
+    }
+    
     if(_conf.user && _conf.pass)
         _auth = _conf.user+':'+_conf.pass+'@';
 
@@ -34,6 +36,8 @@ module.exports = function(app) {
     mongoose.connection.on('open', function() {
         if(_logs)
             _log.info(_group, 'client connected', 'black');
+        
+        cb();
     });
 
     if(_conf.debug)
@@ -44,6 +48,10 @@ module.exports = function(app) {
         _log.info(_group+':STRING', str, 'black');
     }
 
-    return {db: db, str: str, mongoose: mongoose};
+    return app.core.mongo = {
+        db: db, 
+        str: str, 
+        mongoose: mongoose
+    };
 
 };

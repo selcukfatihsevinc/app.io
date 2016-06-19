@@ -9,6 +9,11 @@ var _        = require('lodash');
 // swig extra filters
 extras.useFilter(swig, 'split');
 
+/**
+ * @TODO
+ * buradaki fonksiyonları düzenle
+ */
+
 // use lodash
 function useLodash(swig, filter, string) {
     var obj = string ? _s : _;

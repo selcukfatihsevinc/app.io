@@ -1,4 +1,31 @@
-## app.io
+<h1 align="center">app.io</h1>  
+
+<div align="center">
+  <strong>REST API and web application framework, built on Nodejs, Express, and Mongoose</strong>
+</div>
+
+<br />
+
+<div align="center">
+  <!-- NPM version -->
+  <a href="https://npmjs.org/package/app.io">
+    <img src="https://img.shields.io/npm/v/app.io.svg" alt="NPM version" />
+  </a>
+  <!-- License -->
+  <a href="https://npmjs.org/package/app.io">
+    <img src="https://img.shields.io/npm/l/app.io.svg" alt="License" />
+  </a>  
+  <!-- Downloads -->
+  <a href="https://npmjs.org/package/app.io">
+    <img src="https://img.shields.io/npm/dt/app.io.svg" alt="Downloads" />
+  </a>  
+  <!-- Downloads Month -->
+  <a href="https://npmjs.org/package/app.io">
+    <img src="https://img.shields.io/npm/dm/app.io.svg" alt="Downloads Month" />
+  </a>  
+</div>
+
+<br />
 
 **app.io** is an open source REST API and web application framework, built on Nodejs, Express, and Mongoose,   
 which is simple, easy, quick, flexible, extendable and scalable, and which has numerous features and capabilities,  
@@ -29,3 +56,27 @@ Moreover, it enables you to work on multiple projects within the same framework.
 
 Further information will be provided in time.  
 **app.io** is under development, so use it at your own risk.
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Selçuk Fatih Sevinç
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

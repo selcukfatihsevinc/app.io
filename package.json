@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "REST API and web application framework, built on Nodejs, Express, and Mongoose",
-  "version": "0.2.74",
+  "version": "1.0.0",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -98,6 +98,11 @@
     "lodash": "4.0.1",
     "image-size": "0.4.0"
   },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "chai": "^3.5.0",
+    "supertest": "^1.2.0"
+  },
   "main": "index.js",
   "readmeFilename": "README.md",
   "keywords": [
@@ -108,9 +113,8 @@
     "framework",
     "admin"
   ],
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",

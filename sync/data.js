@@ -3,16 +3,19 @@ var dot   = require('dotty');
 var fs    = require('fs');
 var _     = require('underscore');
 
-module.exports = function(app) {
+module.exports = function(app, loadCb) {
 
     var _log     = app.lib.logger;
     var _env     = app.get('env');
     var _schema  = app.lib.schema;
     var _c       = app.config[_env];
     var _group   = 'SYNC:DATA';
-
-    if(parseInt(process.env.worker_id) != 0)
-        return false;
+    var workerId = app.get('workerid');
+    
+    if(workerId != 0) {
+        loadCb();
+        return false;        
+    }
 
     // async object
     var a = {};
@@ -196,7 +199,7 @@ module.exports = function(app) {
         // execute parallel
         async.parallel(a, function(err, results) {
             _log.info(_group+':RESULTS', 'listing...');
-            console.log(results);
+            // console.log(results);
             
             var series = {};
 
@@ -402,10 +405,14 @@ module.exports = function(app) {
                     return _log.error(_group, err);
 
                 _log.info(_group+':SERIES:RESULTS', 'listing...');
-                console.log(results);
+                // console.log(results);
                 
                 if(Object.keys(results).length)
                     _log.info(_group, 'sync data executed!');
+                
+                setTimeout(function() {
+                    loadCb();     
+                }, 1000);
             });
 
         });

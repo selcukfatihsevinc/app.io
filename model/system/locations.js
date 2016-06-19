@@ -87,14 +87,17 @@ module.exports = function(app) {
     // plugins
     LocationSchema.plugin(_query);
     LocationSchema.plugin(material);
-    LocationSchema.plugin(mongoosastic, {
-        host: _elastic.host,
-        port: _elastic.port,
-        auth: _elastic.auth,
-        bulk: {
-            delay: 50
-        }
-    });
+    
+    if(_elastic) {
+        LocationSchema.plugin(mongoosastic, {
+            host: _elastic.host,
+            port: _elastic.port,
+            auth: _elastic.auth,
+            bulk: {
+                delay: 50
+            }
+        });        
+    }
 
     // indexes
     LocationSchema.index({l: '2d'});
