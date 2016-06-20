@@ -99,13 +99,13 @@ AppIo.prototype.run = function (cb) {
     this.external('libpost', _external.libpost || []);
     this.load('middle');
     this.external('middle', _external.middle || []);
-    this.load('model', ['acl', 'feed', 'oauth', 'system']);
+    this.load('model', 'acl|feed|oauth|system'.split('|'));
     this.external('model', _external.model || []);
     /* order matters */
     this.load('system/response/app'); // before routes
     // api routes
     this.load('boot', api.split('|'));
-    this.load('route/api/v1', ['acl', 'auth', 'entity', 'location', 'object']);
+    this.load('route/api/v1', 'acl|auth|counter|entity|location|object'.split('|'));
     this.external('api', _external.api || []);
     // web routes
     this.load('boot', web.split('|'));
@@ -151,7 +151,7 @@ AppIo.prototype.workers = function () {
     this.external('libpost', _external.libpost || []);
     this.load('middle');
     this.external('middle', _external.middle || []);
-    this.load('model', ['acl', 'feed', 'oauth', 'system']);
+    this.load('model', 'acl|feed|oauth|system'.split('|'));
     this.external('model', _external.model || []);
     this.load('boot', boot.split('|'));
     this.load('boot', (_boot && this.type(_boot) == '[object String]') ? _boot.split('|') : []);
