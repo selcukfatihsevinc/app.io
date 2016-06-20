@@ -72,7 +72,8 @@ LibpostAuth.prototype.userData = function(userData, appSlug, res, tokenDisabled)
 
 LibpostAuth.prototype.emailTemplate = function(name, appSlug, token, toEmail, group, cb) {
     var self  = this;
-    var mConf = dot.get(self._app.config[self._env], 'app.mail.'+appSlug);
+    var mConf = dot.get(self._app.config[self._env], 'app.mail.'+appSlug) ||
+                dot.get(self._app.config[self._env], 'mail.'+appSlug);
 
     /**
      * @TODO
