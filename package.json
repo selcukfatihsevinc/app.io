@@ -74,7 +74,7 @@
     "elasticsearch": "5.0.0",
     "mongoosastic": "https://github.com/jonjburgess/mongoosastic/tarball/53e308f8832663c8729b3c9572577c7b92126a34",
     "socket.io": "1.3.5",
-    "socketio-jwt": "4.0.0",
+    "socketio-jwt": "4.4.1",
     "email-addresses": "2.0.1",
     "cors": "2.7.1",
     "bunyan": "1.4.0",
