@@ -23,6 +23,14 @@
   <a href="https://npmjs.org/package/app.io">
     <img src="https://img.shields.io/npm/dm/app.io.svg" alt="Downloads Month" />
   </a>  
+  <!-- Travis CI -->
+  <a href="https://travis-ci.org/selcukfatihsevinc/app.io">
+    <img src="https://img.shields.io/travis/selcukfatihsevinc/app.io.svg" alt="Travis CI" />
+  </a>    
+  <!-- Dependencies -->
+  <a href="https://david-dm.org/selcukfatihsevinc/app.io">
+    <img src="https://img.shields.io/david/selcukfatihsevinc/app.io.svg" alt="Dependencies" />
+  </a>     
 </div>
 
 <br />
