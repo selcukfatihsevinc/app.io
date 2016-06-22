@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var dot      = require('dotty');
 
-module.exports = function(app, cb) {
+module.exports = function(app) {
 
     var _env    = app.get('env');
     var _log    = app.lib.logger;
@@ -36,8 +36,6 @@ module.exports = function(app, cb) {
     mongoose.connection.on('open', function() {
         if(_logs)
             _log.info(_group, 'client connected', 'black');
-        
-        cb();
     });
 
     if(_conf.debug)

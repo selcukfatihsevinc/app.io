@@ -8,27 +8,27 @@
 
 <div align="center">
   <!-- NPM version -->
-  <a href="https://npmjs.org/package/app.io">
+  <a href="https://npmjs.org/package/app.io" target="_blank">
     <img src="https://img.shields.io/npm/v/app.io.svg" alt="NPM version" />
   </a>
   <!-- License -->
-  <a href="https://npmjs.org/package/app.io">
+  <a href="https://npmjs.org/package/app.io" target="_blank">
     <img src="https://img.shields.io/npm/l/app.io.svg" alt="License" />
   </a>  
   <!-- Downloads -->
-  <a href="https://npmjs.org/package/app.io">
+  <a href="https://npmjs.org/package/app.io" target="_blank">
     <img src="https://img.shields.io/npm/dt/app.io.svg" alt="Downloads" />
   </a>  
   <!-- Downloads Month -->
-  <a href="https://npmjs.org/package/app.io">
+  <a href="https://npmjs.org/package/app.io" target="_blank">
     <img src="https://img.shields.io/npm/dm/app.io.svg" alt="Downloads Month" />
   </a>  
   <!-- Travis CI -->
-  <a href="https://travis-ci.org/selcukfatihsevinc/app.io">
+  <a href="https://travis-ci.org/selcukfatihsevinc/app.io" target="_blank">
     <img src="https://img.shields.io/travis/selcukfatihsevinc/app.io.svg" alt="Travis CI" />
   </a>    
   <!-- Dependencies -->
-  <a href="https://david-dm.org/selcukfatihsevinc/app.io">
+  <a href="https://david-dm.org/selcukfatihsevinc/app.io" target="_blank">
     <img src="https://img.shields.io/david/selcukfatihsevinc/app.io.svg" alt="Dependencies" />
   </a>     
 </div>
