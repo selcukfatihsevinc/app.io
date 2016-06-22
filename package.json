@@ -70,7 +70,7 @@
     "elasticsearch": "11.0.1",
     "mongoosastic": "4.0.1",
     "socket.io": "1.4.6",
-    "socketio-jwt": "4.4.1",
+    "socketio-jwt": "4.5.0",
     "email-addresses": "2.0.2",
     "cors": "2.7.1",
     "bunyan": "1.8.1",
