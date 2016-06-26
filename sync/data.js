@@ -360,7 +360,7 @@ module.exports = function(app, loadCb) {
                 series['userroles'] = function(cb) {
                     var schema = new _schema('system.users').init(app);
 
-                    schema.stream({}, function(err, users) {
+                    schema.stream({limit: 100000}, function(err, users) {
 
                         users.on('data', function (user) {
 
@@ -419,7 +419,7 @@ module.exports = function(app, loadCb) {
 	                        if( ! m )
 	                            return false;
 	                        
-                            m.stream({}, function(err, profiles) {
+                            m.stream({limit: 100000}, function(err, profiles) {
 
 	                            var Users = mongoose.model('System_Users');
 	                            
