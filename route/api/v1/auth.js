@@ -47,6 +47,10 @@ module.exports = function(app) {
         }
 
         app.libpost.auth.userData(userData, appData.slug, res);
+
+        // push application 
+        var Users = _mongoose.model('System_Users');
+        Users.update({_id: userData._id}, {$addToSet: {ap: appData._id}}, {}, function(err, raw) {});
     });
 
     /**
