@@ -16,6 +16,11 @@ function _access_token(req, res, next) {
     var _middle = 'middle.auth';
     
     try {
+        /**
+         * @TODO
+         * querystring ile de çalışabilsin
+         */
+            
         var decoded = jwt.decode(req.headers['x-access-token'], _conf.token.secret);
 
         if ( decoded.exp <= Date.now() )
@@ -66,6 +71,11 @@ function Auth(req, res, next) {
     else if(req.query.access_token && _app.oauth)
         _app.oauth.authorise()(req, res, next);
 
+    /**
+     * @TODO
+     * querystring ile de çalışabilsin
+     */
+    
     // auth user
     else if(req.headers['x-access-token'])
         _access_token(req, res, next);

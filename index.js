@@ -164,7 +164,7 @@ AppIo.prototype.workers = function () {
     this._load.into(this._app, function(err, instance) {
         if(err)
             throw err;
-
+        
         self._app.lib.logger.appio('APP.IO', 'worker initialized');
     });
 }

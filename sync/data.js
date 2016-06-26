@@ -5,12 +5,13 @@ var _     = require('underscore');
 
 module.exports = function(app, loadCb) {
 
-    var _log     = app.lib.logger;
-    var _env     = app.get('env');
-    var _schema  = app.lib.schema;
-    var _c       = app.config[_env];
-    var _group   = 'SYNC:DATA';
-    var workerId = app.get('workerid');
+    var _log      = app.lib.logger;
+    var _env      = app.get('env');
+    var _schema   = app.lib.schema;
+	var _mongoose = app.core.mongo.mongoose;
+	var _c        = app.config[_env];
+    var _group    = 'SYNC:DATA';
+    var workerId  = app.get('workerid');
     
     if(workerId != 0) {
         loadCb();
@@ -376,6 +377,8 @@ module.exports = function(app, loadCb) {
                         });
 
                     });
+	                
+	                cb();
                 };
 
             }
@@ -394,6 +397,54 @@ module.exports = function(app, loadCb) {
 
             }
 
+            /**
+             * ----------------------------------------------------------------
+             * sync user apps
+             * ----------------------------------------------------------------
+             */
+
+            var usersApp = dot.get(_c, 'sync.fill_users_apps');
+            
+            if(usersApp) {
+
+                series['userapps'] = function(cb) {
+                    
+                    _.each(usersApp, function(status, model) {
+                        if( ! status )
+                            return;
+                        
+                        (function(model, schema, app, mongoose) {
+                            var m = new schema(model).err().init(app);
+
+	                        if( ! m )
+	                            return false;
+	                        
+                            m.stream({}, function(err, profiles) {
+
+	                            var Users = mongoose.model('System_Users');
+	                            
+                                profiles.on('data', function (profile) {
+                
+	                                if( ! profile || ! profile.u || ! profile.ap )
+	                                    return;
+
+	                                Users.update({_id: profile.u}, {$addToSet: {ap: profile.ap}}, {}, function(err, raw) {});
+                
+                                }).on('error', function (err) {
+                                    _log.error(_group, err);
+                                }).on('end', function () {
+                                    _log.info(_group, model+' sync stream end');
+                                });
+
+                            });                            
+                        })(model, _schema, app, _mongoose);
+                    });
+	                
+	                cb();
+                };
+
+            }
+            
             /**
              * ----------------------------------------------------------------
              * execute series

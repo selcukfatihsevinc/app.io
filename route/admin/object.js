@@ -701,6 +701,15 @@ module.exports = function(app) {
             if(req.session.app && _system.indexOf(o) != -1)
                 p.apps = req.session.app._id;
 
+	        // check apps for system.users
+	        if(req.session.app && o == 'system.users') {
+	            var modelName = req.session.app.slug+'.profiles';
+		        var mProfile  = dot.get(req.app.model, modelName);
+		     
+		        if(mProfile)
+			        p.apps = req.session.app._id;
+	        }
+	        
             // set user id
             if(req.session.user && o == 'system.filters')
                 p.users = req.session.user._id;

@@ -13,7 +13,9 @@ module.exports = function(app) {
     var _schema    = app.lib.schema;
     var _mailer    = app.lib.mailer;
     var _helper    = app.lib.utils.helper;
+	var _emitter   = app.lib.schemaEmitter;
     var _transport = app.boot.mailer;
+	var _mongoose  = app.core.mongo.mongoose;
     var _authConf  = app.config[_env].auth;
     var _resp      = app.system.response.app;
     var _mdl       = app.middle;
@@ -384,17 +386,24 @@ module.exports = function(app) {
                 if(data.username)
                     profileObj.username = data.username;
 
-                new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {});
+	            // create profile and send response
+                new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {
+	                _resp.Created({email: user.email}, res); // response
+	                _emitter.emit('user_registered', {user: user}); // emit event
+                });
+            }
+            else {
+	            _resp.Created({email: user.email}, res); // response 
+	            _emitter.emit('user_registered', {user: user}); // emit event
             }
 
             // send email (waiting listesinde ise veya email verify yapmıyorsak mail göndermiyoruz)
             if( ! waiting && ! no_email )
                 app.libpost.auth.emailTemplate('register', slug, token, req.body.email, _group, function() {});
-
-            // response
-            _resp.Created({
-                email: user.email
-            }, res);
+	        
+	        // push application 
+	        var Users = _mongoose.model('System_Users');
+	        Users.update({_id: user._id}, {$addToSet: {ap: req.__appData._id}}, {}, function(err, raw) {});
         });
     });
 

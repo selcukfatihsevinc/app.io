@@ -25,6 +25,7 @@ module.exports = function(app) {
      */
 
     var Schema = {
+        ap  : [{type: ObjectId, ref: 'System_Apps', alias: 'apps'}],
         em  : {type: String, required: true, alias: 'email', pattern: 'email', unique: true},
         pa  : {type: String, optional: false, alias: 'password'}, // save'de required: true, update'de required: false gibi davranması için optional: false olarak işaretlendi
         na  : {type: String, alias: 'name', index: true}, // for backward compatibility
@@ -51,10 +52,11 @@ module.exports = function(app) {
      * ----------------------------------------------------------------
      */
 
-    Schema.em.settings = {label: 'Email'};
-    Schema.pa.settings = {label: 'Password'};
-    Schema.na.settings = {label: 'Name'};
-    Schema.ie.settings = {
+    Schema.ap[0].settings = {label: 'Apps', display: 'name'};
+    Schema.em.settings    = {label: 'Email'};
+    Schema.pa.settings    = {label: 'Password'};
+    Schema.na.settings    = {label: 'Name'};
+    Schema.ie.settings    = {
         label: 'Is Enabled ?',
         options: [
             {label: 'Yes', value: 'Y'},
@@ -79,7 +81,7 @@ module.exports = function(app) {
             {label: 'No', value: 'N'}
         ]
     };
-
+	
     Schema.ws.settings = {
         initial: false,
         options: [
@@ -88,6 +90,9 @@ module.exports = function(app) {
             {label: 'Declined', value: 'DC'}
         ]
     };
+
+	Schema.ll.settings = {label: 'Last Login'};
+	Schema.ca.settings = {label: 'Created At'};
     
     /**
      * ----------------------------------------------------------------
@@ -100,17 +105,19 @@ module.exports = function(app) {
         Options: {
             singular : 'System User',
             plural   : 'System Users',
-            columns  : ['email', 'roles'],
+            columns  : ['email', 'roles', 'apps', 'last_login', 'created_at'],
             main     : 'email',
-            perpage  : 25
+            perpage  : 25,
+	        sort     : '-_id'
         }
     });
 
     // plugins
     UserSchema.plugin(_query);
-
     // console.log(UserSchema.inspector.Save.properties);
-    
+
+	UserSchema.index({ap: 1});
+	
     /**
      * ----------------------------------------------------------------
      * Pre Save Hook
