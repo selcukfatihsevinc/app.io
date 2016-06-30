@@ -88,7 +88,7 @@ Moreover, it enables you to work on multiple projects within the same framework.
 - [Other Authentication Endpoints](#other-authentication-endpoints)  
 - [Next Steps](#next-steps)
 - [Routes](#routes)
-- [Configuring an app.io Instance](#configuring-an-app.io-instance)
+- [Configuring an app.io Instance](#configuring-an-appio-instance)
 - [Views](#views)
   - [Static Files](#static-files)
 - [API Responses](#api-responses)
@@ -602,13 +602,13 @@ new AppIo({
 }).run();
 ```
 
-```cores```: You can configure the number of ```Node.js``` instances to take advantage of multi-core systems. By default, an ```app.io``` instance uses the maximum number of cpu cores.     
-```verbose```: If you want to see the loaded modules, use this option.  
-```env```: You can set the environment with this option. You can also use process environment variable if you want; ```NODE_ENV=production```  
-```port```: You can set the server's port with this option. You can also use process environment variable if you want; ```NODE_PORT=3001```  
-```core```: You can load other data sources with this option. Available options are; ```cache```, ```db```, ```elasticsearch```, ```mongo```, ```redis```, ```solr```.  
-```boot```: You can load some extra functionalities that ```app.io``` doesn't load with minimal configuration. Available options are; ```mailer```, ```mailerPool```, ```oauthproxy```, ```override```, ```resize```  
-```external```: You can load external sources with this option. Available options are;  ```boot```, ```model```, ```middle```, ```lib```, ```route```  
+```cores``` => You can configure the number of ```Node.js``` instances to take advantage of multi-core systems. By default, an ```app.io``` instance uses the maximum number of cpu cores.     
+```verbose``` => If you want to see the loaded modules, use this option.  
+```env``` => You can set the environment with this option. You can also use process environment variable if you want; ```NODE_ENV=production```  
+```port``` => You can set the server's port with this option. You can also use process environment variable if you want; ```NODE_PORT=3001```  
+```core``` => You can load other data sources with this option. Available options are; ```cache```, ```db```, ```elasticsearch```, ```mongo```, ```redis```, ```solr```.  
+```boot``` => You can load some extra functionalities that ```app.io``` doesn't load with minimal configuration. Available options are; ```mailer```, ```mailerPool```, ```oauthproxy```, ```override```, ```resize```  
+```external``` => You can load external sources with this option. Available options are;  ```boot```, ```model```, ```middle```, ```lib```, ```route```  
 
 ## Views
 
@@ -786,53 +786,52 @@ thus, you can use all abilities of the ```Mongoose``` models, such as, ```Mongoo
 ## Field Options
 
 You can use all ```Mongoose``` field options. ```Mongoose``` based options are;  
-```default```  
-```required```  
-```enum``` string  
-```lowercase``` string  
-```match``` string  
-```maxlength``` string  
-```minlength``` string  
-```trim``` string  
-```uppercase``` string  
-```max``` number, date  
-```min``` number, date  
-```expires``` date  
+```default``` =>  
+```required``` =>  
+```enum``` => string  
+```lowercase``` => string  
+```match``` => string  
+```maxlength``` => string  
+```minlength``` => string  
+```trim``` => string  
+```uppercase``` => string  
+```max``` => number, date  
+```min``` => number, date  
+```expires``` => date  
 
 The list of other ```app.io``` based field options are;   
-```alias```  
-```Mongodb``` key names are very important. Use the smallest keys possible, use the ```alias``` option when using ```REST API```. For example;  
+```alias``` => ```Mongodb``` key names are very important. Use the smallest keys possible, use the ```alias``` option when using ```REST API```. For example;  
 ```js
 var Schema = {
 	...
 	em : {type: String, required: true, alias: 'email', unique: true},
 	... 
 };	
-``` 
+```  
 
-```settings```  
-```optional```  
-```allow_html```  
-```pattern```   
-```minLength```  
-```maxLength```  
-```exactLength```  
-```min```  
-```max```  
-```lt```  
-```lte```  
-```gt```  
-```gte```  
-```ne```  
-```rules```  
-```pair```  
-```owner```  
-```flex_ref```  
-```entity_acl```  
-```belongs_to```  
-```depends```  
-```s3```  
-```from```  
+```settings``` =>   
+```optional``` =>    
+```allow_html``` =>    
+```pattern``` =>  
+```minLength``` =>    
+```maxLength``` =>  
+```exactLength``` =>    
+```min``` =>  
+```max``` =>  
+```lt``` =>    
+```lte``` =>    
+```gt``` =>    
+```gte``` =>    
+```ne``` =>    
+```rules``` =>    
+```pair``` =>    
+```owner``` =>    
+```flex_ref``` =>    
+```entity_acl``` =>    
+```belongs_to``` =>    
+```depends``` =>    
+```s3``` =>    
+```from``` =>    
 
 ### Model Loader Options
 
@@ -863,20 +862,20 @@ var PostSchema = app.libpost.model.loader.mongoose(Schema, {
 });
 ```
     
-```singular```  
-```plural```  
-```columns```  
-```extra```  
-```main```  
-```perpage```  
-```sort```  
-```filter```  
-```nocreate```    
-```nodelete```  
-```noedit```  
-```nested```  
-```actions```      
-```analytics```      
+```singular``` =>    
+```plural``` =>    
+```columns``` =>    
+```extra``` =>    
+```main``` =>    
+```perpage``` =>    
+```sort``` =>    
+```filter``` =>    
+```nocreate``` =>      
+```nodelete``` =>    
+```noedit``` =>    
+```nested``` =>    
+```actions``` =>        
+```analytics``` =>        
     
 #### Data Denormalization
 
