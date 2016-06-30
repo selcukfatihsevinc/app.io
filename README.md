@@ -1083,16 +1083,16 @@ var PostSchema = app.libpost.model.loader.mongoose(Schema, {
 You can use any predefined model you want, or use them as a reference on your models, it's up to you.
 
 #### System Models 
-- **system.accounts**  
-- **system.actions**  
-- **system.apps**  
-- **system.filters**  
-- **system.images**  
-- **system.invites**  
-- **system.locations**  
-- **system.objects**  
-- **system.roles**  
-- **system.users**  
+- **```system.accounts```**  
+- **```system.actions```**  
+- **```system.apps```**  
+- **```system.filters```**  
+- **```system.images```**  
+- **```system.invites```**  
+- **```system.locations```**  
+- **```system.objects```**  
+- **```system.roles```**  
+- **```system.users```**  
 
 ### Caching Data
 Not documented
