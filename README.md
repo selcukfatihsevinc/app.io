@@ -107,16 +107,6 @@ Moreover, it enables you to work on multiple projects within the same framework.
     - [Field Hook Mechanism](#field-hook-mechanism)
   - [Predefined Models](#predefined-models)
     - [System Models]
-      - [system.accounts]
-      - [system.actions]
-      - [system.apps]
-      - [system.filters]
-      - [system.images]
-      - [system.invites]
-      - [system.locations]
-      - [system.objects]
-      - [system.roles]
-      - [system.users]
   - [Caching Data]
 - [Built-in Middlewares]
   - [Express Middlewares]
@@ -602,13 +592,13 @@ new AppIo({
 }).run();
 ```
 
-```cores``` => You can configure the number of ```Node.js``` instances to take advantage of multi-core systems. By default, an ```app.io``` instance uses the maximum number of cpu cores.     
-```verbose``` => If you want to see the loaded modules, use this option.  
-```env``` => You can set the environment with this option. You can also use process environment variable if you want; ```NODE_ENV=production```  
-```port``` => You can set the server's port with this option. You can also use process environment variable if you want; ```NODE_PORT=3001```  
-```core``` => You can load other data sources with this option. Available options are; ```cache```, ```db```, ```elasticsearch```, ```mongo```, ```redis```, ```solr```.  
-```boot``` => You can load some extra functionalities that ```app.io``` doesn't load with minimal configuration. Available options are; ```mailer```, ```mailerPool```, ```oauthproxy```, ```override```, ```resize```  
-```external``` => You can load external sources with this option. Available options are;  ```boot```, ```model```, ```middle```, ```lib```, ```route```  
+- **```cores```** You can configure the number of ```Node.js``` instances to take advantage of multi-core systems. By default, an ```app.io``` instance uses the maximum number of cpu cores.     
+- **```verbose```** If you want to see the loaded modules, use this option.  
+- **```env```** You can set the environment with this option. You can also use process environment variable if you want; ```NODE_ENV=production```  
+- **```port```** You can set the server's port with this option. You can also use process environment variable if you want; ```NODE_PORT=3001```  
+- **```core```** You can load other data sources with this option. Available options are; ```cache```, ```db```, ```elasticsearch```, ```mongo```, ```redis```, ```solr```.  
+- **```boot```** You can load some extra functionalities that ```app.io``` doesn't load with minimal configuration. Available options are; ```mailer```, ```mailerPool```, ```oauthproxy```, ```override```, ```resize```  
+- **```external```** You can load external sources with this option. Available options are;  ```boot```, ```model```, ```middle```, ```lib```, ```route```  
 
 ## Views
 
@@ -1092,38 +1082,17 @@ var PostSchema = app.libpost.model.loader.mongoose(Schema, {
 ```app.io``` has a bunch of predefined models. They are used in the ```app.io``` system, for example user registration.
 You can use any predefined model you want, or use them as a reference on your models, it's up to you.
 
-#### System Models
-Not documented 
-
-##### system.accounts
-Not documented
-
-##### system.actions
-Not documented
-
-##### system.apps
-Not documented
-
-##### system.filters
-Not documented
-
-##### system.images
-Not documented
-
-##### system.invites
-Not documented
-
-##### system.locations
-Not documented
-
-##### system.objects
-Not documented
-
-##### system.roles
-Not documented
-
-##### system.users
-Not documented
+#### System Models 
+- **system.accounts**  
+- **system.actions**  
+- **system.apps**  
+- **system.filters**  
+- **system.images**  
+- **system.invites**  
+- **system.locations**  
+- **system.objects**  
+- **system.roles**  
+- **system.users**  
 
 ### Caching Data
 Not documented
