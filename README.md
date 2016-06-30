@@ -106,16 +106,16 @@ Moreover, it enables you to work on multiple projects within the same framework.
     - [Field Size Calculating](#field-size-calculating)
     - [Field Hook Mechanism](#field-hook-mechanism)
   - [Predefined Models](#predefined-models)
-    - [System Models]
-  - [Caching Data]
-- [Built-in Middlewares]
-  - [Express Middlewares]
-  - [app.io Middlewares]
-- [Admin UI]
-- [Built-in Job Queue]
-- [Built-in Cron]
-- [Built-in Mailer]
-- [Social Authentication]
+    - [System Models](#system-models)
+  - [Caching Data](#caching-data)
+- [Built-in Middlewares](#built-in-middlewares)
+  - [Express Middlewares](#express-middlewares)
+  - [app.io Middlewares](#appio-middlewares)
+- [Admin UI](#admin-ui)
+- [Built-in Job Queue](#built-in-job-queue)
+- [Built-in Cron](#built-in-cron)
+- [Built-in Mailer](#built-in-mailer)
+- [Social Authentication](#social-authentication)
 - [File Uploads]
 - [On the Fly Image Resizer]
 - [Built-in URL Shortener Service]
@@ -403,6 +403,7 @@ Main query parameters for ```[GET] /api/o/:object``` endpoints are;
 | **skip**       | sk=10              | /api/o/test.model?sk=10              |
 | **limit**      | l=10               | /api/o/test.model?l=10               |
 | **populate**   | p=field_a,field_b  | /api/o/test.model?p=field_a,field_b  |
+| **cache key**  | cacheKey=test_data | /api/o/test.model?cacheKey=test_data |
 
 Other query types for ```[GET] /api/o/:object``` endpoints are;
 ```find``` ```one``` ```count``` ```findcount``` ```distinct``` ```tree```.
@@ -873,9 +874,9 @@ Denormalizing data from another model is very simple with the ```Denorm``` key.
 If the reference data you have normalized before is updated; the model loader also updates your denormalized data.  
 There are two ways of denormalizing the reference model data:  
 
-1. The first way is to add a seperate field to your model. Then, you can denormalize data from another field that has a reference model.  
-   For example; you can denormalize the user's email from the reference of the ```users``` field.  
-   In order to do this, you should add the ```users_email``` field to your model. Here is the structure;  
+- The first way is to add a seperate field to your model. Then, you can denormalize data from another field that has a reference model.  
+  For example; you can denormalize the user's email from the reference of the ```users``` field.  
+  In order to do this, you should add the ```users_email``` field to your model. Here is the structure;  
   
 ```js
 var PostSchema = app.libpost.model.loader.mongoose(Schema, {
@@ -900,8 +901,8 @@ We can set this ```fields``` option like this;
 fields: {users_email: 'email'}
 ```
 
-2. The second way is to choose a reference model. Then, you can denormalize the fields of the reference model to a target field.  
-   In this way there is no source field. The model loader collects the denormalized data of every field that has the same reference model.
+- The second way is to choose a reference model. Then, you can denormalize the fields of the reference model to a target field.  
+  In this way there is no source field. The model loader collects the denormalized data of every field that has the same reference model.
    
 ```js
 var PostSchema = app.libpost.model.loader.mongoose(Schema, {
@@ -1095,31 +1096,138 @@ You can use any predefined model you want, or use them as a reference on your mo
 - **```system.users```**  
 
 ### Caching Data
-Not documented
+
+If you want to cache your data on ```Redis``` for faster response times, you can use the ```cacheKey``` query parameter. For example;  
+```/api/o/test.model?cacheKey=test_data```
 
 ## Built-in Middlewares
-Not documented
+
+```app.io``` has lots of built-in middlewares to simplify your work. 
+Most of them are included by default. You have to enable some of the middlewares in order to use them.
 
 ### Express Middlewares
-Not documented
+
+1. The ```REST API``` part of ```app.io``` uses these ```Express``` middlewares:  
+   ```body-parser```, ```morgan```, ```cors```. 
+   
+2. The ```Web application``` part of ```app.io``` uses these ```Express``` middlewares.
+   ```swig``` as a template engine, ```compression```, ```static```, ```cookie-parser```,
+   ```express-session``` with ```connect-redis```, ```connect-flash```, ```serve-favicon``` and ```passport```.
 
 ### app.io Middlewares
-Not documented
+
+```app.io``` has a bunch of middlewares used internally. They are used on the resource endpoints, authentication endpoints, etc.
+Feel free to use them on your endpoints. You can find them in the ```middle``` directory, and you can use a middleware like this; ```app.middle.acl```.
 
 ## Admin UI
-Not documented
+
+```app.io``` has an ```admin UI```, generated from the models automatically. Write your models and start to manage your data immediately. 
+You can also manage multiple applications from the admin UI. System models are automatically filtered with the active application ID.
+Look at the ```Admin UI Options``` section for detailed options.
 
 ## Built-in Job Queue
-Not documented
+
+```app.io``` has a built-in job queue based on ```Kue```. ```app.io``` uses it for some internal tasks, but you can easily use the job queue for your tasks.  
+You can get the ```Kue``` object like this;  
+```js 
+...
+var kue = app.boot.kue; 
+...
+```
+
+and easily create a job like this;  
+```js
+kue.create('task-name', {
+    title: 'Task Title',
+    params: {
+        ...
+    }
+}).attempts(3).removeOnComplete(true).save();
+```
+
+Now look at your ```workers.js``` file. You have to run this file in order to start listening your job queue; ```$ node workers```.
+Don't forget to include your external worker directory.
+
+```js
+var AppIo = require('app.io');
+new AppIo({
+    basedir: __dirname,
+    external: {
+        model: ['test'],
+        worker: ['test']
+    }
+}).workers();
+```
+
+Create a file under the ```worker``` directory; ```worker/test/my-job.js```, and write your job processor.
+```js
+module.exports = function(app) {
+    var _kue = app.boot.kue;
+
+    _kue.process('task-name', 1, function(job, done) {
+        var params = job.data.params;
+        ...
+    });
+};
+```
 
 ## Built-in Cron
-Not documented
+
+```app.io``` uses ```cron``` under the hood for cronjobs. You can easily create a cronjob like this;
+```js
+module.exports = function(app) {
+    var _cron = app.boot.cron;
+    
+    new _cron('0 */30 * * * *', function() {
+		...
+    }, null, true);    
+};
+```
 
 ## Built-in Mailer
-Not documented
+
+```app.io``` has a built-in mailer based on ```Nodemailer```. You can easily use the mailer to send your mails.
+You can configure your mailer from the configuration file; ```config/development.js```.
+```js
+boot: {
+	...
+    mailer: {
+        'test': {
+            service: 'Mailgun',
+            auth: {
+                user: 'Mailgun user',
+                pass: 'Mailgun pass'
+            },
+            socketTimeout: 60000
+        }
+    },
+    ...
+}
+```
+
+and send your mail like this;
+```js
+...
+var _mailer    = app.lib.mailer;
+var _transport = app.boot.mailer['test'] // 'test' is your app slug.
+// send your mail
+new _mailer(_transport).send({
+	from: ...,
+	to: ..., 
+	subject: ...,
+	html: ...,
+	...
+}); 
+...
+```
 
 ## Social Authentication
-Not documented
+
+```app.io``` has a built-in social authentication middleware based on ```Passport```. 
+```app.io``` simplifies the authentication process into the major social networks.
+The authentication strategies of Facebook, Foursquare, Instagram, and Twitter are implemented for now.
+```app.io``` saves or updates the user's social data to ```system.accounts``` model,
+sets the session object as ```req.session.social```, and redirects the page to the success or failure endpoints that is configured before in the ```config/development.js```.
 
 ## File Uploads
 Not documented
