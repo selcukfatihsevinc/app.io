@@ -786,18 +786,18 @@ thus, you can use all abilities of the ```Mongoose``` models, such as, ```Mongoo
 ## Field Options
 
 You can use all ```Mongoose``` field options. ```Mongoose``` based options are;  
-```default``` =>  
-```required``` =>  
-```enum``` => string  
-```lowercase``` => string  
-```match``` => string  
-```maxlength``` => string  
-```minlength``` => string  
-```trim``` => string  
-```uppercase``` => string  
-```max``` => number, date  
-```min``` => number, date  
-```expires``` => date  
+- **```default```**  
+- **```required```**  
+- **```enum```** string  
+- **```lowercase```** string  
+- **```match```** string  
+- **```maxlength```** string  
+- **```minlength```** string  
+- **```trim```** string  
+- **```uppercase```** string  
+- **```max```** number, date  
+- **```min```** number, date  
+- **```expires```** date  
 
 The list of other ```app.io``` based field options are;   
 ```alias``` => ```Mongodb``` key names are very important. Use the smallest keys possible, use the ```alias``` option when using ```REST API```. For example;  
