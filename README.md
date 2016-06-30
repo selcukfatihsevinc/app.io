@@ -1097,8 +1097,7 @@ You can use any predefined model you want, or use them as a reference on your mo
 
 ### Caching Data
 
-If you want to cache your data on ```Redis``` for faster response times, you can use the ```cacheKey``` query parameter. For example;  
-```/api/o/test.model?cacheKey=test_data```.
+If you want to cache your data on ```Redis``` for faster response times, you can use the ```cacheKey``` query parameter.
 
 ## Built-in Middlewares
 
