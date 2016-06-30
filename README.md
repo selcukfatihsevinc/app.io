@@ -87,25 +87,36 @@ Moreover, it enables you to work on multiple projects within the same framework.
   - [Making Authenticated Requests](#making-authenticated-requests)
 - [Other Authentication Endpoints](#other-authentication-endpoints)  
 - [Next Steps](#next-steps)
-- [Routes]
-- [Configuring app.io Instance]
-- [Views]
-  - [Static Files]
-  - [Pagination]
-- [API Responses]
-- [Detailed Look at ACL]
-- [Models]
-  - [Field Options]
-  - [Model Loader Options]
-    - [Admin UI Options]
-    - [Data Denormalization]
-    - [Document Owner Protection]
-    - [Masking API Data]
-    - [Reference Counting]
-    - [Field Reference Counting]
-    - [Field Size Calculating]
-    - [Field Hook Mechanism]
-  - [Predefined Models]
+- [Routes](#routes)
+- [Configuring an app.io Instance](#configuring-an-app.io-instance)
+- [Views](#views)
+  - [Static Files](#static-files)
+- [API Responses](#api-responses)
+- [Detailed Look at ACL](#detailed-look-at-acl)
+  - [Master User Level]
+- [Models](#models)
+  - [Field Options](#field-options)
+  - [Model Loader Options](#model-loader-options)
+    - [Admin UI Options](#admin-ui-options)
+    - [Data Denormalization](#data-denormalization)
+    - [Document Owner Protection](#document-owner-protection)
+    - [Masking API Data](#masking-api-data)
+    - [Reference Counting](#reference-counting)
+    - [Field Reference Counting](#field-reference-counting)
+    - [Field Size Calculating](#field-size-calculating)
+    - [Field Hook Mechanism](#field-hook-mechanism)
+  - [Predefined Models](#predefined-models)
+    - [System Models]
+      - [system.accounts]
+      - [system.actions]
+      - [system.apps]
+      - [system.filters]
+      - [system.images]
+      - [system.invites]
+      - [system.locations]
+      - [system.objects]
+      - [system.roles]
+      - [system.users]
   - [Caching Data]
 - [Built-in Middlewares]
   - [Express Middlewares]
@@ -217,7 +228,7 @@ module.exports = function(app) {
         u  : {type: ObjectId, required: true, ref: 'System_Users', alias: 'users'},
         t  : {type: String, required: true, alias: 'title'},
         b  : {type: String, required: true, alias: 'body'},
-        ca : {type: Date, default: Date.now, alias: 'created_at'},
+        ca : {type: Date, default: Date.now, alias: 'created_at'}
     };
 
     // settings
@@ -502,7 +513,7 @@ We used ```Guest``` user at all examples above. Now we will try to use ```test.p
 Go to the admin page, ```http://127.0.0.1:3001/admin```, then select the ```System->Actions``` page from the left menu.
 Remove the action for the ```Guest``` user, which we had created before.
 Now create an action for the ```User``` role.
-Fiil in the form, select ```User``` for the ```Role``` field, ```Test Posts``` for the ```Object``` field, and ```Get``` and ```Post``` for the ```Action``` field.
+Fill in the form, select ```User``` for the ```Role``` field, ```Test Posts``` for the ```Object``` field, and ```Get``` and ```Post``` for the ```Action``` field.
 We have ```Get``` and ```Post``` permissions for the ```User``` role on the ```test.posts``` model now.  
 We have to send a ```X-Access-Token``` header to make authenticated requests. If we don't send this header, we will receive ```403``` response.
 ```js
@@ -536,60 +547,583 @@ You have learned the core and the most important concepts of ```app.io```. Howev
 Next, we will learn details about ```app.io```.
 
 ## Routes
-Not documented
 
-## Configuring app.io Instance
-Not documented
+You know that you can use the app object and other ```app.io``` abilities in your external sources. Adding a new route is simple.   
+Create a file under the route directory, ```route/test/posts.js```. Add your route like this;
+```js
+module.exports = function(app) {
+	app.get('/my-route', function(req, res, next) {
+		res.json({everything: 'OK'});
+	});
+};
+```
+
+You have to include external routes to an ```app.io``` instance. New ```app.js``` is look likes that;
+```js
+var AppIo = require('app.io');
+new AppIo({
+    basedir: __dirname,
+    verbose: true,
+    external: {
+        model: ['test'],
+        route: ['test']
+    }    
+}).run();
+```
+
+Run ```[GET] http://127.0.0.1:3001/my-route```;
+```js
+{
+  "everything": "OK"
+}
+```
+
+## Configuring an app.io Instance
+
+You loaded some external sources to an ```app.io``` instance on the examples above. There are some other options to configure an ```app.io``` instance.
+
+```js
+var AppIo = require('app.io');
+new AppIo({
+    basedir: __dirname,
+    cores: 1,
+    env: 'production',
+    port: 3001,
+    verbose: true,
+    core: ['mongo', 'redis', 'cache'],
+    // boot: 'mailer|override',
+    external: {
+        boot: 'i18n|gitversion',
+        model: ['test'],
+        middle: ['test'],
+        lib: ['test'],
+        route: ['test']
+    }    
+}).run();
+```
+
+```cores```: You can configure the number of ```Node.js``` instances to take advantage of multi-core systems. By default, an ```app.io``` instance uses the maximum number of cpu cores.     
+```verbose```: If you want to see the loaded modules, use this option.  
+```env```: You can set the environment with this option. You can also use process environment variable if you want; ```NODE_ENV=production```  
+```port```: You can set the server's port with this option. You can also use process environment variable if you want; ```NODE_PORT=3001```  
+```core```: You can load other data sources with this option. Available options are; ```cache```, ```db```, ```elasticsearch```, ```mongo```, ```redis```, ```solr```.  
+```boot```: You can load some extra functionalities that ```app.io``` doesn't load with minimal configuration. Available options are; ```mailer```, ```mailerPool```, ```oauthproxy```, ```override```, ```resize```  
+```external```: You can load external sources with this option. Available options are;  ```boot```, ```model```, ```middle```, ```lib```, ```route```  
 
 ## Views
-Not documented
+
+Now you have a route file under the route directory; ```route/test/posts.js```. Let's try to render a view in this file. ```app.io``` uses ```Swig``` as a template engine.
+By default, ```app.io``` is looking for the ```view``` directory. You can change it from the configuration file; ```config/development.js```.
+```js
+  boot: {
+      view: {
+          dir: 'view',
+          swig: {
+              cache: false
+          }
+      },
+      ...
+  }
+```
+
+Now our route file looks like this;
+```js
+module.exports = function(app) {
+	app.get('/my-route', function(req, res, next) {
+		res.render('test/my-route');
+	});
+};
+```
 
 ### Static Files
-Not documented
 
-### Pagination
-Not documented
+By default, ```app.io``` is looking for the ```public``` directory to serve static files. You can change it from the configuration file; ```config/development.js```.
+```js
+  boot: {
+	  'static': {
+	      dir: 'public',
+	      options: {
+	          maxAge: '1d'
+	      }
+	  },
+      ...
+  }
+```
 
 ## API Responses
-Not documented
+
+The ```meta``` key is used to give extra information about the response. If the request is succesful and everything is ok, you will receive a ```200``` response with data.
+```js
+{
+  "meta": {
+    "name": "OK",
+    "code": 200
+  },
+  "data": {
+    ...
+  }
+}
+```
+
+If the data you are looking for is not found, you will receive a ```404``` error response.
+```js
+{
+  "meta": {
+    "name": "NotFound",
+    "code": 404
+  }
+}
+```
+
+If the data you send to a resource is not valid, you will receive a ```422``` error response.
+```js
+{
+  "meta": {
+    "name": "UnprocessableEntity",
+    "code": 422,
+    "message": {
+      "type": "ValidationError",
+      "errors": [
+        ...
+      ]
+    }
+  }
+}
+```
+
+If you don't have a proper permission on a resource, or if you don't send a ```X-Access-Token``` header that is required by the resource, you will receive a ```403``` error response.
+```js
+{
+  "meta": {
+    "name": "Forbidden",
+    "code": 403
+  }
+}
+```
+
+If something is wrong about any authentication endpoint, you will receive a ```401``` error response.
+```js
+{
+  "meta": {
+    "name": "Unauthorized",
+    "code": 401,
+    "message": {
+    ...
+    }
+  }
+}
+```
+
+If something is wrong about the server, you will receive a ```500``` error response.
+```js
+{
+  "meta": {
+    "name": ...,
+    "code": 500,
+    "message": ...
+  }
+}
+```
+
+You will receive a ```201``` response to a ```POST``` request that results in a creation.
+```js
+{
+  "meta": {
+    "name": "Created",
+    "code": 201
+  },
+  "data": {
+    "doc": {
+		...
+    }
+  }
+}
+```
+
+You will receive a ```204 NoContent``` response to a successful request that won't be returning a body (like a ```DELETE``` request).
 
 ## Detailed Look at ACL
+
+```app.io``` has an ```ACL (Access Control Lists)``` protection on the resources. If you don't have a proper permission on a resource, you will receive a ```403``` error response.
+You can create any role you want, and select the methods you want to give access to any resources; such as, ```get```, ```post```, ```put```, ```delete```.   
+You can use the admin UI for this process. You can create the role from ```System->Roles``` page, and then create the action from ```System->Actions``` page.
+Just fill in the form; select the ```Role```, the ```Object``` (resource) and the ```Action``` (HTTP methods) fields.  
+If you want a strict control on the permissions, you can use the config file.
+```js
+roles: {
+    test: {
+        'default': [
+            {name: 'Admin', slug: 'admin'},
+            {name: 'User', slug: 'user'},
+            {name: 'Guest', slug: 'guest'},
+            ...
+        ],
+        initial: {
+            register: 'user'
+        },
+        actions: {
+            user: {
+                'test.posts': ['get', 'post'],
+                ...
+            },
+            guest: {
+                'test.posts': ['get'],
+                ...
+            }
+        }
+    }
+}
+```
+
+### Master User Level
 Not documented
 
 ## Models
-Not documented
+
+Models are the core of the ```app.io``` architecture. ```app.io``` basically uses ```Mongoose``` models; 
+thus, you can use all abilities of the ```Mongoose``` models, such as, ```Mongoose``` plugins, hooks, validations, etc.
 
 ## Field Options
-Not documented
+
+You can use all ```Mongoose``` field options. ```Mongoose``` based options are;  
+```default```  
+```required```  
+```enum``` string  
+```lowercase``` string  
+```match``` string  
+```maxlength``` string  
+```minlength``` string  
+```trim``` string  
+```uppercase``` string  
+```max``` number, date  
+```min``` number, date  
+```expires``` date  
+
+The list of other ```app.io``` based field options are;   
+```alias```  
+```Mongodb``` key names are very important. Use the smallest keys possible, use the ```alias``` option when using ```REST API```. For example;  
+```js
+var Schema = {
+	...
+	em : {type: String, required: true, alias: 'email', unique: true},
+	... 
+};	
+``` 
+
+```settings```  
+```optional```  
+```allow_html```  
+```pattern```   
+```minLength```  
+```maxLength```  
+```exactLength```  
+```min```  
+```max```  
+```lt```  
+```lte```  
+```gt```  
+```gte```  
+```ne```  
+```rules```  
+```pair```  
+```owner```  
+```flex_ref```  
+```entity_acl```  
+```belongs_to```  
+```depends```  
+```s3```  
+```from```  
 
 ### Model Loader Options
-Not documented
 
+Along with those field options, there are many other loader options. The loader options add new abilities that have not been in ```Mongoose```.  
+You have to pass a ```Mongoose``` schema object to the ```app.libpost.model.loader.mongoose``` function as a parameter for these additional abilities.
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    Name: 'Test_Posts',
+    ...
+});
+```
+    
 #### Admin UI Options
-Not documented
 
+With the ```Options``` key you can configure admin UI options. Here are the list of the properties;
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+    Options: {
+        singular : 'Test Post',
+        plural   : 'Test Posts',
+        columns  : ['users', 'title', 'body'],
+        main     : 'title',
+        perpage  : 25,
+        ...
+    },
+    ...
+});
+```
+    
+```singular```  
+```plural```  
+```columns```  
+```extra```  
+```main```  
+```perpage```  
+```sort```  
+```filter```  
+```nocreate```    
+```nodelete```  
+```noedit```  
+```nested```  
+```actions```      
+```analytics```      
+    
 #### Data Denormalization
-Not documented
+
+Denormalizing data from another model is very simple with the ```Denorm``` key.   
+If the reference data you have normalized before is updated; the model loader also updates your denormalized data.  
+There are two ways of denormalizing the reference model data:  
+
+1. The first way is to add a seperate field to your model. Then, you can denormalize data from another field that has a reference model.  
+   For example; you can denormalize the user's email from the reference of the ```users``` field.  
+   In order to do this, you should add the ```users_email``` field to your model. Here is the structure;  
+  
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+	Denorm: {
+	    'System_Users': {
+	        targets: {
+	            source: 'users',
+	            fields: {users_email: 'email'}
+	        }
+	    },
+	    ...
+	},
+    ...
+});
+```
+
+```System_Users``` is the reference model of the ```users``` field, so our source is the ```users``` field.  
+Then we can set the fields. We want to denormalize the ```email``` data from the ```System_Users``` model to the ```users_email``` field.
+We can set this ```fields``` option like this;
+```js
+fields: {users_email: 'email'}
+```
+
+2. The second way is to choose a reference model. Then, you can denormalize the fields of the reference model to a target field.  
+   In this way there is no source field. The model loader collects the denormalized data of every field that has the same reference model.
+   
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+	Denorm: {
+	    'System_Users': {
+            target: 'data_users',
+            fields: 'email'
+	    },
+	    ...
+	},
+    ...
+});
+```
+
+Don't forget to add a field for the denormalized data. In this example, this is the ```data_users``` field.
+You have to select the ```Mixed``` type. Write the name of the reference model to the ```from``` option.
+```js
+d_u : {type: Mixed, alias: 'data_users', from: 'System_Users'},
+```
 
 #### Document Owner Protection
-Not documented
 
+```app.io``` has an ```ACL``` protection on the resources, but those are basically the permissions on the resources according to the ```HTTP``` methods.  
+With this kind of protection the ownership of the document is not guaranteed.
+If you have a ```users``` or a ```profiles``` field on your model, and if you want to guarantee that the owner of the request is also the owner of the document,
+then you have to use the ```Owner``` key. Just set the ```users``` (alias: 'users') and the ```profiles``` (profile: {alias: 'profiles'}) fields and 
+select the ```HTTP``` methods you want to guarantee the ownership.
+
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+    Owner: {
+        alias   : 'users',
+        profile : {alias: 'profiles'},
+        protect : {
+            'get'    : true,
+            'getid'  : true,
+            'post'   : true,
+            'put'    : true,
+            'remove' : true
+        }
+    },
+    ...
+});
+```
+        
 #### Masking API Data
-Not documented
+
+If you are working with the ```REST APIs```, then you will need some important features. Masking the data is one of the important features.  
+You may need to mask the data on a ```GET```, a ```POST``` or a ```PUT``` request. You have to use the ```Mask``` key to mask the data.
+You can configure the masking options according to an HTTP method, and, according to the role or the ownership level as well.
+
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+    Mask: {
+        'get': {guest: 'title,body,created_at'},
+        'post': {owner: 'title,body'},
+        'put': {owner: 'title,body'}
+	},
+    ...
+});
+```
+
+The available levels for an ```HTTP``` method are; ```master```, ```owner```, ```user```, ```guest```.
 
 #### Reference Counting
-Not documented
 
+Sometimes you may need the count in a reference model. We have the ```test.posts``` model at the examples above.
+If you create a ```test.comments``` model, and if you want to store the count of the comments in a collection on the ```test.posts``` model, you can use this feature.
+Just add a field on the ```test.posts``` model for the comment count. Use the ```CountRef``` key to set the reference counting on the ```test.comments``` model.
+Our ```test.comments``` schema;
+```js
+module.exports = function(app) {
+    var _query    = app.lib.query;
+    var _mongoose = app.core.mongo.mongoose;
+    var ObjectId  = _mongoose.Schema.Types.ObjectId;
+    var Mixed     = _mongoose.Schema.Types.Mixed;
+    
+    // schema
+    var Schema = {
+        u  : {type: ObjectId, required: true, ref: 'System_Users', alias: 'users'},
+        p  : {type: ObjectId, required: true, ref: 'Test_Posts', alias: 'posts'},
+        b  : {type: String, required: true, alias: 'body'},
+        ca : {type: Date, default: Date.now, alias: 'created_at'}
+    };
+
+    // settings
+    Schema.u.settings = {label: 'User', display: 'email'};
+    Schema.p.settings = {label: 'Post', display: 'title'};
+    Schema.b.settings = {label: 'Body'};
+
+    // load schema
+    var CommentSchema = app.libpost.model.loader.mongoose(Schema, {
+        Name: 'Test_Comments',
+        Options: {
+            singular : 'Test Comment',
+            plural   : 'Test Comments',
+            columns  : ['users', 'posts', 'body'],
+            main     : 'body',
+            perpage  : 25
+        },
+        CountRef: {
+            posts: 'comments_count'
+        }
+    });
+
+    // plugins
+    CommentSchema.plugin(_query);
+
+    return _mongoose.model('Test_Comments', CommentSchema);
+};
+```
+
+You can configure the reference counting just like this;
+```js
+CountRef: {
+	posts: 'comments_count'
+}
+```
+
+If the comment is removed, then the model loader updates the count. 
+Don't forget to add the ```comments_count``` (number) field to the ```test.posts``` model.
+        
 #### Field Reference Counting
-Not documented
+
+If you want to count the size of a field that has a reference, then you can use the ```Count``` key. It stores the count of the data in the reference collection of the source field.
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+    Count: {
+        'source_field': 'target_field'
+    },
+    ...
+});
+```
 
 #### Field Size Calculating
-Not documented
+
+If you have an array field, and if you want to store the size of that array on the document itself, then you can use the ```Size``` key.
+```Mongodb``` doesn't give the size of an array by default; in order to get the array size, you have to execute an aggregation query.
+The ```Size``` key is simplifies this process. For example;
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+    Size: {
+        tags: 'tags_count'
+    },
+    ...
+});
+```
+
+If you have a ```tags``` field on the ```test.posts``` model, then simply add a new ```tags_count``` field to your schema.
+The model loader calculates the size of the ```tags``` and updates the ```tags_count```.
 
 #### Field Hook Mechanism
-Not documented
+
+If you want to push the value of a field to a collection on another reference model, then you can use the ```Hook``` key.
+```js
+var PostSchema = app.libpost.model.loader.mongoose(Schema, {
+    ...
+    Hook: {
+        push: {
+            'field_of_the_source_value': 'field_of_the_target_reference:target_field',
+            ...
+        }
+    },
+    ...
+});
+```
+
+**ps**: It doesn't work on the fields that are identified as entities.
+
 
 ### Predefined Models
+
+```app.io``` has a bunch of predefined models. They are used in the ```app.io``` system, for example user registration.
+You can use any predefined model you want, or use them as a reference on your models, it's up to you.
+
+#### System Models
+Not documented 
+
+##### system.accounts
+Not documented
+
+##### system.actions
+Not documented
+
+##### system.apps
+Not documented
+
+##### system.filters
+Not documented
+
+##### system.images
+Not documented
+
+##### system.invites
+Not documented
+
+##### system.locations
+Not documented
+
+##### system.objects
+Not documented
+
+##### system.roles
+Not documented
+
+##### system.users
 Not documented
 
 ### Caching Data
