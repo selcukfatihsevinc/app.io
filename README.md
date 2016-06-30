@@ -800,7 +800,7 @@ You can use all ```Mongoose``` field options. ```Mongoose``` based options are;
 - **```expires```** date  
 
 The list of other ```app.io``` based field options are;   
-```alias``` => ```Mongodb``` key names are very important. Use the smallest keys possible, use the ```alias``` option when using ```REST API```. For example;  
+- **```alias```** ```Mongodb``` key names are very important. Use the smallest keys possible, use the ```alias``` option when using ```REST API```. For example;  
 ```js
 var Schema = {
 	...
@@ -809,29 +809,29 @@ var Schema = {
 };	
 ```  
 
-```settings``` =>   
-```optional``` =>    
-```allow_html``` =>    
-```pattern``` =>  
-```minLength``` =>    
-```maxLength``` =>  
-```exactLength``` =>    
-```min``` =>  
-```max``` =>  
-```lt``` =>    
-```lte``` =>    
-```gt``` =>    
-```gte``` =>    
-```ne``` =>    
-```rules``` =>    
-```pair``` =>    
-```owner``` =>    
-```flex_ref``` =>    
-```entity_acl``` =>    
-```belongs_to``` =>    
-```depends``` =>    
-```s3``` =>    
-```from``` =>    
+- **```settings```**     
+- **```optional```**      
+- **```allow_html```**      
+- **```pattern```**  
+- **```minLength```**      
+- **```maxLength```**    
+- **```exactLength```**      
+- **```min```**  
+- **```max```**   
+- **```lt```**    
+- **```lte```**      
+- **```gt```**    
+- **```gte```**      
+- **```ne```**    
+- **```rules```**      
+- **```pair```**    
+- **```owner```**     
+- **```flex_ref```**      
+- **```entity_acl```**      
+- **```belongs_to```**     
+- **```depends```**  
+- **```s3```**  
+- **```from```**      
 
 ### Model Loader Options
 
@@ -862,20 +862,20 @@ var PostSchema = app.libpost.model.loader.mongoose(Schema, {
 });
 ```
     
-```singular``` =>    
-```plural``` =>    
-```columns``` =>    
-```extra``` =>    
-```main``` =>    
-```perpage``` =>    
-```sort``` =>    
-```filter``` =>    
-```nocreate``` =>      
-```nodelete``` =>    
-```noedit``` =>    
-```nested``` =>    
-```actions``` =>        
-```analytics``` =>        
+- **```singular```**  
+- **```plural```**      
+- **```columns```**      
+- **```extra```**   
+- **```main```**    
+- **```perpage```**      
+- **```sort```**  
+- **```filter```**      
+- **```nocreate```**        
+- **```nodelete```**     
+- **```noedit```**   
+- **```nested```**     
+- **```actions```**          
+- **```analytics```**          
     
 #### Data Denormalization
 
