@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "REST API and web application framework, built on Nodejs, Express, and Mongoose",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
@@ -93,6 +93,7 @@
     "natural": "0.4.0",
     "lodash": "4.13.1",
     "image-size": "0.5.0",
+    "micromatch": "2.3.10",
     "nodemailer": "2.4.2",
     "nodemailer-smtp-transport": "2.5.0",
     "smtp-connection": "2.5.0",
