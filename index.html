@@ -1,34 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>App.io by selcukfatihsevinc</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>App.io</h1>
-        <p>REST API and web application framework, built on Nodejs, Express, and Mongoose</p>
+    <section class="page-header">
+      <h1 class="project-name">App.io</h1>
+      <h2 class="project-tagline">REST API and web application framework, built on Nodejs, Express, and Mongoose</h2>
+      <a href="https://github.com/selcukfatihsevinc/app.io" class="btn">View on GitHub</a>
+      <a href="https://github.com/selcukfatihsevinc/app.io/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/selcukfatihsevinc/app.io/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-        <p class="view"><a href="https://github.com/selcukfatihsevinc/app.io">View the Project on GitHub <small>selcukfatihsevinc/app.io</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/selcukfatihsevinc/app.io/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/selcukfatihsevinc/app.io/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/selcukfatihsevinc/app.io">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1 align="center">
+    <section class="main-content">
+      <h1 align="center">
 <a id="appio" class="anchor" href="#appio" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>app.io</h1>  
 
 <div align="center">
@@ -54,15 +45,27 @@
   <a href="https://npmjs.org/package/app.io">
     <img src="https://img.shields.io/npm/dm/app.io.svg" alt="Downloads Month">
   </a>  
+  
+  <a href="https://travis-ci.org/selcukfatihsevinc/app.io">
+    <img src="https://img.shields.io/travis/selcukfatihsevinc/app.io.svg" alt="Travis CI">
+  </a>    
+  
+  <a href="https://david-dm.org/selcukfatihsevinc/app.io">
+    <img src="https://img.shields.io/david/selcukfatihsevinc/app.io.svg" alt="Dependencies">
+  </a>
+  
+  <a href="https://github.com/selcukfatihsevinc/app.io">
+    <img src="https://img.shields.io/github/stars/selcukfatihsevinc/app.io.svg?label=%E2%98%85" alt="Github Stars">
+  </a>       
 </div>
 
 <p><br></p>
 
-<p><strong>app.io</strong> is an open source REST API and web application framework, built on Nodejs, Express, and Mongoose,<br>
+<p><code>app.io</code> is an open source <code>REST API</code> and web application framework, built on <code>Nodejs</code>, <code>Express</code>, and <code>Mongoose</code>,<br>
 which is simple, easy, quick, flexible, extendable and scalable, and which has numerous features and capabilities,<br>
-including a pre-configured server, an auto-generated admin UI and also auto-generated REST API endpoints.  </p>
+including a pre-configured server, an auto-generated admin UI and also auto-generated <code>REST API</code> endpoints.  </p>
 
-<p><strong>app.io</strong> is ideal for quick REST API development.<br>
+<p><code>app.io</code> is ideal for quick <code>REST API</code> development.<br>
 It saves you from the complexity of API’s, and helps you to focus on your product and save time.<br>
 Moreover, it enables you to work on multiple projects within the same framework.   </p>
 
@@ -70,9 +73,9 @@ Moreover, it enables you to work on multiple projects within the same framework.
 <a id="why-was-appio-developed" class="anchor" href="#why-was-appio-developed" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why was app.io developed?</h3>
 
 <ul>
-<li>In order to be used in cases, when a very quick REST API is needed for mobile-first applications.</li>
+<li>In order to be used in cases, when a very quick <code>REST API</code> is needed for mobile-first applications.</li>
 <li>In order to answer the need for a powerful framework that will take on many tasks for you and simplify your work. It does not restrict you with given features, and it does not restrain you from writing your own code.</li>
-<li>In order to provide numerous features in a single framework. For example, you can manage multiple projects. Moreover, REST API endpoints and admin UI are automatically generated from Mongoose models.</li>
+<li>In order to provide numerous features in a single framework. For example, you can manage multiple projects. Moreover, <code>REST API</code> endpoints and admin UI are automatically generated from <code>Mongoose</code> models.</li>
 </ul>
 
 <h3>
@@ -80,10 +83,10 @@ Moreover, it enables you to work on multiple projects within the same framework.
 
 <ul>
 <li>
-<strong>app.io</strong> installs Express middlewares you may need, and runs the server. </li>
+<code>app.io</code> installs <code>Express</code> middlewares you may need, and runs the server. </li>
 <li>
-<strong>app.io</strong> connects to data sources.</li>
-<li>You can use auto-generated REST API endpoints and admin UI.</li>
+<code>app.io</code> connects to data sources.</li>
+<li>You can use auto-generated <code>REST API</code> endpoints and admin UI.</li>
 <li>You can use predefined models, such as apps, users, roles, objects and actions.</li>
 <li>You can use the user authentication endpoints, such as login, register, forgot password, invite and change password.</li>
 <li>You can use the ACL-based user authorization.</li>
@@ -94,40 +97,1639 @@ Moreover, it enables you to work on multiple projects within the same framework.
 <h4>
 <a id="note" class="anchor" href="#note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>note:</h4>
 
-<p>Further information will be provided in time.<br>
-<strong>app.io</strong> is under development, so use it at your own risk.</p>
+<p><code>app.io</code> is under development, so use it at your own risk.</p>
+
+<h2>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table Of Contents</h2>
+
+<ul>
+<li>
+<a href="#getting-started">Getting Started</a>
+
+<ul>
+<li><a href="#creating-an-application">Creating an Application</a></li>
+<li><a href="#directory-structure">Directory Structure</a></li>
+</ul>
+</li>
+<li>
+<a href="#creating-an-api">Creating an API</a>
+
+<ul>
+<li><a href="#api-endpoints">API Endpoints</a></li>
+<li><a href="#creating-an-object">Creating an Object</a></li>
+<li><a href="#getting-object-list">Getting Object List</a></li>
+<li><a href="#query-parameters">Query Parameters</a></li>
+<li><a href="#query-operators">Query Operators</a></li>
+</ul>
+</li>
+<li>
+<a href="#authenticating-users">Authenticating Users</a>
+
+<ul>
+<li><a href="#creating-client-key-and-client-secret">Creating Client Key and Client Secret</a></li>
+<li><a href="#authentication-endpoint-requests">Authentication Endpoint Requests</a></li>
+<li>
+<a href="#registering-users">Registering Users</a>
+
+<ul>
+<li><a href="#enabling-authentication-endpoints">Enabling Authentication Endpoints</a></li>
+</ul>
+</li>
+<li><a href="#logging-in-users">Logging in Users</a></li>
+<li><a href="#making-authenticated-requests">Making Authenticated Requests</a></li>
+</ul>
+</li>
+<li>
+<a href="#other-authentication-endpoints">Other Authentication Endpoints</a><br>
+</li>
+<li><a href="#next-steps">Next Steps</a></li>
+<li><a href="#routes">Routes</a></li>
+<li><a href="#configuring-an-appio-instance">Configuring an app.io Instance</a></li>
+<li>
+<a href="#views">Views</a>
+
+<ul>
+<li><a href="#static-files">Static Files</a></li>
+</ul>
+</li>
+<li><a href="#api-responses">API Responses</a></li>
+<li>
+<a href="#detailed-look-at-acl">Detailed Look at ACL</a>
+
+<ul>
+<li>[Master User Level]</li>
+</ul>
+</li>
+<li>
+<a href="#models">Models</a>
+
+<ul>
+<li><a href="#field-options">Field Options</a></li>
+<li>
+<a href="#model-loader-options">Model Loader Options</a>
+
+<ul>
+<li><a href="#admin-ui-options">Admin UI Options</a></li>
+<li><a href="#data-denormalization">Data Denormalization</a></li>
+<li><a href="#document-owner-protection">Document Owner Protection</a></li>
+<li><a href="#masking-api-data">Masking API Data</a></li>
+<li><a href="#reference-counting">Reference Counting</a></li>
+<li><a href="#field-reference-counting">Field Reference Counting</a></li>
+<li><a href="#field-size-calculating">Field Size Calculating</a></li>
+<li><a href="#field-hook-mechanism">Field Hook Mechanism</a></li>
+</ul>
+</li>
+<li>
+<a href="#predefined-models">Predefined Models</a>
+
+<ul>
+<li><a href="#system-models">System Models</a></li>
+</ul>
+</li>
+<li><a href="#caching-data">Caching Data</a></li>
+</ul>
+</li>
+<li>
+<a href="#built-in-middlewares">Built-in Middlewares</a>
+
+<ul>
+<li><a href="#express-middlewares">Express Middlewares</a></li>
+<li><a href="#appio-middlewares">app.io Middlewares</a></li>
+</ul>
+</li>
+<li><a href="#admin-ui">Admin UI</a></li>
+<li><a href="#built-in-job-queue">Built-in Job Queue</a></li>
+<li><a href="#built-in-cron">Built-in Cron</a></li>
+<li><a href="#built-in-mailer">Built-in Mailer</a></li>
+<li><a href="#social-authentication">Social Authentication</a></li>
+<li>[File Uploads]</li>
+<li>[On the Fly Image Resizer]</li>
+<li>[Built-in URL Shortener Service]</li>
+<li>[Built-in RSS Feed Parser]</li>
+<li>[Data Synchronization]</li>
+<li>[Socket.io Support]</li>
+<li>[Oauth]</li>
+<li>[API Documentation]</li>
+</ul>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<h3>
+<a id="creating-an-application" class="anchor" href="#creating-an-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating an Application</h3>
+
+<p>The best way of using <code>app.io</code> is the <code>Yeoman</code> generator. It generates a basic skeleton for <code>app.io</code> based application. If you haven't installed <code>Yeoman</code>, install it first.</p>
+
+<pre><code>$ npm install -g yo
+</code></pre>
+
+<p>Then install the <code>app.io</code> generator.</p>
+
+<pre><code>$ npm install -g generator-appio
+</code></pre>
+
+<p>Now you can generate <code>app.io</code> application by using the <code>Yeoman</code> generator.</p>
+
+<pre><code>$ yo appio
+</code></pre>
+
+<pre><code>     _-----_  
+    |       |    .--------------------------.  
+    |--(o)--|    |   Welcome to the AppIo   |  
+   `---------´   |        generator!        |  
+    ( _´U`_ )    '--------------------------'  
+    /___A___\  
+     |  ~  |  
+   __'.___.'__  
+ ´   `  |° ´ Y `  
+
+? Write app name (My App) Test App  
+? Write app slug (myapp) testapp  
+? Write app description (My App Description) Test App Description  
+</code></pre>
+
+<p>After the generator finishes installation, run the server. Don't forget to start <code>Mongodb</code> and <code>Redis</code> before running <code>app.io</code>.</p>
+
+<pre><code>$ node app
+</code></pre>
+
+<p>That’s all! Now <code>app.io</code> is up and running.
+Let's look at the <code>app.js</code>.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AppIo <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>app.io<span class="pl-pds">'</span></span>);
+<span class="pl-k">new</span> <span class="pl-en">AppIo</span>({basedir<span class="pl-k">:</span> <span class="pl-c1">__dirname</span>}).<span class="pl-en">run</span>();</pre></div>
+
+<p>With these two lines you have a full featured framework, built on <code>Express</code>.<br>
+<code>app.io</code> is now connected to <code>Mongodb</code> and <code>Redis</code>, and is using some <code>Express</code> middlewares you may need,
+such as <code>body-parser</code>, <code>morgan</code>, <code>cors</code>, <code>swig</code> as a template engine, <code>compression</code>, <code>static</code>, <code>cookie-parser</code>,
+<code>express-session</code> with <code>connect-redis</code>, <code>connect-flash</code>, <code>serve-favicon</code> and <code>passport</code>.  </p>
+
+<h3>
+<a id="directory-structure" class="anchor" href="#directory-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Directory Structure</h3>
+
+<p>Directory structure generated by <code>Yeoman</code>:</p>
+
+<pre><code>|--config/
+|  Application configuration files. You can configurate middlewares, data source connections, roles, etc. 
+|--lib/
+|  Custom libraries
+|--model/
+|  Mongoose models
+|--public/
+|  Static files (css, js, images, etc.)
+|--route/
+|  Custom Express routes
+|--view/
+|  Custom view templates
+|--app.js
+|  Main script that starts your application
+|--flightplan.js
+|  Flightplan scripts
+|--package.json
+|  NPM package file
+|--worker.js
+|  Main script that starts your Kue workers
+</code></pre>
+
+<h2>
+<a id="creating-an-api" class="anchor" href="#creating-an-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating an API</h2>
+
+<p>To create an <code>API</code>, you can create a <code>Mongoose</code> model, and your <code>REST API</code> is ready on the fly. It's so simple!
+Create a file under the model directory, <code>model/test/posts.js</code></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-k">var</span> _query    <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">lib</span>.<span class="pl-smi">query</span>;
+    <span class="pl-k">var</span> _mongoose <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">core</span>.<span class="pl-smi">mongo</span>.<span class="pl-smi">mongoose</span>;
+    <span class="pl-k">var</span> ObjectId  <span class="pl-k">=</span> <span class="pl-smi">_mongoose</span>.<span class="pl-smi">Schema</span>.<span class="pl-smi">Types</span>.<span class="pl-smi">ObjectId</span>;
+    <span class="pl-k">var</span> Mixed     <span class="pl-k">=</span> <span class="pl-smi">_mongoose</span>.<span class="pl-smi">Schema</span>.<span class="pl-smi">Types</span>.<span class="pl-smi">Mixed</span>;
+
+    <span class="pl-c">// schema</span>
+    <span class="pl-k">var</span> Schema <span class="pl-k">=</span> {
+        u  <span class="pl-k">:</span> {type<span class="pl-k">:</span> ObjectId, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, ref<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>System_Users<span class="pl-pds">'</span></span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>},
+        t  <span class="pl-k">:</span> {type<span class="pl-k">:</span> <span class="pl-c1">String</span>, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span>},
+        b  <span class="pl-k">:</span> {type<span class="pl-k">:</span> <span class="pl-c1">String</span>, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>body<span class="pl-pds">'</span></span>},
+        ca <span class="pl-k">:</span> {type<span class="pl-k">:</span> <span class="pl-c1">Date</span>, <span class="pl-k">default</span><span class="pl-k">:</span> <span class="pl-c1">Date</span>.<span class="pl-smi">now</span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>created_at<span class="pl-pds">'</span></span>}
+    };
+
+    <span class="pl-c">// settings</span>
+    <span class="pl-smi">Schema</span>.<span class="pl-smi">u</span>.<span class="pl-smi">settings</span>  <span class="pl-k">=</span> {label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>User<span class="pl-pds">'</span></span>, display<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>};
+    <span class="pl-smi">Schema</span>.<span class="pl-smi">t</span>.<span class="pl-smi">settings</span>  <span class="pl-k">=</span> {label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Title<span class="pl-pds">'</span></span>};
+    <span class="pl-smi">Schema</span>.<span class="pl-smi">b</span>.<span class="pl-smi">settings</span>  <span class="pl-k">=</span> {label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Body<span class="pl-pds">'</span></span>};
+
+    <span class="pl-c">// load schema</span>
+    <span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+        Name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test_Posts<span class="pl-pds">'</span></span>,
+        Options<span class="pl-k">:</span> {
+            singular <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test Post<span class="pl-pds">'</span></span>,
+            plural   <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test Posts<span class="pl-pds">'</span></span>,
+            columns  <span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>body<span class="pl-pds">'</span></span>],
+            main     <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span>,
+            perpage  <span class="pl-k">:</span> <span class="pl-c1">25</span>
+        }
+    });
+
+    <span class="pl-c">// plugins</span>
+    <span class="pl-smi">PostSchema</span>.<span class="pl-en">plugin</span>(_query);
+
+    <span class="pl-k">return</span> <span class="pl-smi">_mongoose</span>.<span class="pl-en">model</span>(<span class="pl-s"><span class="pl-pds">'</span>Test_Posts<span class="pl-pds">'</span></span>, PostSchema);
+};</pre></div>
+
+<p>You have to include external models to an <code>app.io</code> instance; otherwise, <code>app.io</code> won't load external sources.
+New <code>app.js</code> is look likes that;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AppIo <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>app.io<span class="pl-pds">'</span></span>);
+<span class="pl-k">new</span> <span class="pl-en">AppIo</span>({
+    basedir<span class="pl-k">:</span> <span class="pl-c1">__dirname</span>,
+    verbose<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    external<span class="pl-k">:</span> {
+        model<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>] <span class="pl-c">// includes whole test directory</span>
+    }    
+}).<span class="pl-en">run</span>();</pre></div>
+
+<p>Run <code>app.js</code> again;</p>
+
+<pre><code>$ node app
+</code></pre>
+
+<p>Yeah! Now you have a <code>REST API</code> for <code>test.posts</code> model that have sanitisation, validation, authentication, authorization, and much more features.<br>
+You also have an admin UI for this model.    </p>
+
+<p>Have you noticed the structure of <code>model/test/posts.js</code>?
+<code>app.io</code> uses <code>express-load</code> under the hood. 
+It loads everything to the app object; thus, you can use <code>app.io</code> abilities in your external files with dot notation, like this;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-c">// all app.io scripts are available in your external files</span>
+    <span class="pl-k">var</span> _mongoose <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">core</span>.<span class="pl-smi">mongo</span>.<span class="pl-smi">mongoose</span>;
+};</pre></div>
+
+<p>You have to use the <code>Mongoose</code> query plugin, <code>app.lib.query</code>, to query <code>REST API</code> with several operators.<br>
+You have to pass a <code>Mongoose</code> schema object to <code>app.libpost.model.loader.mongoose</code> function as a parameter for additional abilities.</p>
+
+<h3>
+<a id="api-endpoints" class="anchor" href="#api-endpoints" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API Endpoints</h3>
+
+<p>Now you have a <code>REST API</code> that listens requests on the following endpoints: </p>
+
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Resource</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/api/o/test.posts</td>
+<td>Get a list of objects</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/api/o/test.posts/:id</td>
+<td>Get a single object</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/o/test.posts</td>
+<td>Create a new object</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/api/o/test.posts/:id</td>
+<td>Update an object</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/api/o/test.posts/:id</td>
+<td>Delete an object</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="creating-an-object" class="anchor" href="#creating-an-object" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating an Object</h3>
+
+<p>Try to create an object:<br>
+Run <code>[POST] http://127.0.0.1:3001/api/o/test.posts</code>.</p>
+
+<p>Do you see the response? You receive <code>403</code> response, because <code>app.io</code> is ACL-ready!</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Forbidden<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">403</span>
+  }
+}</pre></div>
+
+<p>Let's allow posting an object for <code>test.posts</code> model. Go to the admin page; <code>http://127.0.0.1:3001/admin</code>.
+You can find basic auth and login cridentials in your config file; <code>config/development.js</code>.
+Choose <code>Test App</code> on admin dashboard and go to the <code>System-&gt;Actions</code> page from the left menu.
+In order to create an action for the <code>Guest</code> user, click on the "+new" button.
+Fill in the form. Select <code>Guest</code> for the <code>Role</code> field, <code>Test Posts</code> for the <code>Object</code> field and <code>Post</code> for the <code>Action</code> field.
+Try again on your HTTP client.</p>
+
+<p>Do you see the response now? You received <code>422</code> response, because <code>app.io</code> has an API validation!</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>UnprocessableEntity<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">422</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+      <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>ValidationError<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>errors<span class="pl-pds">"</span></span><span class="pl-k">:</span> [
+        {
+          <span class="pl-s"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>users<span class="pl-pds">"</span></span>,
+          <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>is missing and not optional<span class="pl-pds">"</span></span>,
+          <span class="pl-s"><span class="pl-pds">"</span>slug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>required_error<span class="pl-pds">"</span></span>
+        },
+        {
+          <span class="pl-s"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>,
+          <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>is missing and not optional<span class="pl-pds">"</span></span>,
+          <span class="pl-s"><span class="pl-pds">"</span>slug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>required_error<span class="pl-pds">"</span></span>
+        },
+        {
+          <span class="pl-s"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span>,
+          <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>is missing and not optional<span class="pl-pds">"</span></span>,
+          <span class="pl-s"><span class="pl-pds">"</span>slug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>required_error<span class="pl-pds">"</span></span>
+        }
+      ]
+    }
+  }
+}</pre></div>
+
+<p>Fill in the parameters and try again. Oh yeah, you received <code>201</code> response now!<br>
+<code>ps</code>: please, look at the system_users collection from Mongodb for a valid user id. </p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Created<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">201</span>
+  },
+  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>doc<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+      <span class="pl-s"><span class="pl-pds">"</span>_id<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>576d9023420ba27f0475cd9b<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>users<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>576bca775c7a8dee2702dddb<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>created_at<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>2016-06-24T19:55:15.636Z<span class="pl-pds">"</span></span>
+    }
+  }
+}</pre></div>
+
+<p>It is so simple! Now you are ready to execute a query on data.</p>
+
+<h3>
+<a id="getting-object-list" class="anchor" href="#getting-object-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Object List</h3>
+
+<p>In order to get a list of objects, as shown above, you must allow getting objects for the <code>test.posts</code> model. Edit previous <code>System-&gt;Actions</code> record and add a <code>Get</code> permission.<br>
+Run <code>[GET] http://127.0.0.1:3001/api/o/test.posts</code>;</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">200</span>
+  },
+  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>doc<span class="pl-pds">"</span></span><span class="pl-k">:</span> [
+      {
+        <span class="pl-s"><span class="pl-pds">"</span>_id<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>576d9023420ba27f0475cd9b<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>users<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>576bca775c7a8dee2702dddb<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>created_at<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>2016-06-24T19:55:15.636Z<span class="pl-pds">"</span></span>
+      }
+    ]
+  }
+}</pre></div>
+
+<p>You received the objects!   </p>
+
+<h3>
+<a id="query-parameters" class="anchor" href="#query-parameters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Query Parameters</h3>
+
+<p>Main query parameters for <code>[GET] /api/o/:object</code> endpoints are;</p>
+
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Query</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>query type</strong></td>
+<td>qt=find</td>
+<td>/api/o/test.model?qt=find</td>
+</tr>
+<tr>
+<td><strong>fields</strong></td>
+<td>f=field_a,field_b</td>
+<td>/api/o/test.model?f=field_a,field_b</td>
+</tr>
+<tr>
+<td><strong>sort</strong></td>
+<td>s=field_a,-field_b</td>
+<td>/api/o/test.model?s=field_a,-field_b</td>
+</tr>
+<tr>
+<td><strong>skip</strong></td>
+<td>sk=10</td>
+<td>/api/o/test.model?sk=10</td>
+</tr>
+<tr>
+<td><strong>limit</strong></td>
+<td>l=10</td>
+<td>/api/o/test.model?l=10</td>
+</tr>
+<tr>
+<td><strong>populate</strong></td>
+<td>p=field_a,field_b</td>
+<td>/api/o/test.model?p=field_a,field_b</td>
+</tr>
+<tr>
+<td><strong>cache key</strong></td>
+<td>cacheKey=test_data</td>
+<td>/api/o/test.model?cacheKey=test_data</td>
+</tr>
+</tbody>
+</table>
+
+<p>Other query types for <code>[GET] /api/o/:object</code> endpoints are;
+<code>find</code> <code>one</code> <code>count</code> <code>findcount</code> <code>distinct</code> <code>tree</code>.</p>
+
+<h3>
+<a id="query-operators" class="anchor" href="#query-operators" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Query Operators</h3>
+
+<p><code>[GET] /api/o/:object</code> endpoints have a number of operators;</p>
+
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Query</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>equal</strong></td>
+<td>key=a</td>
+<td>/api/o/test.model?key=a</td>
+</tr>
+<tr>
+<td><strong>not equal</strong></td>
+<td>key={ne}a</td>
+<td>/api/o/test.model?key={ne}a</td>
+</tr>
+<tr>
+<td><strong>greater than</strong></td>
+<td>key={gt}a</td>
+<td>/api/o/test.model?key={gt}a</td>
+</tr>
+<tr>
+<td><strong>greater than or equal to</strong></td>
+<td>key={gte}a</td>
+<td>/api/o/test.model?key={gte}a</td>
+</tr>
+<tr>
+<td><strong>less than</strong></td>
+<td>key={lt}a</td>
+<td>/api/o/test.model?key={lt}a</td>
+</tr>
+<tr>
+<td><strong>less than or equal to</strong></td>
+<td>key={lte}a</td>
+<td>/api/o/test.model?key={lte}a</td>
+</tr>
+<tr>
+<td><strong>in</strong></td>
+<td>key={in}a,b</td>
+<td>/api/o/test.model?key={in}a,b</td>
+</tr>
+<tr>
+<td><strong>not in</strong></td>
+<td>key={nin}a,b</td>
+<td>/api/o/test.model?key={nin}a,b</td>
+</tr>
+<tr>
+<td><strong>contains all</strong></td>
+<td>key={all}a,b</td>
+<td>/api/o/test.model?key={all}a,b</td>
+</tr>
+<tr>
+<td><strong>empty or not exists</strong></td>
+<td>key={empty}</td>
+<td>/api/o/test.model?key={empty}</td>
+</tr>
+<tr>
+<td><strong>exists and not empty</strong></td>
+<td>key={!empty}</td>
+<td>/api/o/test.model?key={!empty}</td>
+</tr>
+<tr>
+<td><strong>exists and null</strong></td>
+<td>key={null}</td>
+<td>/api/o/test.model?key={null}</td>
+</tr>
+<tr>
+<td><strong>near</strong></td>
+<td>key={near}lon,lat,max</td>
+<td>/api/o/test.model?key={near}lon,lat,max</td>
+</tr>
+<tr>
+<td><strong>%like%</strong></td>
+<td>key={:like:}a</td>
+<td>/api/o/test.model?key={:like:}a</td>
+</tr>
+<tr>
+<td><strong>like%</strong></td>
+<td>key={like:}a</td>
+<td>/api/o/test.model?key={like:}a</td>
+</tr>
+<tr>
+<td><strong>%like</strong></td>
+<td>key={:like}a</td>
+<td>/api/o/test.model?key={:like}a</td>
+</tr>
+<tr>
+<td><strong>exists and null</strong></td>
+<td>key={all}a,b</td>
+<td>/api/o/test.model?key={all}a,b</td>
+</tr>
+<tr>
+<td><strong>between</strong></td>
+<td>key={between}a,b</td>
+<td>/api/o/test.model?key={between}a,b</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="authenticating-users" class="anchor" href="#authenticating-users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authenticating Users</h2>
+
+<p>We used <code>Guest</code> user on the examples above. However, we need authenticated users in real life.<br>
+You can use authentication endpoints that are ready in <code>app.io</code></p>
+
+<h3>
+<a id="creating-client-id-and-client-secret" class="anchor" href="#creating-client-id-and-client-secret" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating Client Id and Client Secret</h3>
+
+<p>Before using authentication endpoints, you need a <code>Client Id</code> and a <code>Client Secret</code>. All authentication endpoints require this information.
+Go to the admin page, <code>http://127.0.0.1:3001/admin</code>.
+You can find basic auth and login cridentials in your config file, <code>config/development.js</code>.
+Choose <code>Test App</code> on admin dashboard and go to the <code>Oauth-&gt;Clients</code> page from the left menu.
+Create a client.
+Fill in the <code>Name</code> field, select <code>Test App</code> for the <code>Apps</code> field, and fill in the <code>Redirect Uri</code> field (<code>Redirect Uri</code> is required, but is not important for now).
+If the <code>Client Id</code> and the <code>Client Secret</code> fields are empty, <code>app.io</code> will generate these keys for you.</p>
+
+<h3>
+<a id="authentication-endpoint-requests" class="anchor" href="#authentication-endpoint-requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authentication Endpoint Requests</h3>
+
+<p>Authentication endpoints require a <code>Client Id</code> and a <code>Client Secret</code>. Get the keys you generated for the <code>Test App</code>, and
+send headers as <code>X-Client-Id</code> and <code>X-Client-Secret</code>.</p>
+
+<h3>
+<a id="registering-users" class="anchor" href="#registering-users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Registering Users</h3>
+
+<p>You can use <code>[POST] /api/register</code> endpoint to register users.
+<code>email</code> and <code>password</code> fields are required for the minimal configuration.</p>
+
+<h4>
+<a id="enabling-authentication-endpoints" class="anchor" href="#enabling-authentication-endpoints" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Enabling Authentication Endpoints</h4>
+
+<p>Before using authentication endpoints, be sure that you have enabled endpoints in the config file; otherwise, you will receive <code>401</code> response.</p>
+
+<div class="highlight highlight-source-js"><pre>  auth<span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span><span class="pl-k">:</span> {
+      <span class="pl-s"><span class="pl-pds">'</span>/api/register<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>,
+      <span class="pl-k">...</span>
+    }
+  }</pre></div>
+
+<h3>
+<a id="logging-in-users" class="anchor" href="#logging-in-users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logging in Users</h3>
+
+<p>You can use <code>[POST] /api/login</code> endpoint to login users. Before using this endpoint, don't forget to enable it.
+Example response for a login request;</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">200</span>
+  },
+  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>token<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NzE5OTMxMjE3NzYsInVzZXIiOnsiX2lkIjoiNTc2ZGJhMzY4YzU1NGUyOTA3N2IyMDU4In19.S1uNjX64z3aNIfEukw60bbCdQbHMOLO4Ei6tvvIc1X8<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>expires<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">1471993121776</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>userId<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>576dba368c554e29077b2058<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>roles<span class="pl-pds">"</span></span><span class="pl-k">:</span> [
+      <span class="pl-s"><span class="pl-pds">"</span>test_user<span class="pl-pds">"</span></span>
+    ],
+    <span class="pl-s"><span class="pl-pds">"</span>resources<span class="pl-pds">"</span></span><span class="pl-k">:</span> {},
+    <span class="pl-s"><span class="pl-pds">"</span>profile<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>isEnabled<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Yes<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>waitingStatus<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Accepted<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>passwordChanged<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>N<span class="pl-pds">"</span></span>
+  }
+}</pre></div>
+
+<p>You will use <code>data.token</code> for making authenticated requests.</p>
+
+<h3>
+<a id="making-authenticated-requests" class="anchor" href="#making-authenticated-requests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Making Authenticated Requests</h3>
+
+<p>We used <code>Guest</code> user at all examples above. Now we will try to use <code>test.posts</code> endpoints with a real user.<br>
+Go to the admin page, <code>http://127.0.0.1:3001/admin</code>, then select the <code>System-&gt;Actions</code> page from the left menu.
+Remove the action for the <code>Guest</code> user, which we had created before.
+Now create an action for the <code>User</code> role.
+Fill in the form, select <code>User</code> for the <code>Role</code> field, <code>Test Posts</code> for the <code>Object</code> field, and <code>Get</code> and <code>Post</code> for the <code>Action</code> field.
+We have <code>Get</code> and <code>Post</code> permissions for the <code>User</code> role on the <code>test.posts</code> model now.<br>
+We have to send a <code>X-Access-Token</code> header to make authenticated requests. If we don't send this header, we will receive <code>403</code> response.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Forbidden<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">403</span>
+  }
+}</pre></div>
+
+<h2>
+<a id="other-authentication-endpoints" class="anchor" href="#other-authentication-endpoints" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other Authentication Endpoints</h2>
+
+<p><code>app.io</code> has other authentication endpoints you may have need;</p>
+
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/api/token</td>
+<td>get user data for verified token</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/forgot</td>
+<td>forgot password</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/reset/:token</td>
+<td>reset your password with forgot password token</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/invite</td>
+<td>user invitation</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/invite/:token</td>
+<td>accept invitation and register with invitation token</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/verify/:token</td>
+<td>verify user with registration token</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/resend</td>
+<td>resend registration token</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/change_password</td>
+<td>change password</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/social</td>
+<td>social login or register</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="next-steps" class="anchor" href="#next-steps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Next Steps</h2>
+
+<p>You have learned the core and the most important concepts of <code>app.io</code>. However, this is yet the tip of the iceberg.
+Next, we will learn details about <code>app.io</code>.</p>
+
+<h2>
+<a id="routes" class="anchor" href="#routes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Routes</h2>
+
+<p>You know that you can use the app object and other <code>app.io</code> abilities in your external sources. Adding a new route is simple.<br>
+Create a file under the route directory, <code>route/test/posts.js</code>. Add your route like this;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-smi">app</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/my-route<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>, <span class="pl-smi">next</span>) {
+        <span class="pl-smi">res</span>.<span class="pl-en">json</span>({everything<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>OK<span class="pl-pds">'</span></span>});
+    });
+};</pre></div>
+
+<p>You have to include external routes to an <code>app.io</code> instance. New <code>app.js</code> is look likes that;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AppIo <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>app.io<span class="pl-pds">'</span></span>);
+<span class="pl-k">new</span> <span class="pl-en">AppIo</span>({
+    basedir<span class="pl-k">:</span> <span class="pl-c1">__dirname</span>,
+    verbose<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    external<span class="pl-k">:</span> {
+        model<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>],
+        route<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>]
+    }    
+}).<span class="pl-en">run</span>();</pre></div>
+
+<p>Run <code>[GET] http://127.0.0.1:3001/my-route</code>;</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>everything<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h2>
+<a id="configuring-an-appio-instance" class="anchor" href="#configuring-an-appio-instance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuring an app.io Instance</h2>
+
+<p>You loaded some external sources to an <code>app.io</code> instance on the examples above. There are some other options to configure an <code>app.io</code> instance.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AppIo <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>app.io<span class="pl-pds">'</span></span>);
+<span class="pl-k">new</span> <span class="pl-en">AppIo</span>({
+    basedir<span class="pl-k">:</span> <span class="pl-c1">__dirname</span>,
+    cores<span class="pl-k">:</span> <span class="pl-c1">1</span>,
+    env<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>production<span class="pl-pds">'</span></span>,
+    port<span class="pl-k">:</span> <span class="pl-c1">3001</span>,
+    verbose<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    core<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>mongo<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>redis<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>cache<span class="pl-pds">'</span></span>],
+    <span class="pl-c">// boot: 'mailer|override',</span>
+    external<span class="pl-k">:</span> {
+        boot<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n|gitversion<span class="pl-pds">'</span></span>,
+        model<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>],
+        middle<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>],
+        lib<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>],
+        route<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>]
+    }    
+}).<span class="pl-en">run</span>();</pre></div>
+
+<ul>
+<li>
+<strong><code>cores</code></strong> You can configure the number of <code>Node.js</code> instances to take advantage of multi-core systems. By default, an <code>app.io</code> instance uses the maximum number of cpu cores.<br>
+</li>
+<li>
+<strong><code>verbose</code></strong> If you want to see the loaded modules, use this option.<br>
+</li>
+<li>
+<strong><code>env</code></strong> You can set the environment with this option. You can also use process environment variable if you want; <code>NODE_ENV=production</code><br>
+</li>
+<li>
+<strong><code>port</code></strong> You can set the server's port with this option. You can also use process environment variable if you want; <code>NODE_PORT=3001</code><br>
+</li>
+<li>
+<strong><code>core</code></strong> You can load other data sources with this option. Available options are; <code>cache</code>, <code>db</code>, <code>elasticsearch</code>, <code>mongo</code>, <code>redis</code>, <code>solr</code>.<br>
+</li>
+<li>
+<strong><code>boot</code></strong> You can load some extra functionalities that <code>app.io</code> doesn't load with minimal configuration. Available options are; <code>mailer</code>, <code>mailerPool</code>, <code>oauthproxy</code>, <code>override</code>, <code>resize</code><br>
+</li>
+<li>
+<strong><code>external</code></strong> You can load external sources with this option. Available options are;  <code>boot</code>, <code>model</code>, <code>middle</code>, <code>lib</code>, <code>route</code><br>
+</li>
+</ul>
+
+<h2>
+<a id="views" class="anchor" href="#views" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Views</h2>
+
+<p>Now you have a route file under the route directory; <code>route/test/posts.js</code>. Let's try to render a view in this file. <code>app.io</code> uses <code>Swig</code> as a template engine.
+By default, <code>app.io</code> is looking for the <code>view</code> directory. You can change it from the configuration file; <code>config/development.js</code>.</p>
+
+<div class="highlight highlight-source-js"><pre>  boot<span class="pl-k">:</span> {
+      view<span class="pl-k">:</span> {
+          dir<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>view<span class="pl-pds">'</span></span>,
+          swig<span class="pl-k">:</span> {
+              cache<span class="pl-k">:</span> <span class="pl-c1">false</span>
+          }
+      },
+      <span class="pl-k">...</span>
+  }</pre></div>
+
+<p>Now our route file looks like this;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-smi">app</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>/my-route<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">req</span>, <span class="pl-smi">res</span>, <span class="pl-smi">next</span>) {
+        <span class="pl-smi">res</span>.<span class="pl-en">render</span>(<span class="pl-s"><span class="pl-pds">'</span>test/my-route<span class="pl-pds">'</span></span>);
+    });
+};</pre></div>
+
+<h3>
+<a id="static-files" class="anchor" href="#static-files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static Files</h3>
+
+<p>By default, <code>app.io</code> is looking for the <code>public</code> directory to serve static files. You can change it from the configuration file; <code>config/development.js</code>.</p>
+
+<div class="highlight highlight-source-js"><pre>  boot<span class="pl-k">:</span> {
+      <span class="pl-s"><span class="pl-pds">'</span>static<span class="pl-pds">'</span></span><span class="pl-k">:</span> {
+          dir<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>public<span class="pl-pds">'</span></span>,
+          options<span class="pl-k">:</span> {
+              maxAge<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>1d<span class="pl-pds">'</span></span>
+          }
+      },
+      <span class="pl-k">...</span>
+  }</pre></div>
+
+<h2>
+<a id="api-responses" class="anchor" href="#api-responses" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API Responses</h2>
+
+<p>The <code>meta</code> key is used to give extra information about the response. If the request is succesful and everything is ok, you will receive a <code>200</code> response with data.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">200</span>
+  },
+  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-k">...</span>
+  }
+}</pre></div>
+
+<p>If the data you are looking for is not found, you will receive a <code>404</code> error response.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>NotFound<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">404</span>
+  }
+}</pre></div>
+
+<p>If the data you send to a resource is not valid, you will receive a <code>422</code> error response.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>UnprocessableEntity<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">422</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+      <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>ValidationError<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>errors<span class="pl-pds">"</span></span><span class="pl-k">:</span> [
+        <span class="pl-k">...</span>
+      ]
+    }
+  }
+}</pre></div>
+
+<p>If you don't have a proper permission on a resource, or if you don't send a <code>X-Access-Token</code> header that is required by the resource, you will receive a <code>403</code> error response.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Forbidden<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">403</span>
+  }
+}</pre></div>
+
+<p>If something is wrong about any authentication endpoint, you will receive a <code>401</code> error response.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Unauthorized<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">401</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-k">...</span>
+    }
+  }
+}</pre></div>
+
+<p>If something is wrong about the server, you will receive a <code>500</code> error response.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-k">...</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">500</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-k">...</span>
+  }
+}</pre></div>
+
+<p>You will receive a <code>201</code> response to a <code>POST</code> request that results in a creation.</p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>meta<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Created<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>code<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">201</span>
+  },
+  <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s"><span class="pl-pds">"</span>doc<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+        <span class="pl-k">...</span>
+    }
+  }
+}</pre></div>
+
+<p>You will receive a <code>204 NoContent</code> response to a successful request that won't be returning a body (like a <code>DELETE</code> request).</p>
+
+<h2>
+<a id="detailed-look-at-acl" class="anchor" href="#detailed-look-at-acl" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Detailed Look at ACL</h2>
+
+<p><code>app.io</code> has an <code>ACL (Access Control Lists)</code> protection on the resources. If you don't have a proper permission on a resource, you will receive a <code>403</code> error response.
+You can create any role you want, and select the methods you want to give access to any resources; such as, <code>get</code>, <code>post</code>, <code>put</code>, <code>delete</code>.<br>
+You can use the admin UI for this process. You can create the role from <code>System-&gt;Roles</code> page, and then create the action from <code>System-&gt;Actions</code> page.
+Just fill in the form; select the <code>Role</code>, the <code>Object</code> (resource) and the <code>Action</code> (HTTP methods) fields.<br>
+If you want a strict control on the permissions, you can use the config file.</p>
+
+<div class="highlight highlight-source-js"><pre>roles<span class="pl-k">:</span> {
+    test<span class="pl-k">:</span> {
+        <span class="pl-s"><span class="pl-pds">'</span>default<span class="pl-pds">'</span></span><span class="pl-k">:</span> [
+            {name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Admin<span class="pl-pds">'</span></span>, slug<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>admin<span class="pl-pds">'</span></span>},
+            {name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>User<span class="pl-pds">'</span></span>, slug<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>},
+            {name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Guest<span class="pl-pds">'</span></span>, slug<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>guest<span class="pl-pds">'</span></span>},
+            <span class="pl-k">...</span>
+        ],
+        initial<span class="pl-k">:</span> {
+            register<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>user<span class="pl-pds">'</span></span>
+        },
+        actions<span class="pl-k">:</span> {
+            user<span class="pl-k">:</span> {
+                <span class="pl-s"><span class="pl-pds">'</span>test.posts<span class="pl-pds">'</span></span><span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>get<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>post<span class="pl-pds">'</span></span>],
+                <span class="pl-k">...</span>
+            },
+            guest<span class="pl-k">:</span> {
+                <span class="pl-s"><span class="pl-pds">'</span>test.posts<span class="pl-pds">'</span></span><span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>get<span class="pl-pds">'</span></span>],
+                <span class="pl-k">...</span>
+            }
+        }
+    }
+}</pre></div>
+
+<h3>
+<a id="master-user-level" class="anchor" href="#master-user-level" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Master User Level</h3>
+
+<p>Not documented</p>
+
+<h2>
+<a id="models" class="anchor" href="#models" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Models</h2>
+
+<p>Models are the core of the <code>app.io</code> architecture. <code>app.io</code> basically uses <code>Mongoose</code> models; 
+thus, you can use all abilities of the <code>Mongoose</code> models, such as, <code>Mongoose</code> plugins, hooks, validations, etc.</p>
+
+<h2>
+<a id="field-options" class="anchor" href="#field-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Field Options</h2>
+
+<p>You can use all <code>Mongoose</code> field options. <code>Mongoose</code> based options are;  </p>
+
+<ul>
+<li>
+<strong><code>default</code></strong><br>
+</li>
+<li>
+<strong><code>required</code></strong><br>
+</li>
+<li>
+<strong><code>enum</code></strong> string<br>
+</li>
+<li>
+<strong><code>lowercase</code></strong> string<br>
+</li>
+<li>
+<strong><code>match</code></strong> string<br>
+</li>
+<li>
+<strong><code>maxlength</code></strong> string<br>
+</li>
+<li>
+<strong><code>minlength</code></strong> string<br>
+</li>
+<li>
+<strong><code>trim</code></strong> string<br>
+</li>
+<li>
+<strong><code>uppercase</code></strong> string<br>
+</li>
+<li>
+<strong><code>max</code></strong> number, date<br>
+</li>
+<li>
+<strong><code>min</code></strong> number, date<br>
+</li>
+<li>
+<strong><code>expires</code></strong> date<br>
+</li>
+</ul>
+
+<p>The list of other <code>app.io</code> based field options are;   </p>
+
+<ul>
+<li>
+<strong><code>alias</code></strong> <code>Mongodb</code> key names are very important. Use the smallest keys possible, use the <code>alias</code> option when using <code>REST API</code>. For example;<br>
+</li>
+</ul>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> Schema <span class="pl-k">=</span> {
+    <span class="pl-k">...</span>
+    em <span class="pl-k">:</span> {type<span class="pl-k">:</span> <span class="pl-c1">String</span>, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>, unique<span class="pl-k">:</span> <span class="pl-c1">true</span>},
+    <span class="pl-k">...</span> 
+};  </pre></div>
+
+<ul>
+<li>
+<strong><code>settings</code></strong><br>
+</li>
+<li>
+<strong><code>optional</code></strong><br>
+</li>
+<li>
+<strong><code>allow_html</code></strong><br>
+</li>
+<li>
+<strong><code>pattern</code></strong><br>
+</li>
+<li>
+<strong><code>minLength</code></strong><br>
+</li>
+<li>
+<strong><code>maxLength</code></strong><br>
+</li>
+<li>
+<strong><code>exactLength</code></strong><br>
+</li>
+<li>
+<strong><code>min</code></strong><br>
+</li>
+<li>
+<strong><code>max</code></strong><br>
+</li>
+<li>
+<strong><code>lt</code></strong><br>
+</li>
+<li>
+<strong><code>lte</code></strong><br>
+</li>
+<li>
+<strong><code>gt</code></strong><br>
+</li>
+<li>
+<strong><code>gte</code></strong><br>
+</li>
+<li>
+<strong><code>ne</code></strong><br>
+</li>
+<li>
+<strong><code>rules</code></strong><br>
+</li>
+<li>
+<strong><code>pair</code></strong><br>
+</li>
+<li>
+<strong><code>owner</code></strong><br>
+</li>
+<li>
+<strong><code>flex_ref</code></strong><br>
+</li>
+<li>
+<strong><code>entity_acl</code></strong><br>
+</li>
+<li>
+<strong><code>belongs_to</code></strong><br>
+</li>
+<li>
+<strong><code>depends</code></strong><br>
+</li>
+<li>
+<strong><code>s3</code></strong><br>
+</li>
+<li>
+<strong><code>from</code></strong><br>
+</li>
+</ul>
+
+<h3>
+<a id="model-loader-options" class="anchor" href="#model-loader-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model Loader Options</h3>
+
+<p>Along with those field options, there are many other loader options. The loader options add new abilities that have not been in <code>Mongoose</code>.<br>
+You have to pass a <code>Mongoose</code> schema object to the <code>app.libpost.model.loader.mongoose</code> function as a parameter for these additional abilities.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    Name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test_Posts<span class="pl-pds">'</span></span>,
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<h4>
+<a id="admin-ui-options" class="anchor" href="#admin-ui-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Admin UI Options</h4>
+
+<p>With the <code>Options</code> key you can configure admin UI options. Here are the list of the properties;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Options<span class="pl-k">:</span> {
+        singular <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test Post<span class="pl-pds">'</span></span>,
+        plural   <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test Posts<span class="pl-pds">'</span></span>,
+        columns  <span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>body<span class="pl-pds">'</span></span>],
+        main     <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span>,
+        perpage  <span class="pl-k">:</span> <span class="pl-c1">25</span>,
+        <span class="pl-k">...</span>
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<ul>
+<li>
+<strong><code>singular</code></strong><br>
+</li>
+<li>
+<strong><code>plural</code></strong><br>
+</li>
+<li>
+<strong><code>columns</code></strong><br>
+</li>
+<li>
+<strong><code>extra</code></strong><br>
+</li>
+<li>
+<strong><code>main</code></strong><br>
+</li>
+<li>
+<strong><code>perpage</code></strong><br>
+</li>
+<li>
+<strong><code>sort</code></strong><br>
+</li>
+<li>
+<strong><code>filter</code></strong><br>
+</li>
+<li>
+<strong><code>nocreate</code></strong><br>
+</li>
+<li>
+<strong><code>nodelete</code></strong><br>
+</li>
+<li>
+<strong><code>noedit</code></strong><br>
+</li>
+<li>
+<strong><code>nested</code></strong><br>
+</li>
+<li>
+<strong><code>actions</code></strong><br>
+</li>
+<li>
+<strong><code>analytics</code></strong><br>
+</li>
+</ul>
+
+<h4>
+<a id="data-denormalization" class="anchor" href="#data-denormalization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data Denormalization</h4>
+
+<p>Denormalizing data from another model is very simple with the <code>Denorm</code> key.<br>
+If the reference data you have normalized before is updated; the model loader also updates your denormalized data.<br>
+There are two ways of denormalizing the reference model data:  </p>
+
+<ul>
+<li>The first way is to add a seperate field to your model. Then, you can denormalize data from another field that has a reference model.<br>
+For example; you can denormalize the user's email from the reference of the <code>users</code> field.<br>
+In order to do this, you should add the <code>users_email</code> field to your model. Here is the structure;<br>
+</li>
+</ul>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Denorm<span class="pl-k">:</span> {
+        <span class="pl-s"><span class="pl-pds">'</span>System_Users<span class="pl-pds">'</span></span><span class="pl-k">:</span> {
+            targets<span class="pl-k">:</span> {
+                source<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,
+                fields<span class="pl-k">:</span> {users_email<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>}
+            }
+        },
+        <span class="pl-k">...</span>
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<p><code>System_Users</code> is the reference model of the <code>users</code> field, so our source is the <code>users</code> field.<br>
+Then we can set the fields. We want to denormalize the <code>email</code> data from the <code>System_Users</code> model to the <code>users_email</code> field.
+We can set this <code>fields</code> option like this;</p>
+
+<div class="highlight highlight-source-js"><pre>fields<span class="pl-k">:</span> {users_email<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>}</pre></div>
+
+<ul>
+<li>The second way is to choose a reference model. Then, you can denormalize the fields of the reference model to a target field.<br>
+In this way there is no source field. The model loader collects the denormalized data of every field that has the same reference model.</li>
+</ul>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Denorm<span class="pl-k">:</span> {
+        <span class="pl-s"><span class="pl-pds">'</span>System_Users<span class="pl-pds">'</span></span><span class="pl-k">:</span> {
+            target<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>data_users<span class="pl-pds">'</span></span>,
+            fields<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>
+        },
+        <span class="pl-k">...</span>
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<p>Don't forget to add a field for the denormalized data. In this example, this is the <code>data_users</code> field.
+You have to select the <code>Mixed</code> type. Write the name of the reference model to the <code>from</code> option.</p>
+
+<div class="highlight highlight-source-js"><pre>d_u <span class="pl-k">:</span> {type<span class="pl-k">:</span> Mixed, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>data_users<span class="pl-pds">'</span></span>, from<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>System_Users<span class="pl-pds">'</span></span>},</pre></div>
+
+<h4>
+<a id="document-owner-protection" class="anchor" href="#document-owner-protection" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Document Owner Protection</h4>
+
+<p><code>app.io</code> has an <code>ACL</code> protection on the resources, but those are basically the permissions on the resources according to the <code>HTTP</code> methods.<br>
+With this kind of protection the ownership of the document is not guaranteed.
+If you have a <code>users</code> or a <code>profiles</code> field on your model, and if you want to guarantee that the owner of the request is also the owner of the document,
+then you have to use the <code>Owner</code> key. Just set the <code>users</code> (alias: 'users') and the <code>profiles</code> (profile: {alias: 'profiles'}) fields and 
+select the <code>HTTP</code> methods you want to guarantee the ownership.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Owner<span class="pl-k">:</span> {
+        alias   <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>,
+        profile <span class="pl-k">:</span> {alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>profiles<span class="pl-pds">'</span></span>},
+        protect <span class="pl-k">:</span> {
+            <span class="pl-s"><span class="pl-pds">'</span>get<span class="pl-pds">'</span></span>    <span class="pl-k">:</span> <span class="pl-c1">true</span>,
+            <span class="pl-s"><span class="pl-pds">'</span>getid<span class="pl-pds">'</span></span>  <span class="pl-k">:</span> <span class="pl-c1">true</span>,
+            <span class="pl-s"><span class="pl-pds">'</span>post<span class="pl-pds">'</span></span>   <span class="pl-k">:</span> <span class="pl-c1">true</span>,
+            <span class="pl-s"><span class="pl-pds">'</span>put<span class="pl-pds">'</span></span>    <span class="pl-k">:</span> <span class="pl-c1">true</span>,
+            <span class="pl-s"><span class="pl-pds">'</span>remove<span class="pl-pds">'</span></span> <span class="pl-k">:</span> <span class="pl-c1">true</span>
+        }
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<h4>
+<a id="masking-api-data" class="anchor" href="#masking-api-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Masking API Data</h4>
+
+<p>If you are working with the <code>REST APIs</code>, then you will need some important features. Masking the data is one of the important features.<br>
+You may need to mask the data on a <code>GET</code>, a <code>POST</code> or a <code>PUT</code> request. You have to use the <code>Mask</code> key to mask the data.
+You can configure the masking options according to an HTTP method, and, according to the role or the ownership level as well.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Mask<span class="pl-k">:</span> {
+        <span class="pl-s"><span class="pl-pds">'</span>get<span class="pl-pds">'</span></span><span class="pl-k">:</span> {guest<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title,body,created_at<span class="pl-pds">'</span></span>},
+        <span class="pl-s"><span class="pl-pds">'</span>post<span class="pl-pds">'</span></span><span class="pl-k">:</span> {owner<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title,body<span class="pl-pds">'</span></span>},
+        <span class="pl-s"><span class="pl-pds">'</span>put<span class="pl-pds">'</span></span><span class="pl-k">:</span> {owner<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title,body<span class="pl-pds">'</span></span>}
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<p>The available levels for an <code>HTTP</code> method are; <code>master</code>, <code>owner</code>, <code>user</code>, <code>guest</code>.</p>
+
+<h4>
+<a id="reference-counting" class="anchor" href="#reference-counting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Reference Counting</h4>
+
+<p>Sometimes you may need the count in a reference model. We have the <code>test.posts</code> model at the examples above.
+If you create a <code>test.comments</code> model, and if you want to store the count of the comments in a collection on the <code>test.posts</code> model, you can use this feature.
+Just add a field on the <code>test.posts</code> model for the comment count. Use the <code>CountRef</code> key to set the reference counting on the <code>test.comments</code> model.
+Our <code>test.comments</code> schema;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-k">var</span> _query    <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">lib</span>.<span class="pl-smi">query</span>;
+    <span class="pl-k">var</span> _mongoose <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">core</span>.<span class="pl-smi">mongo</span>.<span class="pl-smi">mongoose</span>;
+    <span class="pl-k">var</span> ObjectId  <span class="pl-k">=</span> <span class="pl-smi">_mongoose</span>.<span class="pl-smi">Schema</span>.<span class="pl-smi">Types</span>.<span class="pl-smi">ObjectId</span>;
+    <span class="pl-k">var</span> Mixed     <span class="pl-k">=</span> <span class="pl-smi">_mongoose</span>.<span class="pl-smi">Schema</span>.<span class="pl-smi">Types</span>.<span class="pl-smi">Mixed</span>;
+
+    <span class="pl-c">// schema</span>
+    <span class="pl-k">var</span> Schema <span class="pl-k">=</span> {
+        u  <span class="pl-k">:</span> {type<span class="pl-k">:</span> ObjectId, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, ref<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>System_Users<span class="pl-pds">'</span></span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>},
+        p  <span class="pl-k">:</span> {type<span class="pl-k">:</span> ObjectId, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, ref<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test_Posts<span class="pl-pds">'</span></span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>posts<span class="pl-pds">'</span></span>},
+        b  <span class="pl-k">:</span> {type<span class="pl-k">:</span> <span class="pl-c1">String</span>, required<span class="pl-k">:</span> <span class="pl-c1">true</span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>body<span class="pl-pds">'</span></span>},
+        ca <span class="pl-k">:</span> {type<span class="pl-k">:</span> <span class="pl-c1">Date</span>, <span class="pl-k">default</span><span class="pl-k">:</span> <span class="pl-c1">Date</span>.<span class="pl-smi">now</span>, alias<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>created_at<span class="pl-pds">'</span></span>}
+    };
+
+    <span class="pl-c">// settings</span>
+    <span class="pl-smi">Schema</span>.<span class="pl-smi">u</span>.<span class="pl-smi">settings</span> <span class="pl-k">=</span> {label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>User<span class="pl-pds">'</span></span>, display<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>};
+    <span class="pl-smi">Schema</span>.<span class="pl-smi">p</span>.<span class="pl-smi">settings</span> <span class="pl-k">=</span> {label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Post<span class="pl-pds">'</span></span>, display<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>title<span class="pl-pds">'</span></span>};
+    <span class="pl-smi">Schema</span>.<span class="pl-smi">b</span>.<span class="pl-smi">settings</span> <span class="pl-k">=</span> {label<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Body<span class="pl-pds">'</span></span>};
+
+    <span class="pl-c">// load schema</span>
+    <span class="pl-k">var</span> CommentSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+        Name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test_Comments<span class="pl-pds">'</span></span>,
+        Options<span class="pl-k">:</span> {
+            singular <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test Comment<span class="pl-pds">'</span></span>,
+            plural   <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Test Comments<span class="pl-pds">'</span></span>,
+            columns  <span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>users<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>posts<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>body<span class="pl-pds">'</span></span>],
+            main     <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>body<span class="pl-pds">'</span></span>,
+            perpage  <span class="pl-k">:</span> <span class="pl-c1">25</span>
+        },
+        CountRef<span class="pl-k">:</span> {
+            posts<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>comments_count<span class="pl-pds">'</span></span>
+        }
+    });
+
+    <span class="pl-c">// plugins</span>
+    <span class="pl-smi">CommentSchema</span>.<span class="pl-en">plugin</span>(_query);
+
+    <span class="pl-k">return</span> <span class="pl-smi">_mongoose</span>.<span class="pl-en">model</span>(<span class="pl-s"><span class="pl-pds">'</span>Test_Comments<span class="pl-pds">'</span></span>, CommentSchema);
+};</pre></div>
+
+<p>You can configure the reference counting just like this;</p>
+
+<div class="highlight highlight-source-js"><pre>CountRef<span class="pl-k">:</span> {
+    posts<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>comments_count<span class="pl-pds">'</span></span>
+}</pre></div>
+
+<p>If the comment is removed, then the model loader updates the count. 
+Don't forget to add the <code>comments_count</code> (number) field to the <code>test.posts</code> model.</p>
+
+<h4>
+<a id="field-reference-counting" class="anchor" href="#field-reference-counting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Field Reference Counting</h4>
+
+<p>If you want to count the size of a field that has a reference, then you can use the <code>Count</code> key. It stores the count of the data in the reference collection of the source field.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Count<span class="pl-k">:</span> {
+        <span class="pl-s"><span class="pl-pds">'</span>source_field<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>target_field<span class="pl-pds">'</span></span>
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<h4>
+<a id="field-size-calculating" class="anchor" href="#field-size-calculating" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Field Size Calculating</h4>
+
+<p>If you have an array field, and if you want to store the size of that array on the document itself, then you can use the <code>Size</code> key.
+<code>Mongodb</code> doesn't give the size of an array by default; in order to get the array size, you have to execute an aggregation query.
+The <code>Size</code> key is simplifies this process. For example;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Size<span class="pl-k">:</span> {
+        tags<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>tags_count<span class="pl-pds">'</span></span>
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<p>If you have a <code>tags</code> field on the <code>test.posts</code> model, then simply add a new <code>tags_count</code> field to your schema.
+The model loader calculates the size of the <code>tags</code> and updates the <code>tags_count</code>.</p>
+
+<h4>
+<a id="field-hook-mechanism" class="anchor" href="#field-hook-mechanism" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Field Hook Mechanism</h4>
+
+<p>If you want to push the value of a field to a collection on another reference model, then you can use the <code>Hook</code> key.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> PostSchema <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">libpost</span>.<span class="pl-smi">model</span>.<span class="pl-smi">loader</span>.<span class="pl-en">mongoose</span>(Schema, {
+    <span class="pl-k">...</span>
+    Hook<span class="pl-k">:</span> {
+        push<span class="pl-k">:</span> {
+            <span class="pl-s"><span class="pl-pds">'</span>field_of_the_source_value<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>field_of_the_target_reference:target_field<span class="pl-pds">'</span></span>,
+            <span class="pl-k">...</span>
+        }
+    },
+    <span class="pl-k">...</span>
+});</pre></div>
+
+<p><strong>ps</strong>: It doesn't work on the fields that are identified as entities.</p>
+
+<h3>
+<a id="predefined-models" class="anchor" href="#predefined-models" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Predefined Models</h3>
+
+<p><code>app.io</code> has a bunch of predefined models. They are used in the <code>app.io</code> system, for example user registration.
+You can use any predefined model you want, or use them as a reference on your models, it's up to you.</p>
+
+<h4>
+<a id="system-models" class="anchor" href="#system-models" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>System Models</h4>
+
+<ul>
+<li>
+<strong><code>system.accounts</code></strong><br>
+</li>
+<li>
+<strong><code>system.actions</code></strong><br>
+</li>
+<li>
+<strong><code>system.apps</code></strong><br>
+</li>
+<li>
+<strong><code>system.filters</code></strong><br>
+</li>
+<li>
+<strong><code>system.images</code></strong><br>
+</li>
+<li>
+<strong><code>system.invites</code></strong><br>
+</li>
+<li>
+<strong><code>system.locations</code></strong><br>
+</li>
+<li>
+<strong><code>system.objects</code></strong><br>
+</li>
+<li>
+<strong><code>system.roles</code></strong><br>
+</li>
+<li>
+<strong><code>system.users</code></strong><br>
+</li>
+</ul>
+
+<h3>
+<a id="caching-data" class="anchor" href="#caching-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Caching Data</h3>
+
+<p>If you want to cache your data on <code>Redis</code> for faster response times, you can use the <code>cacheKey</code> query parameter.</p>
+
+<h2>
+<a id="built-in-middlewares" class="anchor" href="#built-in-middlewares" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Built-in Middlewares</h2>
+
+<p><code>app.io</code> has lots of built-in middlewares to simplify your work. 
+Most of them are included by default. You have to enable some of the middlewares in order to use them.</p>
+
+<h3>
+<a id="express-middlewares" class="anchor" href="#express-middlewares" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Express Middlewares</h3>
+
+<ol>
+<li><p>The <code>REST API</code> part of <code>app.io</code> uses these <code>Express</code> middlewares:<br>
+<code>body-parser</code>, <code>morgan</code>, <code>cors</code>. </p></li>
+<li><p>The <code>Web application</code> part of <code>app.io</code> uses these <code>Express</code> middlewares.
+<code>swig</code> as a template engine, <code>compression</code>, <code>static</code>, <code>cookie-parser</code>,
+<code>express-session</code> with <code>connect-redis</code>, <code>connect-flash</code>, <code>serve-favicon</code> and <code>passport</code>.</p></li>
+</ol>
+
+<h3>
+<a id="appio-middlewares" class="anchor" href="#appio-middlewares" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>app.io Middlewares</h3>
+
+<p><code>app.io</code> has a bunch of middlewares used internally. They are used on the resource endpoints, authentication endpoints, etc.
+Feel free to use them on your endpoints. You can find them in the <code>middle</code> directory, and you can use a middleware like this; <code>app.middle.acl</code>.</p>
+
+<h2>
+<a id="admin-ui" class="anchor" href="#admin-ui" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Admin UI</h2>
+
+<p><code>app.io</code> has an <code>admin UI</code>, generated from the models automatically. Write your models and start to manage your data immediately. 
+You can also manage multiple applications from the admin UI. System models are automatically filtered with the active application ID.
+Look at the <code>Admin UI Options</code> section for detailed options.</p>
+
+<h2>
+<a id="built-in-job-queue" class="anchor" href="#built-in-job-queue" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Built-in Job Queue</h2>
+
+<p><code>app.io</code> has a built-in job queue based on <code>Kue</code>. <code>app.io</code> uses it for some internal tasks, but you can easily use the job queue for your tasks.<br>
+You can get the <code>Kue</code> object like this;  </p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">...</span>
+<span class="pl-k">var</span> kue <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">boot</span>.<span class="pl-smi">kue</span>; 
+<span class="pl-k">...</span></pre></div>
+
+<p>and easily create a job like this;  </p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">kue</span>.<span class="pl-en">create</span>(<span class="pl-s"><span class="pl-pds">'</span>task-name<span class="pl-pds">'</span></span>, {
+    title<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Task Title<span class="pl-pds">'</span></span>,
+    params<span class="pl-k">:</span> {
+        <span class="pl-k">...</span>
+    }
+}).<span class="pl-en">attempts</span>(<span class="pl-c1">3</span>).<span class="pl-en">removeOnComplete</span>(<span class="pl-c1">true</span>).<span class="pl-en">save</span>();</pre></div>
+
+<p>Now look at your <code>workers.js</code> file. You have to run this file in order to start listening your job queue; <code>$ node workers</code>.
+Don't forget to include your external worker directory.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AppIo <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>app.io<span class="pl-pds">'</span></span>);
+<span class="pl-k">new</span> <span class="pl-en">AppIo</span>({
+    basedir<span class="pl-k">:</span> <span class="pl-c1">__dirname</span>,
+    external<span class="pl-k">:</span> {
+        model<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>],
+        worker<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>]
+    }
+}).<span class="pl-en">workers</span>();</pre></div>
+
+<p>Create a file under the <code>worker</code> directory; <code>worker/test/my-job.js</code>, and write your job processor.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-k">var</span> _kue <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">boot</span>.<span class="pl-smi">kue</span>;
+
+    <span class="pl-smi">_kue</span>.<span class="pl-en">process</span>(<span class="pl-s"><span class="pl-pds">'</span>task-name<span class="pl-pds">'</span></span>, <span class="pl-c1">1</span>, <span class="pl-k">function</span>(<span class="pl-smi">job</span>, <span class="pl-smi">done</span>) {
+        <span class="pl-k">var</span> params <span class="pl-k">=</span> <span class="pl-smi">job</span>.<span class="pl-c1">data</span>.<span class="pl-smi">params</span>;
+        <span class="pl-k">...</span>
+    });
+};</pre></div>
+
+<h2>
+<a id="built-in-cron" class="anchor" href="#built-in-cron" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Built-in Cron</h2>
+
+<p><code>app.io</code> uses <code>cron</code> under the hood for cronjobs. You can easily create a cronjob like this;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">app</span>) {
+    <span class="pl-k">var</span> _cron <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">boot</span>.<span class="pl-smi">cron</span>;
+
+    <span class="pl-k">new</span> <span class="pl-en">_cron</span>(<span class="pl-s"><span class="pl-pds">'</span>0 */30 * * * *<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>() {
+        <span class="pl-k">...</span>
+    }, <span class="pl-c1">null</span>, <span class="pl-c1">true</span>);    
+};</pre></div>
+
+<h2>
+<a id="built-in-mailer" class="anchor" href="#built-in-mailer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Built-in Mailer</h2>
+
+<p><code>app.io</code> has a built-in mailer based on <code>Nodemailer</code>. You can easily use the mailer to send your mails.
+You can configure your mailer from the configuration file; <code>config/development.js</code>.</p>
+
+<div class="highlight highlight-source-js"><pre>boot<span class="pl-k">:</span> {
+    <span class="pl-k">...</span>
+    mailer<span class="pl-k">:</span> {
+        <span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span><span class="pl-k">:</span> {
+            service<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Mailgun<span class="pl-pds">'</span></span>,
+            auth<span class="pl-k">:</span> {
+                user<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Mailgun user<span class="pl-pds">'</span></span>,
+                pass<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Mailgun pass<span class="pl-pds">'</span></span>
+            },
+            socketTimeout<span class="pl-k">:</span> <span class="pl-c1">60000</span>
+        }
+    },
+    <span class="pl-k">...</span>
+}</pre></div>
+
+<p>and send your mail like this;</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">...</span>
+<span class="pl-k">var</span> _mailer    <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">lib</span>.<span class="pl-smi">mailer</span>;
+<span class="pl-k">var</span> _transport <span class="pl-k">=</span> <span class="pl-smi">app</span>.<span class="pl-smi">boot</span>.<span class="pl-smi">mailer</span>[<span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span>] <span class="pl-c">// 'test' is your app slug.</span>
+<span class="pl-c">// send your mail</span>
+<span class="pl-k">new</span> <span class="pl-en">_mailer</span>(_transport).<span class="pl-c1">send</span>({
+    from<span class="pl-k">:</span> <span class="pl-k">...</span>,
+    to<span class="pl-k">:</span> <span class="pl-k">...</span>, 
+    subject<span class="pl-k">:</span> <span class="pl-k">...</span>,
+    html<span class="pl-k">:</span> <span class="pl-k">...</span>,
+    <span class="pl-k">...</span>
+}); 
+<span class="pl-k">...</span></pre></div>
+
+<h2>
+<a id="social-authentication" class="anchor" href="#social-authentication" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Social Authentication</h2>
+
+<p><code>app.io</code> has a built-in social authentication middleware based on <code>Passport</code>. 
+<code>app.io</code> simplifies the authentication process into the major social networks.
+The authentication strategies of Facebook, Foursquare, Instagram, and Twitter are implemented for now.
+<code>app.io</code> saves or updates the user's social data to <code>system.accounts</code> model,
+sets the session object as <code>req.session.social</code>, and redirects the page to the success or failure endpoints that is configured before in the <code>config/development.js</code>.</p>
+
+<h2>
+<a id="file-uploads" class="anchor" href="#file-uploads" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>File Uploads</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="on-the-fly-image-resizer" class="anchor" href="#on-the-fly-image-resizer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>On the Fly Image Resizer</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="built-in-url-shortener-service" class="anchor" href="#built-in-url-shortener-service" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Built-in URL Shortener Service</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="built-in-rss-feed-parser" class="anchor" href="#built-in-rss-feed-parser" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Built-in RSS Feed Parser</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="data-synchronization" class="anchor" href="#data-synchronization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data Synchronization</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="socketio-support" class="anchor" href="#socketio-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Socket.io Support</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="oauth" class="anchor" href="#oauth" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Oauth</h2>
+
+<p>Not documented</p>
+
+<h2>
+<a id="api-documentation" class="anchor" href="#api-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API Documentation</h2>
+
+<p>Not documented</p>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
-<p>The MIT License (MIT)</p>
+<pre><code>The MIT License (MIT)
 
-<p>Copyright (c) 2016 Selçuk Fatih Sevinç</p>
+Copyright (c) 2016 Selçuk Fatih Sevinç
 
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
+furnished to do so, subject to the following conditions:
 
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/selcukfatihsevinc">selcukfatihsevinc</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+SOFTWARE.
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/selcukfatihsevinc/app.io">App.io</a> is maintained by <a href="https://github.com/selcukfatihsevinc">selcukfatihsevinc</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
+
+    </section>
+
+  
   </body>
 </html>
