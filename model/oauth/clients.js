@@ -69,8 +69,11 @@ module.exports = function(app) {
         var self = this;
 
         if(self.isNew) {
-            self.clientId     = _helper.random(32);
-            self.clientSecret = _helper.random(32);
+            if( ! self.clientId )
+                self.clientId = _helper.random(32);
+
+            if( ! self.clientSecret )
+                self.clientSecret = _helper.random(32);
         }
 
         next();

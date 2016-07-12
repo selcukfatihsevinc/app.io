@@ -91,8 +91,8 @@ module.exports = function(app) {
         ]
     };
 
-	Schema.ll.settings = {label: 'Last Login'};
-	Schema.ca.settings = {label: 'Created At'};
+	Schema.ll.settings = {initial: false, label: 'Last Login'};
+	Schema.ca.settings = {initial: false, label: 'Created At'};
     
     /**
      * ----------------------------------------------------------------
