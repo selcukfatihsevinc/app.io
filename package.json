@@ -91,7 +91,7 @@
     "node-read": "0.1.7",
     "short": "https://github.com/selcukfatihsevinc/short/tarball/579a4e9dad4b2ca57894bb00b4f21d8190b42381",
     "natural": "0.4.0",
-    "lodash": "4.13.1",
+    "lodash": "4.14.2",
     "image-size": "0.5.0",
     "micromatch": "2.3.10",
     "nodemailer": "2.4.2",
