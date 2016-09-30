@@ -74,7 +74,7 @@
     "email-addresses": "2.0.2",
     "cors": "2.7.1",
     "bunyan": "1.8.1",
-    "aws-sdk": "2.4.1",
+    "aws-sdk": "2.5.5",
     "ejs": "2.4.2",
     "geonames-reader": "0.2.4",
     "speakingurl": "9.0.0",
