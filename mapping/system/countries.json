@@ -1,0 +1,2369 @@
+{
+  "AD": {
+    "n": "Principality of Andorra",
+    "an": "Principality of Andorra",
+    "cc": "AD",
+    "aen": [
+      "Andorra",
+      "Principality of Andorra"
+    ],
+    "atr": [
+      "Andora",
+      "Andorra"
+    ]
+  },
+  "AE": {
+    "n": "United Arab Emirates",
+    "an": "United Arab Emirates",
+    "cc": "AE",
+    "aen": [
+      "United Arab Emirates"
+    ],
+    "atr": [
+      "Birleşik Arap Emirlikleri"
+    ]
+  },
+  "AF": {
+    "n": "Islamic Republic of Afghanistan",
+    "an": "Islamic Republic of Afghanistan",
+    "cc": "AF",
+    "aen": [
+      "Afghanistan",
+      "Islamic Republic of Afghanistan"
+    ],
+    "atr": [
+      "Afganistan"
+    ]
+  },
+  "AG": {
+    "n": "Antigua and Barbuda",
+    "an": "Antigua and Barbuda",
+    "cc": "AG",
+    "aen": [
+      "Antigua and Barbuda"
+    ],
+    "atr": [
+      "Antigua ve Barbuda"
+    ]
+  },
+  "AL": {
+    "n": "Republic of Albania",
+    "an": "Republic of Albania",
+    "cc": "AL",
+    "aen": [
+      "Albania",
+      "Republic of Albania"
+    ],
+    "atr": [
+      "Arnavutluk",
+      "Arnavutluk Cumhuriyeti"
+    ]
+  },
+  "AM": {
+    "n": "Republic of Armenia",
+    "an": "Republic of Armenia",
+    "cc": "AM",
+    "aen": [
+      "Armenia",
+      "Republic of Armenia"
+    ],
+    "atr": [
+      "Ermenistan"
+    ]
+  },
+  "AO": {
+    "n": "Republic of Angola",
+    "an": "Republic of Angola",
+    "cc": "AO",
+    "aen": [
+      "Angola",
+      "Republic of Angola"
+    ],
+    "atr": [
+      "Angola"
+    ]
+  },
+  "AR": {
+    "n": "Argentine Republic",
+    "an": "Argentine Republic",
+    "cc": "AR",
+    "aen": [
+      "Argentina",
+      "Argentine Republic"
+    ],
+    "atr": [
+      "Arjantin"
+    ]
+  },
+  "AT": {
+    "n": "Republic of Austria",
+    "an": "Republic of Austria",
+    "cc": "AT",
+    "aen": [
+      "Austria",
+      "Republic of Austria"
+    ],
+    "atr": [
+      "Avusturya"
+    ]
+  },
+  "AU": {
+    "n": "Commonwealth of Australia",
+    "an": "Commonwealth of Australia",
+    "cc": "AU",
+    "aen": [
+      "Australia"
+    ],
+    "atr": [
+      "Avustralya"
+    ]
+  },
+  "AZ": {
+    "n": "Republic of Azerbaijan",
+    "an": "Republic of Azerbaijan",
+    "cc": "AZ",
+    "aen": [
+      "Azerbaijan",
+      "Republic of Azerbaijan"
+    ],
+    "atr": [
+      "Azerbaycan"
+    ]
+  },
+  "BA": {
+    "n": "Bosnia and Herzegovina",
+    "an": "Bosnia and Herzegovina",
+    "cc": "BA",
+    "aen": [
+      "Bosnia and Herzegovina"
+    ],
+    "atr": [
+      "Bosna Hersek",
+      "Bosna-Hersek",
+      "Bosna ve Hersek"
+    ]
+  },
+  "BB": {
+    "n": "Barbados",
+    "an": "Barbados",
+    "cc": "BB",
+    "aen": [
+      "Barbados"
+    ],
+    "atr": [
+      "Barbados"
+    ]
+  },
+  "BD": {
+    "n": "Bangladesh",
+    "an": "Bangladesh",
+    "cc": "BD",
+    "aen": [
+      "Bangladesh"
+    ],
+    "atr": [
+      "Bangladeş"
+    ]
+  },
+  "BE": {
+    "n": "Kingdom of Belgium",
+    "an": "Kingdom of Belgium",
+    "cc": "BE",
+    "aen": [
+      "Belgium",
+      "Kingdom of Belgium"
+    ],
+    "atr": [
+      "Belçika"
+    ]
+  },
+  "BF": {
+    "n": "Burkina Faso",
+    "an": "Burkina Faso",
+    "cc": "BF",
+    "aen": [
+      "Burkina Faso"
+    ],
+    "atr": [
+      "Burkina Faso"
+    ]
+  },
+  "BG": {
+    "n": "Republic of Bulgaria",
+    "an": "Republic of Bulgaria",
+    "cc": "BG",
+    "aen": [
+      "Bulgaria",
+      "Republic of Bulgaria"
+    ],
+    "atr": [
+      "Bulgaristan"
+    ]
+  },
+  "BH": {
+    "n": "Kingdom of Bahrain",
+    "an": "Kingdom of Bahrain",
+    "cc": "BH",
+    "aen": [
+      "Bahrain",
+      "Kingdom of Bahrain"
+    ],
+    "atr": [
+      "Bahreyn"
+    ]
+  },
+  "BI": {
+    "n": "Republic of Burundi",
+    "an": "Republic of Burundi",
+    "cc": "BI",
+    "atr": [
+      "Burundi"
+    ],
+    "aen": [
+      "Burundi",
+      "Republic of Burundi"
+    ]
+  },
+  "BJ": {
+    "n": "Republic of Benin",
+    "an": "Republic of Benin",
+    "cc": "BJ",
+    "aen": [
+      "Benin",
+      "Republic of Benin"
+    ],
+    "atr": [
+      "Benin"
+    ]
+  },
+  "BN": {
+    "n": "Brunei Darussalam",
+    "an": "Brunei Darussalam",
+    "cc": "BN",
+    "aen": [
+      "Brunei",
+      "Brunei Darussalam"
+    ],
+    "atr": [
+      "Brunei"
+    ]
+  },
+  "BO": {
+    "n": "Plurinational State of Bolivia",
+    "an": "Plurinational State of Bolivia",
+    "cc": "BO",
+    "aen": [
+      "Bolivia",
+      "Plurinational State of Bolivia",
+      "Republic of Bolivia",
+      "Bolivia, Plurinational State Of"
+    ],
+    "atr": [
+      "Bolivya"
+    ]
+  },
+  "BR": {
+    "n": "Federative Republic of Brazil",
+    "an": "Federative Republic of Brazil",
+    "cc": "BR",
+    "aen": [
+      "Brazil",
+      "Federative Republic of Brazil"
+    ],
+    "atr": [
+      "Brezilya"
+    ]
+  },
+  "BS": {
+    "n": "Commonwealth of The Bahamas",
+    "an": "Commonwealth of The Bahamas",
+    "cc": "BS",
+    "aen": [
+      "Bahamas",
+      "The Bahamas"
+    ],
+    "atr": [
+      "Bahamalar",
+      "Bahama"
+    ]
+  },
+  "BT": {
+    "n": "Kingdom of Bhutan",
+    "an": "Kingdom of Bhutan",
+    "cc": "BT",
+    "aen": [
+      "Bhutan"
+    ],
+    "atr": [
+      "Bhutan",
+      "Butan"
+    ]
+  },
+  "BW": {
+    "n": "Republic of Botswana",
+    "an": "Republic of Botswana",
+    "cc": "BW",
+    "aen": [
+      "Botswana"
+    ],
+    "atr": [
+      "Botsvana",
+      "Botsvana Cumhuriyeti",
+      "Botswana"
+    ]
+  },
+  "BY": {
+    "n": "Republic of Belarus",
+    "an": "Republic of Belarus",
+    "cc": "BY",
+    "aen": [
+      "Belarus",
+      "Republic of Belarus"
+    ],
+    "atr": [
+      "Beyaz Rusya"
+    ]
+  },
+  "BZ": {
+    "n": "Belize",
+    "an": "Belize",
+    "cc": "BZ",
+    "aen": [
+      "Belize"
+    ],
+    "atr": [
+      "Belize"
+    ]
+  },
+  "CA": {
+    "n": "Canada",
+    "an": "Canada",
+    "cc": "CA",
+    "aen": [
+      "Canada"
+    ],
+    "atr": [
+      "Kanada"
+    ]
+  },
+  "CD": {
+    "n": "Democratic Republic of the Congo",
+    "an": "Democratic Republic of the Congo",
+    "cc": "CD",
+    "aen": [
+      "Belgian Congo",
+      "Democratic Republic of the Congo",
+      "Democratic Republic of Congo",
+      "Republic of Zaire",
+      "Congo, The Democratic Republic Of",
+      "Congo-Kinshasa",
+      "Congo [DRC]",
+      "Congo",
+      "DR Congo"
+    ],
+    "atr": [
+      "Kongo Demokratik Cumhuriyeti",
+      "Demokratik Kongo Cumhuriyeti",
+      "Kongo Cumhuriyeti"
+    ]
+  },
+  "CF": {
+    "n": "Central African Republic",
+    "an": "Central African Republic",
+    "cc": "CF",
+    "aen": [
+      "Central African Republic"
+    ],
+    "atr": [
+      "Orta Afrika Cumhuriyeti"
+    ]
+  },
+  "CG": {
+    "n": "Republic of the Congo",
+    "an": "Republic of the Congo",
+    "cc": "CG",
+    "aen": [
+      "Congo (Brazzaville",
+      "Republic of the Congo",
+      "Congo-Brazzaville",
+      "Congo"
+    ],
+    "atr": [
+      "Kongo",
+      "Kongo Cumhuriyeti",
+      "Kongo - Brazzaville"
+    ]
+  },
+  "CH": {
+    "n": "Swiss Confederation",
+    "an": "Swiss Confederation",
+    "cc": "CH",
+    "aen": [
+      "Switzerland"
+    ],
+    "atr": [
+      "İsviçre"
+    ]
+  },
+  "CI": {
+    "n": "Republic of Côte d’Ivoire",
+    "an": "Republic of Cote d'Ivoire",
+    "cc": "CI",
+    "aen": [
+      "Ivory Coast",
+      "Côte d'Ivoire",
+      "Republic of Côte d’Ivoire",
+      "Côte d’Ivoire"
+    ],
+    "atr": [
+      "Fildişi Sahilleri",
+      "Fildişi Kıyısı",
+      "Fildişi Sahili"
+    ]
+  },
+  "CL": {
+    "n": "Republic of Chile",
+    "an": "Republic of Chile",
+    "cc": "CL",
+    "aen": [
+      "Chile",
+      "Republic of Chile"
+    ],
+    "atr": [
+      "Şili"
+    ]
+  },
+  "CM": {
+    "n": "Republic of Cameroon",
+    "an": "Republic of Cameroon",
+    "cc": "CM",
+    "aen": [
+      "Cameroon",
+      "Republic of Cameroon"
+    ],
+    "atr": [
+      "Kamerun"
+    ]
+  },
+  "CN": {
+    "n": "People’s Republic of China",
+    "an": "People's Republic of China",
+    "cc": "CN",
+    "aen": [
+      "China",
+      "People's Republic of China",
+      "People’s Republic of China"
+    ],
+    "atr": [
+      "Çin",
+      "Çin Halk Cumhuriyeti"
+    ]
+  },
+  "CO": {
+    "n": "Republic of Colombia",
+    "an": "Republic of Colombia",
+    "cc": "CO",
+    "aen": [
+      "Colombia",
+      "Republic of Colombia"
+    ],
+    "atr": [
+      "Kolombiya"
+    ]
+  },
+  "CR": {
+    "n": "Republic of Costa Rica",
+    "an": "Republic of Costa Rica",
+    "cc": "CR",
+    "aen": [
+      "Costa Rica",
+      "Republic of Costa Rica"
+    ],
+    "atr": [
+      "Kosta Rika"
+    ]
+  },
+  "CU": {
+    "n": "Republic of Cuba",
+    "an": "Republic of Cuba",
+    "cc": "CU",
+    "aen": [
+      "Cuba",
+      "Republic of Cuba"
+    ],
+    "atr": [
+      "Küba"
+    ]
+  },
+  "CV": {
+    "n": "Republic of Cabo Verde",
+    "an": "Republic of Cabo Verde",
+    "cc": "CV",
+    "aen": [
+      "Cape Verde",
+      "Republic of Cape Verde",
+      "Republic of Cabo Verde",
+      "Cabo Verde"
+    ],
+    "atr": [
+      "Cape Verde",
+      "Yeşilburun"
+    ]
+  },
+  "CY": {
+    "n": "Republic of Cyprus",
+    "an": "Republic of Cyprus",
+    "cc": "CY",
+    "atr": [
+      "Kıbrıs Cumhuriyeti",
+      "Kıbrıs",
+      "Güney Kıbrıs Rum Kesimi"
+    ],
+    "aen": [
+      "Cyprus"
+    ]
+  },
+  "CZ": {
+    "n": "Czech Republic",
+    "an": "Czech Republic",
+    "cc": "CZ",
+    "aen": [
+      "Czechia",
+      "Czech Republic"
+    ],
+    "atr": [
+      "Çek Cumhuriyeti"
+    ]
+  },
+  "DE": {
+    "n": "Federal Republic of Germany",
+    "an": "Federal Republic of Germany",
+    "cc": "DE",
+    "aen": [
+      "Germany",
+      "Federal Republic of Germany",
+      "West Germany"
+    ],
+    "atr": [
+      "Almanya"
+    ]
+  },
+  "DJ": {
+    "n": "Republic of Djibouti",
+    "an": "Republic of Djibouti",
+    "cc": "DJ",
+    "aen": [
+      "Djibouti",
+      "Republic of Djibouti"
+    ],
+    "atr": [
+      "Cibuti"
+    ]
+  },
+  "DK": {
+    "n": "Kingdom of Denmark",
+    "an": "Kingdom of Denmark",
+    "cc": "DK",
+    "aen": [
+      "Denmark",
+      "Kingdom of Denmark"
+    ],
+    "atr": [
+      "Danimarka"
+    ]
+  },
+  "DM": {
+    "n": "Dominica",
+    "an": "Dominica",
+    "cc": "DM",
+    "aen": [
+      "Dominica",
+      "Commonwealth of Dominica"
+    ],
+    "atr": [
+      "Dominik",
+      "Dominika"
+    ]
+  },
+  "DO": {
+    "n": "Dominican Republic",
+    "an": "Dominican Republic",
+    "cc": "DO",
+    "aen": [
+      "Dominican Republic",
+      "Spanish Haiti"
+    ],
+    "atr": [
+      "Dominik Cumhuriyeti"
+    ]
+  },
+  "DZ": {
+    "n": "People’s Democratic Republic of Algeria",
+    "an": "People's Democratic Republic of Algeria",
+    "cc": "DZ",
+    "aen": [
+      "Algeria",
+      "People’s Democratic Republic of Algeria"
+    ],
+    "atr": [
+      "Cezayir"
+    ]
+  },
+  "EC": {
+    "n": "Republic of Ecuador",
+    "an": "Republic of Ecuador",
+    "cc": "EC",
+    "aen": [
+      "Ecuador",
+      "Republic of Ecuador"
+    ],
+    "atr": [
+      "Ekvador"
+    ]
+  },
+  "EE": {
+    "n": "Republic of Estonia",
+    "an": "Republic of Estonia",
+    "cc": "EE",
+    "aen": [
+      "Estonia",
+      "Republic of Estonia"
+    ],
+    "atr": [
+      "Estonya"
+    ]
+  },
+  "EG": {
+    "n": "Arab Republic of Egypt",
+    "an": "Arab Republic of Egypt",
+    "cc": "EG",
+    "aen": [
+      "Egypt",
+      "Arab Republic of Egypt"
+    ],
+    "atr": [
+      "Mısır"
+    ]
+  },
+  "ER": {
+    "n": "State of Eritrea",
+    "an": "State of Eritrea",
+    "cc": "ER",
+    "aen": [
+      "Eritrea",
+      "State of Eritrea"
+    ],
+    "atr": [
+      "Eritre"
+    ]
+  },
+  "ES": {
+    "n": "Kingdom of Spain",
+    "an": "Kingdom of Spain",
+    "cc": "ES",
+    "aen": [
+      "Spanish State",
+      "Spain",
+      "Kingdom of Spain"
+    ],
+    "atr": [
+      "İspanya"
+    ]
+  },
+  "ET": {
+    "n": "Federal Democratic Republic of Ethiopia",
+    "an": "Federal Democratic Republic of Ethiopia",
+    "cc": "ET",
+    "aen": [
+      "Ethiopia",
+      "Federal Democratic Republic of Ethiopia"
+    ],
+    "atr": [
+      "Etiyopya"
+    ]
+  },
+  "FI": {
+    "n": "Republic of Finland",
+    "an": "Republic of Finland",
+    "cc": "FI",
+    "aen": [
+      "Finland",
+      "Republic of Finland"
+    ],
+    "atr": [
+      "Finlandiya"
+    ]
+  },
+  "FJ": {
+    "n": "Republic of Fiji",
+    "an": "Republic of Fiji",
+    "cc": "FJ",
+    "aen": [
+      "Fiji"
+    ],
+    "atr": [
+      "Fiji"
+    ]
+  },
+  "FR": {
+    "n": "Republic of France",
+    "an": "Republic of France",
+    "cc": "FR",
+    "aen": [
+      "France"
+    ],
+    "atr": [
+      "Fransa"
+    ]
+  },
+  "GA": {
+    "n": "Gabonese Republic",
+    "an": "Gabonese Republic",
+    "cc": "GA",
+    "aen": [
+      "Gabon",
+      "Gabonese Republic"
+    ],
+    "atr": [
+      "Gabon"
+    ]
+  },
+  "GB": {
+    "n": "United Kingdom of Great Britain and Northern Ireland",
+    "an": "United Kingdom of Great Britain and Northern Ireland",
+    "cc": "GB",
+    "aen": [
+      "Great Britain",
+      "Britain",
+      "United Kingdom",
+      "UK",
+      "U.K.",
+      "United Kingdom of Great Britain and Northern Ireland"
+    ],
+    "atr": [
+      "Birleşik Krallık",
+      "İngiltere"
+    ]
+  },
+  "GD": {
+    "n": "Grenada",
+    "an": "Grenada",
+    "cc": "GD",
+    "aen": [
+      "Grenada"
+    ],
+    "atr": [
+      "Granada",
+      "Grenada"
+    ]
+  },
+  "GE": {
+    "n": "Georgia",
+    "an": "Georgia",
+    "cc": "GE",
+    "aen": [
+      "Georgian Soviet Socialist Republic",
+      "Georgia"
+    ],
+    "atr": [
+      "Gürcistan"
+    ]
+  },
+  "GH": {
+    "n": "Republic of Ghana",
+    "an": "Republic of Ghana",
+    "cc": "GH",
+    "aen": [
+      "Ghana"
+    ],
+    "atr": [
+      "Gana"
+    ]
+  },
+  "GM": {
+    "n": "Gambia",
+    "an": "Gambia",
+    "cc": "GM",
+    "aen": [
+      "Gambia",
+      "The Gambia",
+      "Republic of The Gambia"
+    ],
+    "atr": [
+      "Gambia",
+      "Gambiya"
+    ]
+  },
+  "GN": {
+    "n": "Republic of Guinea",
+    "an": "Republic of Guinea",
+    "cc": "GN",
+    "aen": [
+      "Guinea",
+      "Republic of Guinea"
+    ],
+    "atr": [
+      "Gine"
+    ]
+  },
+  "GQ": {
+    "n": "Republic of Equatorial Guinea",
+    "an": "Republic of Equatorial Guinea",
+    "cc": "GQ",
+    "aen": [
+      "Spanish Guinea",
+      "Equatorial Guinea",
+      "Republic of Equatorial Guinea"
+    ],
+    "atr": [
+      "Ekvator Ginesi"
+    ]
+  },
+  "GR": {
+    "n": "Hellenic Republic",
+    "an": "Hellenic Republic",
+    "cc": "GR",
+    "aen": [
+      "Greece",
+      "Hellenic Republic"
+    ],
+    "atr": [
+      "Yunanistan"
+    ]
+  },
+  "GT": {
+    "n": "Republic of Guatemala",
+    "an": "Republic of Guatemala",
+    "cc": "GT",
+    "aen": [
+      "Guatemala",
+      "Republic of Guatemala"
+    ],
+    "atr": [
+      "Guatemala"
+    ]
+  },
+  "GW": {
+    "n": "Republic of Guinea-Bissau",
+    "an": "Republic of Guinea-Bissau",
+    "cc": "GW",
+    "aen": [
+      "Guinea-Bissau",
+      "Republic of Guinea-Bissau"
+    ],
+    "atr": [
+      "Gine-Bissau",
+      "Gine Bissau",
+      "Gine-Biso"
+    ]
+  },
+  "GY": {
+    "n": "Co-operative Republic of Guyana",
+    "an": "Co-operative Republic of Guyana",
+    "cc": "GY",
+    "aen": [
+      "Guyana"
+    ],
+    "atr": [
+      "Guyana"
+    ]
+  },
+  "HN": {
+    "n": "Republic of Honduras",
+    "an": "Republic of Honduras",
+    "cc": "HN",
+    "aen": [
+      "Honduras",
+      "Republic of Honduras"
+    ],
+    "atr": [
+      "Honduras"
+    ]
+  },
+  "HR": {
+    "n": "Republic of Croatia",
+    "an": "Republic of Croatia",
+    "cc": "HR",
+    "aen": [
+      "Croatia",
+      "Republic of Croatia"
+    ],
+    "atr": [
+      "Hırvatistan"
+    ]
+  },
+  "HT": {
+    "n": "Republic of Haiti",
+    "an": "Republic of Haiti",
+    "cc": "HT",
+    "aen": [
+      "Haiti",
+      "Republic of Haiti"
+    ],
+    "atr": [
+      "Haiti"
+    ]
+  },
+  "HU": {
+    "n": "Hungary",
+    "an": "Hungary",
+    "cc": "HU",
+    "aen": [
+      "Hungary",
+      "Republic of Hungary"
+    ],
+    "atr": [
+      "Macaristan"
+    ]
+  },
+  "ID": {
+    "n": "Republic of Indonesia",
+    "an": "Republic of Indonesia",
+    "cc": "ID",
+    "aen": [
+      "Indonesia",
+      "Republic of Indonesia"
+    ],
+    "atr": [
+      "Endonezya"
+    ]
+  },
+  "IE": {
+    "n": "Ireland",
+    "an": "Ireland",
+    "cc": "IE",
+    "aen": [
+      "Ireland",
+      "Republic of Ireland"
+    ],
+    "atr": [
+      "İrlanda"
+    ]
+  },
+  "IL": {
+    "n": "State of Israel",
+    "an": "State of Israel",
+    "cc": "IL",
+    "aen": [
+      "Israel",
+      "State of Israel"
+    ],
+    "atr": [
+      "İsrail"
+    ]
+  },
+  "IN": {
+    "n": "Republic of India",
+    "an": "Republic of India",
+    "cc": "IN",
+    "aen": [
+      "India"
+    ],
+    "atr": [
+      "Hindistan"
+    ]
+  },
+  "IQ": {
+    "n": "Republic of Iraq",
+    "an": "Republic of Iraq",
+    "cc": "IQ",
+    "aen": [
+      "Iraq",
+      "Republic of Iraq"
+    ],
+    "atr": [
+      "Irak"
+    ]
+  },
+  "IR": {
+    "n": "Islamic Republic of Iran",
+    "an": "Islamic Republic of Iran",
+    "cc": "IR",
+    "aen": [
+      "Iran",
+      "Empire of Iran",
+      "Islamic Republic of Iran",
+      "Iran, Islamic Republic Of"
+    ],
+    "atr": [
+      "İran"
+    ]
+  },
+  "IS": {
+    "n": "Republic of Iceland",
+    "an": "Republic of Iceland",
+    "cc": "IS",
+    "aen": [
+      "Iceland",
+      "Republic of Iceland"
+    ],
+    "atr": [
+      "İzlanda"
+    ]
+  },
+  "IT": {
+    "n": "Repubblica Italiana",
+    "an": "Repubblica Italiana",
+    "cc": "IT",
+    "aen": [
+      "Republic of Italy",
+      "Italy",
+      "Italian Republic"
+    ],
+    "atr": [
+      "İtalya"
+    ]
+  },
+  "JM": {
+    "n": "Jamaica",
+    "an": "Jamaica",
+    "cc": "JM",
+    "aen": [
+      "Jamaica"
+    ],
+    "atr": [
+      "Jamaika"
+    ]
+  },
+  "JO": {
+    "n": "Hashemite Kingdom of Jordan",
+    "an": "Hashemite Kingdom of Jordan",
+    "cc": "JO",
+    "atr": [
+      "Ürdün"
+    ],
+    "aen": [
+      "Jordan",
+      "Hashemite Kingdom of Jordan"
+    ]
+  },
+  "JP": {
+    "n": "Japan",
+    "an": "Japan",
+    "cc": "JP",
+    "aen": [
+      "Japan"
+    ],
+    "atr": [
+      "Japonya"
+    ]
+  },
+  "KE": {
+    "n": "Republic of Kenya",
+    "an": "Republic of Kenya",
+    "cc": "KE",
+    "aen": [
+      "Kenya"
+    ],
+    "atr": [
+      "Kenya"
+    ]
+  },
+  "KG": {
+    "n": "Kyrgyz Republic",
+    "an": "Kyrgyz Republic",
+    "cc": "KG",
+    "aen": [
+      "Kyrgyzstan",
+      "Kyrgyz Republic"
+    ],
+    "atr": [
+      "Kırgızistan"
+    ]
+  },
+  "KH": {
+    "n": "Kingdom of Cambodia",
+    "an": "Kingdom of Cambodia",
+    "cc": "KH",
+    "aen": [
+      "Democratic Cambodia",
+      "Khmer Republic",
+      "Democratic Kampuchea",
+      "Cambodia",
+      "Kingdom of Cambodia"
+    ],
+    "atr": [
+      "Kamboçya"
+    ]
+  },
+  "KI": {
+    "n": "Republic of Kiribati",
+    "an": "Republic of Kiribati",
+    "cc": "KI",
+    "aen": [
+      "Kiribati"
+    ],
+    "atr": [
+      "Kiribati"
+    ]
+  },
+  "KM": {
+    "n": "Union of the Comoros",
+    "an": "Union of the Comoros",
+    "cc": "KM",
+    "aen": [
+      "Comoros",
+      "Union of the Comoros",
+      "Republic of the Comoros",
+      "Federal Islamic Republic of the Comoros"
+    ],
+    "atr": [
+      "Komorlar",
+      "Comoros",
+      "Komor",
+      "Komoros"
+    ]
+  },
+  "KN": {
+    "n": "Federation of Saint Kitts and Nevis",
+    "an": "Federation of Saint Kitts and Nevis",
+    "cc": "KN",
+    "aen": [
+      "Saint Kitts and Nevis"
+    ],
+    "atr": [
+      "Saint Kitts ve Nevis"
+    ]
+  },
+  "KP": {
+    "n": "Democratic People’s Republic of Korea",
+    "an": "Democratic People's Republic of Korea",
+    "cc": "KP",
+    "aen": [
+      "North Korea",
+      "Democratic People’s Republic of Korea",
+      "Korea, Democratic People’s Republic of"
+    ],
+    "atr": [
+      "Kuzey Kore",
+      "Kore Demokratik Halk Cumhuriyeti"
+    ]
+  },
+  "KR": {
+    "n": "Republic of Korea",
+    "an": "Republic of Korea",
+    "cc": "KR",
+    "aen": [
+      "South Korea",
+      "Republic of Korea",
+      "Korea, Republic of"
+    ],
+    "atr": [
+      "Güney Kore",
+      "Kore Cumhuriyeti"
+    ]
+  },
+  "KW": {
+    "n": "State of Kuwait",
+    "an": "State of Kuwait",
+    "cc": "KW",
+    "aen": [
+      "Kuwait",
+      "State of Kuwait"
+    ],
+    "atr": [
+      "Kuveyt"
+    ]
+  },
+  "KZ": {
+    "n": "Republic of Kazakhstan",
+    "an": "Republic of Kazakhstan",
+    "cc": "KZ",
+    "aen": [
+      "Kazakhstan",
+      "Republic of Kazakhstan"
+    ],
+    "atr": [
+      "Kazakistan"
+    ]
+  },
+  "LA": {
+    "n": "Lao People’s Democratic Republic",
+    "an": "Lao People's Democratic Republic",
+    "cc": "LA",
+    "aen": [
+      "Laos",
+      "Lao People’s Democratic Republic",
+      "Lao",
+      "Lao PDR"
+    ],
+    "atr": [
+      "Laos"
+    ]
+  },
+  "LB": {
+    "n": "Lebanon",
+    "an": "Lebanon",
+    "cc": "LB",
+    "aen": [
+      "Lebanon",
+      "Republic of Lebanon"
+    ],
+    "atr": [
+      "Lübnan"
+    ]
+  },
+  "LC": {
+    "n": "Saint Lucia",
+    "an": "Saint Lucia",
+    "cc": "LC",
+    "aen": [
+      "Saint Lucia"
+    ],
+    "atr": [
+      "Saint Lucia"
+    ]
+  },
+  "LI": {
+    "n": "Principality of Liechtenstein",
+    "an": "Principality of Liechtenstein",
+    "cc": "LI",
+    "aen": [
+      "Liechtenstein",
+      "Principality of Liechtenstein"
+    ],
+    "atr": [
+      "Liechtenstein",
+      "Lihtenştayn"
+    ]
+  },
+  "LK": {
+    "n": "Democratic Socialist Republic of Sri Lanka",
+    "an": "Democratic Socialist Republic of Sri Lanka",
+    "cc": "LK",
+    "aen": [
+      "Sri Lanka"
+    ],
+    "atr": [
+      "Sri Lanka"
+    ]
+  },
+  "LR": {
+    "n": "Republic of Liberia",
+    "an": "Republic of Liberia",
+    "cc": "LR",
+    "aen": [
+      "Liberia"
+    ],
+    "atr": [
+      "Liberya"
+    ]
+  },
+  "LS": {
+    "n": "Kingdom of Lesotho",
+    "an": "Kingdom of Lesotho",
+    "cc": "LS",
+    "aen": [
+      "Lesotho"
+    ],
+    "atr": [
+      "Lesotho",
+      "Lesoto"
+    ]
+  },
+  "LT": {
+    "n": "Republic of Lithuania",
+    "an": "Republic of Lithuania",
+    "cc": "LT",
+    "aen": [
+      "Lithuanian Soviet Socialist Republic",
+      "Lithuania",
+      "Republic of Lithuania"
+    ],
+    "atr": [
+      "Litvanya"
+    ]
+  },
+  "LU": {
+    "n": "Grand Duchy of Luxembourg",
+    "an": "Grand Duchy of Luxembourg",
+    "cc": "LU",
+    "aen": [
+      "Luxembourg",
+      "Grand Duchy of Luxembourg"
+    ],
+    "atr": [
+      "Lüksemburg"
+    ]
+  },
+  "LV": {
+    "n": "Republic of Latvia",
+    "an": "Republic of Latvia",
+    "cc": "LV",
+    "aen": [
+      "Latvia",
+      "Republic of Latvia"
+    ],
+    "atr": [
+      "Letonya"
+    ]
+  },
+  "LY": {
+    "n": "Libya",
+    "an": "Libya",
+    "cc": "LY",
+    "aen": [
+      "Libya",
+      "Great Socialist People’s Libyan Arab Jamahiriya"
+    ],
+    "atr": [
+      "Libya"
+    ]
+  },
+  "MA": {
+    "n": "Kingdom of Morocco",
+    "an": "Kingdom of Morocco",
+    "cc": "MA",
+    "aen": [
+      "Morocco",
+      "Kingdom of Morocco"
+    ],
+    "atr": [
+      "Fas"
+    ]
+  },
+  "MC": {
+    "n": "Principality of Monaco",
+    "an": "Principality of Monaco",
+    "cc": "MC",
+    "aen": [
+      "Monaco"
+    ],
+    "atr": [
+      "Monako"
+    ]
+  },
+  "MD": {
+    "n": "Republic of Moldova",
+    "an": "Republic of Moldova",
+    "cc": "MD",
+    "aen": [
+      "Moldova",
+      "Republic of Moldova",
+      "Moldova, Republic Of"
+    ],
+    "atr": [
+      "Moldovya Cumhuriyeti",
+      "Moldova",
+      "Moldovya"
+    ]
+  },
+  "ME": {
+    "n": "Montenegro",
+    "an": "Montenegro",
+    "cc": "ME",
+    "aen": [
+      "Socialist Republic of Montenegro",
+      "Montenegro",
+      "Republic of Montenegro"
+    ],
+    "atr": [
+      "Karadağ"
+    ]
+  },
+  "MG": {
+    "n": "Republic of Madagascar",
+    "an": "Republic of Madagascar",
+    "cc": "MG",
+    "aen": [
+      "Madagascar",
+      "Republic of Madagascar"
+    ],
+    "atr": [
+      "Madagaskar"
+    ]
+  },
+  "MK": {
+    "n": "Republic of Macedonia",
+    "an": "Republic of Macedonia",
+    "cc": "MK",
+    "aen": [
+      "Macedonia (FYR",
+      "Republic of Macedonia",
+      "Macedonia, The Former Yugoslav Republic Of",
+      "Macedonia"
+    ],
+    "atr": [
+      "Makedonya"
+    ]
+  },
+  "ML": {
+    "n": "Republic of Mali",
+    "an": "Republic of Mali",
+    "cc": "ML",
+    "aen": [
+      "Mali"
+    ],
+    "atr": [
+      "Mali"
+    ]
+  },
+  "MM": {
+    "n": "Union of Burma",
+    "an": "Union of Burma",
+    "cc": "MM",
+    "aen": [
+      "Myanmar [Burma]",
+      "Union of Burma",
+      "Birma (Myanmar"
+    ],
+    "atr": [
+      "Myanmar",
+      "Birmanya"
+    ]
+  },
+  "MN": {
+    "n": "Mongolia",
+    "an": "Mongolia",
+    "cc": "MN",
+    "aen": [
+      "Mongolian People’s Republic",
+      "Mongol Peoples Republic",
+      "Mongolia"
+    ],
+    "atr": [
+      "Moğolistan"
+    ]
+  },
+  "MR": {
+    "n": "Islamic Republic of Mauritania",
+    "an": "Islamic Republic of Mauritania",
+    "cc": "MR",
+    "aen": [
+      "Mauritania",
+      "Islamic Republic of Mauritania"
+    ],
+    "atr": [
+      "Moritanya"
+    ]
+  },
+  "MT": {
+    "n": "Republic of Malta",
+    "an": "Republic of Malta",
+    "cc": "MT",
+    "aen": [
+      "Republic of Malta",
+      "Malta Island",
+      "Malta"
+    ],
+    "atr": [
+      "Malta"
+    ]
+  },
+  "MU": {
+    "n": "Republic of Mauritius",
+    "an": "Republic of Mauritius",
+    "cc": "MU",
+    "aen": [
+      "Mauritius",
+      "Republic of Mauritius"
+    ],
+    "atr": [
+      "Mauritius"
+    ]
+  },
+  "MV": {
+    "n": "Republic of Maldives",
+    "an": "Republic of Maldives",
+    "cc": "MV",
+    "aen": [
+      "Maldives",
+      "Republic of Maldives"
+    ],
+    "atr": [
+      "Maldivler"
+    ]
+  },
+  "MW": {
+    "n": "Republic of Malawi",
+    "an": "Republic of Malawi",
+    "cc": "MW",
+    "aen": [
+      "Malawi"
+    ],
+    "atr": [
+      "Malavi"
+    ]
+  },
+  "MX": {
+    "n": "Mexico",
+    "an": "Mexico",
+    "cc": "MX",
+    "aen": [
+      "United Mexican States",
+      "Mexican Republic",
+      "Mexico"
+    ],
+    "atr": [
+      "Meksika"
+    ]
+  },
+  "MY": {
+    "n": "Malaysia",
+    "an": "Malaysia",
+    "cc": "MY",
+    "aen": [
+      "Malaysia"
+    ],
+    "atr": [
+      "Malezya"
+    ]
+  },
+  "MZ": {
+    "n": "Republic of Mozambique",
+    "an": "Republic of Mozambique",
+    "cc": "MZ",
+    "aen": [
+      "Mozambique",
+      "Republic of Mozambique"
+    ],
+    "atr": [
+      "Mozambik"
+    ]
+  },
+  "NA": {
+    "n": "Republic of Namibia",
+    "an": "Republic of Namibia",
+    "cc": "NA",
+    "aen": [
+      "Namibia"
+    ],
+    "atr": [
+      "Namibya"
+    ]
+  },
+  "NE": {
+    "n": "Republic of Niger",
+    "an": "Republic of Niger",
+    "cc": "NE",
+    "aen": [
+      "Niger",
+      "Republic of Niger"
+    ],
+    "atr": [
+      "Nijer"
+    ]
+  },
+  "NG": {
+    "n": "Federal Republic of Nigeria",
+    "an": "Federal Republic of Nigeria",
+    "cc": "NG",
+    "aen": [
+      "Nigeria"
+    ],
+    "atr": [
+      "Nijerya"
+    ]
+  },
+  "NI": {
+    "n": "Republic of Nicaragua",
+    "an": "Republic of Nicaragua",
+    "cc": "NI",
+    "aen": [
+      "Nicaragua",
+      "Republic of Nicaragua"
+    ],
+    "atr": [
+      "Nikaragua"
+    ]
+  },
+  "NL": {
+    "n": "Kingdom of the Netherlands",
+    "an": "Kingdom of the Netherlands",
+    "cc": "NL",
+    "aen": [
+      "Netherlands",
+      "Holland",
+      "The Netherlands",
+      "Kingdom of the Netherlands"
+    ],
+    "atr": [
+      "Hollanda"
+    ]
+  },
+  "NO": {
+    "n": "Kingdom of Norway",
+    "an": "Kingdom of Norway",
+    "cc": "NO",
+    "aen": [
+      "Norway",
+      "Kingdom of Norway"
+    ],
+    "atr": [
+      "Norveç"
+    ]
+  },
+  "NP": {
+    "n": "Federal Democratic Republic of Nepal",
+    "an": "Federal Democratic Republic of Nepal",
+    "cc": "NP",
+    "aen": [
+      "Nepal",
+      "Federal Democratic Republic of Nepal"
+    ],
+    "atr": [
+      "Nepal"
+    ]
+  },
+  "NR": {
+    "n": "Nauru",
+    "an": "Nauru",
+    "cc": "NR",
+    "aen": [
+      "Republic of Nauru",
+      "Nauru"
+    ],
+    "atr": [
+      "Nauru Adası",
+      "Nauru"
+    ]
+  },
+  "NZ": {
+    "n": "New Zealand",
+    "an": "New Zealand",
+    "cc": "NZ",
+    "aen": [
+      "New Zealand"
+    ],
+    "atr": [
+      "Yeni Zelanda"
+    ]
+  },
+  "OM": {
+    "n": "Sultanate of Oman",
+    "an": "Sultanate of Oman",
+    "cc": "OM",
+    "atr": [
+      "Umman"
+    ],
+    "aen": [
+      "Sultanate of Oman",
+      "Oman"
+    ]
+  },
+  "PA": {
+    "n": "Republic of Panama",
+    "an": "Republic of Panama",
+    "cc": "PA",
+    "aen": [
+      "Panama",
+      "Republic of Panama"
+    ],
+    "atr": [
+      "Panama"
+    ]
+  },
+  "PE": {
+    "n": "Republic of Peru",
+    "an": "Republic of Peru",
+    "cc": "PE",
+    "aen": [
+      "Peru",
+      "Republic of Peru"
+    ],
+    "atr": [
+      "Peru"
+    ]
+  },
+  "PG": {
+    "n": "Independent State of Papua New Guinea",
+    "an": "Independent State of Papua New Guinea",
+    "cc": "PG",
+    "aen": [
+      "Papua New Guinea"
+    ],
+    "atr": [
+      "Papua Yeni Gine"
+    ]
+  },
+  "PH": {
+    "n": "Republic of the Philippines",
+    "an": "Republic of the Philippines",
+    "cc": "PH",
+    "aen": [
+      "Philippines",
+      "Republic of the Philippines"
+    ],
+    "atr": [
+      "Filipinler",
+      "Filipinler Cumhuriyeti"
+    ]
+  },
+  "PK": {
+    "n": "Islamic Republic of Pakistan",
+    "an": "Islamic Republic of Pakistan",
+    "cc": "PK",
+    "aen": [
+      "Pakistan",
+      "Islamic Republic of Pakistan"
+    ],
+    "atr": [
+      "Pakistan"
+    ]
+  },
+  "PL": {
+    "n": "Republic of Poland",
+    "an": "Republic of Poland",
+    "cc": "PL",
+    "aen": [
+      "Poland",
+      "Republic of Poland"
+    ],
+    "atr": [
+      "Polonya"
+    ]
+  },
+  "PT": {
+    "n": "Portuguese Republic",
+    "an": "Portuguese Republic",
+    "cc": "PT",
+    "aen": [
+      "Portugal",
+      "Portuguese Republic"
+    ],
+    "atr": [
+      "Portekiz"
+    ]
+  },
+  "PY": {
+    "n": "Republic of Paraguay",
+    "an": "Republic of Paraguay",
+    "cc": "PY",
+    "aen": [
+      "Paraguay",
+      "Republic of Paraguay"
+    ],
+    "atr": [
+      "Paraguay"
+    ]
+  },
+  "QA": {
+    "n": "State of Qatar",
+    "an": "State of Qatar",
+    "cc": "QA",
+    "aen": [
+      "Qatar",
+      "State of Qatar"
+    ],
+    "atr": [
+      "Katar"
+    ]
+  },
+  "RO": {
+    "n": "România",
+    "an": "Romania",
+    "cc": "RO",
+    "aen": [
+      "Romania"
+    ],
+    "atr": [
+      "Romanya"
+    ]
+  },
+  "RS": {
+    "n": "Serbia",
+    "an": "Serbia",
+    "cc": "RS",
+    "aen": [
+      "Serbia"
+    ],
+    "atr": [
+      "Sırbistan"
+    ]
+  },
+  "RU": {
+    "n": "Russian Federation",
+    "an": "Russian Federation",
+    "cc": "RU",
+    "aen": [
+      "Russian Soviet Federated Socialist Republic",
+      "Russian Soviet Federative Socialist Republic",
+      "Russian Socialist Federative Soviet Republic",
+      "Russia",
+      "Russian Federation"
+    ],
+    "atr": [
+      "Rusya Federasyonu",
+      "Rusya"
+    ]
+  },
+  "RW": {
+    "n": "Republic of Rwanda",
+    "an": "Republic of Rwanda",
+    "cc": "RW",
+    "aen": [
+      "Rwanda",
+      "Republic of Rwanda"
+    ],
+    "atr": [
+      "Ruanda"
+    ]
+  },
+  "SA": {
+    "n": "Kingdom of Saudi Arabia",
+    "an": "Kingdom of Saudi Arabia",
+    "cc": "SA",
+    "aen": [
+      "Saudi Arabia",
+      "Kingdom of Saudi Arabia"
+    ],
+    "atr": [
+      "Suudi Arabistan"
+    ]
+  },
+  "SB": {
+    "n": "Solomon Islands",
+    "an": "Solomon Islands",
+    "cc": "SB",
+    "aen": [
+      "Solomon Islands"
+    ],
+    "atr": [
+      "Solomon Adaları"
+    ]
+  },
+  "SC": {
+    "n": "Republic of Seychelles",
+    "an": "Republic of Seychelles",
+    "cc": "SC",
+    "aen": [
+      "Seychelles"
+    ],
+    "atr": [
+      "Seyşeller",
+      "Seyşel Adaları",
+      "Seychelles"
+    ]
+  },
+  "SD": {
+    "n": "Republic of the Sudan",
+    "an": "Republic of the Sudan",
+    "cc": "SD",
+    "aen": [
+      "Sudan"
+    ],
+    "atr": [
+      "Sudan"
+    ]
+  },
+  "SE": {
+    "n": "Kingdom of Sweden",
+    "an": "Kingdom of Sweden",
+    "cc": "SE",
+    "aen": [
+      "Sweden",
+      "Kingdom of Sweden"
+    ],
+    "atr": [
+      "İsveç"
+    ]
+  },
+  "SG": {
+    "n": "Republic of Singapore",
+    "an": "Republic of Singapore",
+    "cc": "SG",
+    "aen": [
+      "Singapore"
+    ],
+    "atr": [
+      "Singapur"
+    ]
+  },
+  "SI": {
+    "n": "Republic of Slovenia",
+    "an": "Republic of Slovenia",
+    "cc": "SI",
+    "aen": [
+      "Slovenia",
+      "Republic of Slovenia"
+    ],
+    "atr": [
+      "Slovenya"
+    ]
+  },
+  "SK": {
+    "n": "Slovak Republic",
+    "an": "Slovak Republic",
+    "cc": "SK",
+    "aen": [
+      "Slovakia",
+      "Slovak Republic"
+    ],
+    "atr": [
+      "Slovakya"
+    ]
+  },
+  "SL": {
+    "n": "Republic of Sierra Leone",
+    "an": "Republic of Sierra Leone",
+    "cc": "SL",
+    "aen": [
+      "Sierra Leone"
+    ],
+    "atr": [
+      "Sierra Leone"
+    ]
+  },
+  "SM": {
+    "n": "Repubblica di San Marino",
+    "an": "Repubblica di San Marino",
+    "cc": "SM",
+    "aen": [
+      "San Marino"
+    ],
+    "atr": [
+      "San Marino"
+    ]
+  },
+  "SN": {
+    "n": "Republic of Senegal",
+    "an": "Republic of Senegal",
+    "cc": "SN",
+    "aen": [
+      "Senegal",
+      "Republic of Senegal"
+    ],
+    "atr": [
+      "Senegal"
+    ]
+  },
+  "SO": {
+    "n": "Somalia",
+    "an": "Somalia",
+    "cc": "SO",
+    "aen": [
+      "Somalia",
+      "Federal Republic of Somalia",
+      "The Somali Republic"
+    ],
+    "atr": [
+      "Somali"
+    ]
+  },
+  "SR": {
+    "n": "Republic of Suriname",
+    "an": "Republic of Suriname",
+    "cc": "SR",
+    "aen": [
+      "Suriname",
+      "Republic of Suriname"
+    ],
+    "atr": [
+      "Surinam"
+    ]
+  },
+  "SS": {
+    "n": "South Sudan",
+    "an": "South Sudan",
+    "cc": "SS",
+    "aen": [
+      "South Sudan",
+      "Republic of South Sudan"
+    ]
+  },
+  "ST": {
+    "n": "Sao Tome and Principe",
+    "an": "Sao Tome and Principe",
+    "cc": "ST",
+    "aen": [
+      "Sao Tome and Principe",
+      "São Tomé and Príncipe",
+      "Democratic Republic of Sao Tome and Principe"
+    ],
+    "atr": [
+      "Sao Tome ve Principe",
+      "São Tomé and Príncipe"
+    ]
+  },
+  "SV": {
+    "n": "Republic of El Salvador",
+    "an": "Republic of El Salvador",
+    "cc": "SV",
+    "aen": [
+      "El Salvador",
+      "Republic of El Salvador"
+    ],
+    "atr": [
+      "El Salvador"
+    ]
+  },
+  "SY": {
+    "n": "Syrian Arab Republic",
+    "an": "Syrian Arab Republic",
+    "cc": "SY",
+    "aen": [
+      "Syria",
+      "Syrian Arab Republic"
+    ],
+    "atr": [
+      "Suriye"
+    ]
+  },
+  "SZ": {
+    "n": "Kingdom of Swaziland",
+    "an": "Kingdom of Swaziland",
+    "cc": "SZ",
+    "aen": [
+      "Swaziland"
+    ],
+    "atr": [
+      "Svaziland",
+      "Swaziland"
+    ]
+  },
+  "TD": {
+    "n": "Republic of Chad",
+    "an": "Republic of Chad",
+    "cc": "TD",
+    "aen": [
+      "Chad",
+      "Republic of Chad"
+    ],
+    "atr": [
+      "Çad"
+    ]
+  },
+  "TG": {
+    "n": "Togolese Republic",
+    "an": "Togolese Republic",
+    "cc": "TG",
+    "aen": [
+      "Togo",
+      "Togolese Republic"
+    ],
+    "atr": [
+      "Togo"
+    ]
+  },
+  "TH": {
+    "n": "Kingdom of Thailand",
+    "an": "Kingdom of Thailand",
+    "cc": "TH",
+    "aen": [
+      "Thailand",
+      "Kingdom of Thailand"
+    ],
+    "atr": [
+      "Tayland"
+    ]
+  },
+  "TJ": {
+    "n": "Republic of Tajikistan",
+    "an": "Republic of Tajikistan",
+    "cc": "TJ",
+    "aen": [
+      "Tajikistan",
+      "Republic of Tajikistan"
+    ],
+    "atr": [
+      "Tacikistan"
+    ]
+  },
+  "TL": {
+    "n": "Democratic Republic of Timor-Leste",
+    "an": "Democratic Republic of Timor-Leste",
+    "cc": "TL",
+    "aen": [
+      "East Timor",
+      "Democratic Republic of Timor-Leste",
+      "Timor-Leste"
+    ],
+    "atr": [
+      "Doğu Timor"
+    ]
+  },
+  "TM": {
+    "n": "Turkmenistan",
+    "an": "Turkmenistan",
+    "cc": "TM",
+    "aen": [
+      "Turkmenistan"
+    ],
+    "atr": [
+      "Türkmenistan"
+    ]
+  },
+  "TN": {
+    "n": "Republic of Tunisia",
+    "an": "Republic of Tunisia",
+    "cc": "TN",
+    "aen": [
+      "Tunisia",
+      "Tunisian Republic"
+    ],
+    "atr": [
+      "Tunus"
+    ]
+  },
+  "TO": {
+    "n": "Kingdom of Tonga",
+    "an": "Kingdom of Tonga",
+    "cc": "TO",
+    "aen": [
+      "Tonga"
+    ],
+    "atr": [
+      "Tonga"
+    ]
+  },
+  "TR": {
+    "n": "Republic of Turkey",
+    "an": "Republic of Turkey",
+    "cc": "TR",
+    "aen": [
+      "Republic of Turkey",
+      "Turkey"
+    ],
+    "atr": [
+      "Türkiye",
+      "Türkiye Cumhuriyeti"
+    ]
+  },
+  "TT": {
+    "n": "Republic of Trinidad and Tobago",
+    "an": "Republic of Trinidad and Tobago",
+    "cc": "TT",
+    "aen": [
+      "Trinidad and Tobago"
+    ],
+    "atr": [
+      "Trinidad ve Tobago"
+    ]
+  },
+  "TV": {
+    "n": "Tuvalu",
+    "an": "Tuvalu",
+    "cc": "TV",
+    "aen": [
+      "Tuvalu"
+    ],
+    "atr": [
+      "Tuvalu"
+    ]
+  },
+  "TW": {
+    "n": "Taiwan",
+    "an": "Taiwan",
+    "cc": "TW",
+    "aen": [
+      "Taiwan"
+    ],
+    "atr": [
+      "Çin Cumhuriyeti"
+    ]
+  },
+  "TZ": {
+    "n": "United Republic of Tanzania",
+    "an": "United Republic of Tanzania",
+    "cc": "TZ",
+    "atr": [
+      "Tanzanya"
+    ],
+    "aen": [
+      "Tanzania"
+    ]
+  },
+  "UA": {
+    "n": "Ukraine",
+    "an": "Ukraine",
+    "cc": "UA",
+    "aen": [
+      "Ukraine"
+    ],
+    "atr": [
+      "Ukrayna"
+    ]
+  },
+  "UG": {
+    "n": "Republic of Uganda",
+    "an": "Republic of Uganda",
+    "cc": "UG",
+    "aen": [
+      "Uganda"
+    ],
+    "atr": [
+      "Uganda"
+    ]
+  },
+  "US": {
+    "n": "United States",
+    "an": "United States",
+    "cc": "US",
+    "aen": [
+      "United States",
+      "America",
+      "United States of America"
+    ],
+    "atr": [
+      "Amerika Birleşik Devletleri",
+      "ABD"
+    ]
+  },
+  "UY": {
+    "n": "Oriental Republic of Uruguay",
+    "an": "Oriental Republic of Uruguay",
+    "cc": "UY",
+    "aen": [
+      "Uruguay",
+      "Oriental Republic of Uruguay"
+    ],
+    "atr": [
+      "Uruguay"
+    ]
+  },
+  "UZ": {
+    "n": "Republic of Uzbekistan",
+    "an": "Republic of Uzbekistan",
+    "cc": "UZ",
+    "aen": [
+      "Uzbekistan",
+      "Republic of Uzbekistan"
+    ],
+    "atr": [
+      "Özbekistan"
+    ]
+  },
+  "VA": {
+    "n": "State of the Vatican City",
+    "an": "State of the Vatican City",
+    "cc": "VA",
+    "aen": [
+      "Vatican City",
+      "Holy See",
+      "Vatican City State",
+      "Vatican",
+      "Vatican Hill",
+      "Holy See (Vatican City State",
+      "Vatican City State (Holy See"
+    ],
+    "atr": [
+      "Vatikan"
+    ]
+  },
+  "VC": {
+    "n": "Saint Vincent and the Grenadines",
+    "an": "Saint Vincent and the Grenadines",
+    "cc": "VC",
+    "aen": [
+      "Saint Vincent and the Grenadines"
+    ],
+    "atr": [
+      "Saint Vincent ve Grenadinler",
+      "Saint Vincent ve Grenadines"
+    ]
+  },
+  "VE": {
+    "n": "Bolivarian Republic of Venezuela",
+    "an": "Bolivarian Republic of Venezuela",
+    "cc": "VE",
+    "aen": [
+      "United States of Venezuela",
+      "Republic of Venezuela",
+      "Venezuela",
+      "Bolivarian Republic of Venezuela",
+      "Venezuela, Bolivarian Republic Of"
+    ],
+    "atr": [
+      "Venezuela"
+    ]
+  },
+  "VN": {
+    "n": "Socialist Republic of Vietnam",
+    "an": "Socialist Republic of Vietnam",
+    "cc": "VN",
+    "aen": [
+      "Vietnam",
+      "Socialist Republic of Vietnam"
+    ],
+    "atr": [
+      "Vietnam"
+    ]
+  },
+  "VU": {
+    "n": "Republic of Vanuatu",
+    "an": "Republic of Vanuatu",
+    "cc": "VU",
+    "aen": [
+      "Vanuatu",
+      "Republic of Vanuatu"
+    ],
+    "atr": [
+      "Vanuatu",
+      "Vanuatu Cumhuriyeti"
+    ]
+  },
+  "WS": {
+    "n": "Independent State of Samoa",
+    "an": "Independent State of Samoa",
+    "cc": "WS",
+    "aen": [
+      "Samoa",
+      "Independent State of Samoa"
+    ],
+    "atr": [
+      "Samoa",
+      "Bağımsız Samoa Devleti"
+    ]
+  },
+  "XK": {
+    "n": "Republic of Kosovo",
+    "an": "Republic of Kosovo",
+    "cc": "XK",
+    "atr": [
+      "Kosova"
+    ],
+    "aen": [
+      "Republic of Kosovo",
+      "Kosovo"
+    ]
+  },
+  "YE": {
+    "n": "Republic of Yemen",
+    "an": "Republic of Yemen",
+    "cc": "YE",
+    "atr": [
+      "Yemen"
+    ],
+    "aen": [
+      "Yemen",
+      "Republic of Yemen"
+    ]
+  },
+  "ZA": {
+    "n": "Republic of South Africa",
+    "an": "Republic of South Africa",
+    "cc": "ZA",
+    "aen": [
+      "Republic of South Africa",
+      "South Africa"
+    ],
+    "atr": [
+      "Güney Afrika",
+      "Güney Afrika Cumhuriyeti"
+    ]
+  },
+  "ZM": {
+    "n": "Republic of Zambia",
+    "an": "Republic of Zambia",
+    "cc": "ZM",
+    "atr": [
+      "Zambiya"
+    ],
+    "aen": [
+      "Northern Rhodesia",
+      "Zambia"
+    ]
+  },
+  "ZW": {
+    "n": "Republic of Zimbabwe",
+    "an": "Republic of Zimbabwe",
+    "cc": "ZW",
+    "aen": [
+      "Zimbabwe",
+      "Southern Rhodesia"
+    ],
+    "atr": [
+      "Zimbabve"
+    ]
+  }
+}

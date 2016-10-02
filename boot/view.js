@@ -32,7 +32,7 @@ function useLodash(swig, filter, string) {
     }
 
     if (lodashHas(filter, string))
-        swig.setFilter((string?'s_':'')+filter, obj[filter])
+        swig.setFilter((string?'s_':'l_')+filter, obj[filter])
     else
         throw new Error(filter+' is not a lodash function');
 }

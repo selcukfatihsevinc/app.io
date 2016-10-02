@@ -559,17 +559,28 @@ module.exports = function(app) {
         // _mdl.user.waiting, profile data'sını token olmadan döneceğiz
         // _mdl.user.enabled, profile data'sını token olmadan döneceğiz
     function(req, res, next) {
-        var appData    = req.__appData;
-        var appSlug    = req.__appData.slug;
-        var userData   = req.__userData;
-        var socialData = req.__social;
+        var appData     = req.__appData;
+        var appSlug     = req.__appData.slug;
+        var userData    = req.__userData;
+        var socialData  = req.__social;
+	    var accountData = req.__social.account;
 
+	    // check profile model
+	    var profiles = appSlug+'.profiles';
+	    var mProfile = dot.get(req.app.model, profiles);
+	    
+	    // set tokenDisabled 
         var tokenDisabled = false;
         if(userData && (userData.is_enabled == 'No' || userData.waiting_status != 'Accepted'))
             tokenDisabled = true;
 
         // return user data if found
         if(userData) {
+	        // create account
+	        accountData.apps  = req.__appId;
+	        accountData.users = userData._id;
+	        new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});
+	        
             /**
              * @TODO
              * profili de kontrol et, eğer yoksa profil oluştur
@@ -605,9 +616,6 @@ module.exports = function(app) {
         }
         
         // profile obj
-        var profiles = appSlug+'.profiles';
-        var mProfile = dot.get(req.app.model, profiles);
-
         if(mProfile) {
             rules.name = dot.get(_authConf, appSlug+'.register.name') || 'required';
             data.name  = req.body.name || socialData.name;
@@ -637,6 +645,11 @@ module.exports = function(app) {
             // user id
             user._id = user._id.toString();
             
+	        // create account
+	        accountData.apps  = req.__appId;
+	        accountData.users = user._id;
+	        new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});
+	        
             // create profile
             if(mProfile) {
                 var profileObj = {

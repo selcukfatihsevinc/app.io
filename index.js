@@ -114,7 +114,7 @@ AppIo.prototype.run = function (cb) {
     this.external('route', _external.route || []);
     this.load('route/api/v1', ['social']); // requires session
     this.load('route/admin');
-    if( this._opts.resize) this.load('boot/resize'); // image resize middlware routes
+    if(this._opts.resize) this.load('boot/resize'); // image resize middlware routes
     this.load('system/handler/app'); // after routes
     this.load('sync/data');
     this.listen(cb);

@@ -22,7 +22,7 @@ module.exports = function(app) {
     var Schema = {
         ap  : {type: ObjectId, required: true, ref: 'System_Apps', alias: 'apps'},
         u   : {type: ObjectId, ref: 'System_Users', alias: 'users', index: true},
-        t   : {type: String, required: true, enum: ['F', 'T', 'I', 'G', 'L', 'D', 'FS'], alias: 'type'},
+        t   : {type: String, required: true, enum: ['F', 'T', 'I', 'G', 'L', 'D', 'FS', 'GP'], alias: 'type'},
         sc  : {type: Number, default: 0, alias: 'score'},
 
         uid : {type: Number, alias: 'user_id'},
@@ -31,9 +31,12 @@ module.exports = function(app) {
         dn  : {type: String, alias: 'display_name'},
         pp  : {type: String, alias: 'profile_photo'},
         l   : {type: String, alias: 'location'},
+        tz  : {type: Number, alias: 'timezone'},
+        g   : {type: String, alias: 'gender'},
         tk  : {type: String, required: true, alias: 'token'},
         rtk : {type: String, alias: 'refresh_token'},
         tks : {type: String, alias: 'token_secret'},
+	    idt : {type: String, alias: 'id_token'}, // googleplus
 
         ua  : {type: Date, default: Date.now, alias: 'updated_at'},
         ca  : {type: Date, default: Date.now, alias: 'created_at'}
@@ -54,7 +57,8 @@ module.exports = function(app) {
             {label: 'Github', value: 'G'},
             {label: 'Linkedin', value: 'L'},
             {label: 'Dribbble', value: 'D'},
-            {label: 'Foursquare', value: 'FS'}
+            {label: 'Foursquare', value: 'FS'},
+	        {label: 'GooglePlus', value: 'GP'}
         ]
     };
 
@@ -98,6 +102,9 @@ module.exports = function(app) {
     // plugins
     AccountSchema.plugin(_query);
 
+	// index
+	AccountSchema.index({ap: 1, u: 1, t: 1, ust: 1}, {unique: true, sparse: true});
+	
     /**
      * ----------------------------------------------------------------
      * Pre Save Hook

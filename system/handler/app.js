@@ -10,7 +10,7 @@ function error(err, req, res, next) {
     var message = err.message || false;
     var type    = err.type || false;
 
-    console.log(err);
+    // console.log(err);
     _log.error(err.stack);
 
     var response = {
