@@ -6,7 +6,7 @@
 
             <ul>
                 {% for c in children %}
-                    <li id="{{ c._id.toString() }}" class="jstree-closed">{{ c.name_tr }} - {{ c.name_en }}</li>
+                    <li id="{{ c._id.toString() }}" class="jstree-closed">{% if c.name_tr %}{{ c.name_tr }} - {% endif %}{{ c.name_en }}</li>
                 {% endfor %}
             </ul>
 
