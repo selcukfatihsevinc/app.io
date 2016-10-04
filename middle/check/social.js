@@ -173,7 +173,7 @@ function CheckSocial(req, res, next) {
 			    user_id_str: body.id,
 			    user_name: body.username || '',
 			    display_name: body.name || '',
-			    profile_photo: 'http://graph.facebook.com/'+body.id+'/picture?type=square',
+			    profile_photo: 'https://graph.facebook.com/'+body.id+'/picture?type=large',
 			    timezone: body.timezone || 0,
 				gender: body.gender || '',   
 			    token: data.access_token,

@@ -36,7 +36,7 @@ LibpostAuth.prototype.userProfile = function(userId, appSlug, cb) {
     });
 };
 
-LibpostAuth.prototype.userData = function(userData, appSlug, res, tokenDisabled, socialData) {
+LibpostAuth.prototype.userData = function(userData, appSlug, res, tokenDisabled, accountData) {
     var self   = this;
     var userId = userData._id;
     var tConf  = self._conf.token;
@@ -63,14 +63,14 @@ LibpostAuth.prototype.userData = function(userData, appSlug, res, tokenDisabled,
         if(userData.password_changed) token.passwordChanged = userData.password_changed;
         if(userData.password_changed_at) token.passwordChangedAt = userData.password_changed_at;
         
-        if(socialData) {
+        if(accountData) {
             token.account = {
-			    user_id_str: socialData.user_id_str,
-			    user_name: socialData.user_name || '',
-			    display_name: socialData.display_name || '',
-			    profile_photo: socialData.profile_photo,
-			    timezone: socialData.timezone || 0,
-				gender: socialData.gender || ''
+			    user_id_str: accountData.user_id_str,
+			    user_name: accountData.user_name || '',
+			    display_name: accountData.display_name || '',
+			    profile_photo: accountData.profile_photo || false,
+			    timezone: accountData.timezone || 0,
+				gender: accountData.gender || ''
             }
         }
         

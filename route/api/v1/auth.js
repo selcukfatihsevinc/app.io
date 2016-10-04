@@ -577,16 +577,18 @@ module.exports = function(app) {
         // return user data if found
         if(userData) {
 	        // create account
-	        accountData.apps  = req.__appId;
-	        accountData.users = userData._id;
-	        new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});
+            if(accountData) {
+                accountData.apps  = req.__appId;
+                accountData.users = userData._id;
+                new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});                
+            }
 	        
             /**
              * @TODO
              * profili de kontrol et, eğer yoksa profil oluştur
              */
             
-            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled, socialData);
+            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled, accountData);
         }
 
         // check username after login function
@@ -646,10 +648,12 @@ module.exports = function(app) {
             user._id = user._id.toString();
             
 	        // create account
-	        accountData.apps  = req.__appId;
-	        accountData.users = user._id;
-	        new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});
-	        
+            if(accountData) {
+    	        accountData.apps  = req.__appId;
+	            accountData.users = user._id;
+	            new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});
+            }
+
             // set tokenDisabled
             tokenDisabled = waiting ? true : false;
 
@@ -666,12 +670,12 @@ module.exports = function(app) {
 
                 new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {
                     // return user data
-                    app.libpost.auth.userData(user, appSlug, res, tokenDisabled, socialData);
+                    app.libpost.auth.userData(user, appSlug, res, tokenDisabled, accountData);
                 });
             }
             else {
                 // return user data
-                app.libpost.auth.userData(user, appSlug, res, tokenDisabled, socialData); 
+                app.libpost.auth.userData(user, appSlug, res, tokenDisabled, accountData); 
             }
         });
     });
