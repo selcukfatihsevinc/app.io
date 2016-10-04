@@ -252,7 +252,7 @@ module.exports = function(app) {
 
         // set default password
         var password = req.body.password;
-        if( ! password || password == '' )
+        if( ! password || password === '' )
             password = _helper.random(20);
 
         // validation rules
@@ -506,7 +506,7 @@ module.exports = function(app) {
             old_password        : oldPass,
             new_password        : newPass,
             new_password_repeat : passRepeat
-        }
+        };
 
         var rule  = dot.get(_authConf, slug+'.register.password') || 'required|min:4|max:20';
         var rules = {
@@ -586,7 +586,7 @@ module.exports = function(app) {
              * profili de kontrol et, eğer yoksa profil oluştur
              */
             
-            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled);
+            return app.libpost.auth.userData(userData, appSlug, res, tokenDisabled, socialData);
         }
 
         // check username after login function
@@ -650,6 +650,9 @@ module.exports = function(app) {
 	        accountData.users = user._id;
 	        new _schema('system.accounts').init(req, res, next).post(accountData, function(err, doc) {});
 	        
+            // set tokenDisabled
+            tokenDisabled = waiting ? true : false;
+
             // create profile
             if(mProfile) {
                 var profileObj = {
@@ -662,21 +665,13 @@ module.exports = function(app) {
                     profileObj.username = data.username;
 
                 new _schema(profiles).init(req, res, next).post(profileObj, function(err, doc) {
-                    // waiting list özelliği varsa token vs dönmüyoruz
-                    if(waiting)
-                        return app.libpost.auth.userData(user, appSlug, res, true); // tokenDisabled = true
-
                     // return user data
-                    app.libpost.auth.userData(user, appSlug, res);
+                    app.libpost.auth.userData(user, appSlug, res, tokenDisabled, socialData);
                 });
             }
             else {
-                // waiting list özelliği varsa token vs dönmüyoruz
-                if(waiting)
-                    return app.libpost.auth.userData(user, appSlug, res, true); // tokenDisabled = true
-
                 // return user data
-                app.libpost.auth.userData(user, appSlug, res);                
+                app.libpost.auth.userData(user, appSlug, res, tokenDisabled, socialData); 
             }
         });
     });
