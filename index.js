@@ -21,10 +21,14 @@ function AppIo(options) {
         process.env['worker_id'] = parseInt(process.env.worker_id);
 
     // set worker id for pm2
-    if(process.env.pm_id)
+    var pm2 = false;
+    if(typeof process.env.pm_id != 'undefined')  {
         process.env['worker_id'] = parseInt(process.env.pm_id);
-    
-    if (cluster.isMaster && ! this._test) {
+        pm2 = true;
+        this._master = false;
+    }
+
+    if (cluster.isMaster && ! this._test && ! pm2 ) {
         console.log('app.io is loading...');
         this.fork();
         return this;
