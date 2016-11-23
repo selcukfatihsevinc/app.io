@@ -1,6 +1,6 @@
 var async  = require('async');
 var crypto = require('crypto');
-var uuid   = require('node-uuid');
+var uuid   = require('uuid');
 var php    = require('phpjs');
 var _      = require('underscore');
 
