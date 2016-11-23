@@ -57,7 +57,7 @@
     "kue": "0.11.1",
     "kue-ui": "0.1.0",
     "he": "1.1.0",
-    "bluebird": "3.4.1",
+    "bluebird": "3.4.6",
     "basic-auth": "1.0.4",
     "sanitize-html": "1.12.0",
     "git-rev-sync": "1.6.0",
