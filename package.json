@@ -97,7 +97,7 @@
     "nodemailer": "2.4.2",
     "nodemailer-smtp-transport": "2.5.0",
     "smtp-connection": "2.5.0",
-    "nodemailer-smtp-pool": "2.6.0"
+    "nodemailer-smtp-pool": "2.8.0"
   },
   "devDependencies": {
     "mocha": "^2.5.3",
