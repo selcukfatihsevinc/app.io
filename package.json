@@ -37,7 +37,7 @@
     "cache-stampede": "https://github.com/selcukfatihsevinc/cache-stampede/tarball/95cf172b979581785756e71e5ccd27f0a0ca4459",
     "parseable": "1.0.16",
     "multiparty": "4.1.2",
-    "cloudinary": "1.4.1",
+    "cloudinary": "1.4.3",
     "winston": "2.2.0",
     "morgan": "1.7.0",
     "shortid": "2.2.6",
