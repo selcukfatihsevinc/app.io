@@ -65,7 +65,7 @@
     "jwt-redis-session": "1.0.4",
     "sequelize": "3.24.3",
     "mysql": "2.11.1",
-    "purest": "2.0.1",
+    "purest": "3.0.0",
     "oauth-shim": "1.1.0",
     "elasticsearch": "11.0.1",
     "mongoosastic": "4.0.1",
