@@ -94,7 +94,7 @@
     "lodash": "4.13.1",
     "image-size": "0.5.0",
     "micromatch": "2.3.10",
-    "nodemailer": "2.4.2",
+    "nodemailer": "2.5.0",
     "nodemailer-smtp-transport": "2.5.0",
     "smtp-connection": "2.5.0",
     "nodemailer-smtp-pool": "2.6.0"
