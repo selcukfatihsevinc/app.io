@@ -1,7 +1,7 @@
 {
   "name": "app.io",
   "description": "REST API and web application framework, built on Nodejs, Express, and Mongoose",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "author": "Selçuk Fatih Sevinç",
   "license": "MIT",
   "engines": {
