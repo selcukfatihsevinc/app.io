@@ -101,7 +101,7 @@
     "winston": "2.2.0"
   },
   "devDependencies": {
-    "mocha": "^2.5.3",
+    "mocha": "^3.1.2",
     "chai": "^3.5.0",
     "supertest": "^1.2.0"
   },
